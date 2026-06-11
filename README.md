@@ -101,7 +101,7 @@ readerware-to-tellico books \
    
 4. **Select Output Folder**: Choose the location and name of the output folder.  Ensure that each export goes to a **separate** folder.  Press "Next".
    
-   ![File Selection](./docs/images/file_selection.png)
+   ![Folder Selection](./docs/images/folder_selection.png)
    
 5. **Select Items to Export**: Choose the items to be exported. "All in database" is usually the best choice.  Press "Next".
    
