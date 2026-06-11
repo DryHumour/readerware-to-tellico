@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0 # Required for GoReleaser to generate the changelog
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.24'
 
