@@ -1,0 +1,5 @@
+{{- define "books.condition" -}}
+{{- with .L "ITEM_CONDITION" }}
+   <condition>{{ index . 0 | xml }}</condition>
+{{- end -}}
+{{- end -}}

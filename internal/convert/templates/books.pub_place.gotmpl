@@ -1,0 +1,9 @@
+{{- define "books.pub_place" -}}
+{{- with .L "PUB_PLACE" }}
+   <pub_places>
+    {{- range . }}
+    <pub_place>{{ . | xml }}</pub_place>
+    {{- end }}
+   </pub_places>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.rel_date" -}}
+{{- with .D "RELEASE_DATE" }}
+   <rel_date>{{ template "tellico.date" . }}</rel_date>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.rating" -}}
+{{- with .V "MY_RATING" }}
+   <rating>{{ . | xml }}</rating>
+{{- end -}}
+{{- end -}}

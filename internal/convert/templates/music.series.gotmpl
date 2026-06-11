@@ -1,0 +1,5 @@
+{{- define "music.series" -}}
+{{- with .V "SERIES" }}
+   <series>{{ . | xml }}</series>
+{{- end -}}
+{{- end -}}

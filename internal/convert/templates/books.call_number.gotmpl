@@ -1,0 +1,5 @@
+{{- define "books.call_number" -}}
+{{- with .V "CALL_NUMBER" }}
+   <call_number>{{ . | xml }}</call_number>
+{{- end -}}
+{{- end -}}

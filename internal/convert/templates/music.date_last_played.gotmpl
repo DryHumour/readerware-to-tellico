@@ -1,0 +1,5 @@
+{{- define "music.date_last_played" -}}
+{{- with .D "DATE_LAST_PLAYED" }}
+   <date_last_played>{{ template "tellico.date" . }}</date_last_played>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "video.cover_condition" -}}
+{{- with .V "COVER_CONDITION" }}
+   <cover_condition>{{ . | xml }}</cover_condition>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.pages" -}}
+{{- with .V "PAGES" }}
+   <pages>{{ . | xml }}</pages>
+{{- end -}}
+{{- end -}}

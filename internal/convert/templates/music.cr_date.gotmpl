@@ -1,0 +1,5 @@
+{{- define "music.cr_date" -}}
+{{- with .D "COPYRIGHT_DATE" }}
+   <cr_date>{{ template "tellico.date" . }}</cr_date>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "video.copies" -}}
+{{- with .V "COPIES" }}
+   <copies>{{ . | xml }}</copies>
+{{- end -}}
+{{- end -}}

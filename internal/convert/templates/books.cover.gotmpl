@@ -1,0 +1,5 @@
+{{- define "books.cover" -}}
+{{- with .Images.LargeCover }}
+   <cover>{{ .Use.ID }}</cover>
+{{- end -}}
+{{- end -}}

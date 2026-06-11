@@ -1,0 +1,5 @@
+{{- define "music.product_info" -}}
+{{- with .V "PRODUCT_INFO" }}
+   <product_info>{{ . | paragraphs | xml }}</product_info>
+{{- end -}}
+{{- end -}}

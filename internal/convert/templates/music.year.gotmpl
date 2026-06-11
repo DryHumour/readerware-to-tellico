@@ -1,0 +1,5 @@
+{{- define "music.year" -}}
+{{- with coalesce (.D "RECORDING_DATE") (.D "RELEASE_DATE") (.D "COPYRIGHT_DATE") }}
+   <year>{{ coalesce .YYYY .Literal | toString | xml }}</year>
+{{- end -}}
+{{- end -}}

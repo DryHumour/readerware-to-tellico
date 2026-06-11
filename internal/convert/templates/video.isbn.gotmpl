@@ -1,0 +1,5 @@
+{{- define "video.isbn" -}}
+{{- with .V "ISBN" }}
+   <isbn>{{ . | xml }}</isbn>
+{{- end -}}
+{{- end -}}

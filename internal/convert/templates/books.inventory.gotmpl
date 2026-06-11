@@ -1,0 +1,5 @@
+{{- define "books.inventory" -}}
+{{- with .V "INVENTORY" }}
+   <inventory>{{ . | xml }}</inventory>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,6 @@
+{{- define "music.barcode" -}}
+{{- /* Tellico UPCitemdb data source requires a field named "barcode" */ -}}
+{{- with coalesce (.V "BARCODE") (.V "UPC") }}
+   <barcode>{{ . | xml }}</barcode>
+{{- end -}}
+{{- end -}}

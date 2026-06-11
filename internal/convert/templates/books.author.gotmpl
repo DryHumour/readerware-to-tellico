@@ -1,0 +1,9 @@
+{{- define "books.author" -}}
+{{- with .Authors }}
+   <authors>
+    {{- range . }}
+    <author>{{ . | xml }}</author>
+    {{- end }}
+   </authors>
+{{- end -}}
+{{- end -}}

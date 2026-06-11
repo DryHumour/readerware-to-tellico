@@ -1,0 +1,9 @@
+{{- define "music.location" -}}
+{{- with .V "LOCATION" -}}
+{{- if hasPrefix "Box " . }}
+   <location>{{ . | xml }}</location>
+{{- else -}}
+  {{- printf "[location] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

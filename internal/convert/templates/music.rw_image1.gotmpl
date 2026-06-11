@@ -1,0 +1,7 @@
+{{- define "music.rw_image1" -}}
+{{- with .Images.Image 1 -}}
+{{- if not .IsUsed }}
+   <rw_image1>{{ .Use.ID }}</rw_image1>
+{{- end -}}
+{{- end -}}
+{{- end -}}

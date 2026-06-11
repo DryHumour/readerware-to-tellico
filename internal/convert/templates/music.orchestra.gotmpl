@@ -1,0 +1,9 @@
+{{- define "music.orchestra" -}}
+{{- with .Orchestras }}
+   <orchestras>
+    {{- range . }}
+    <orchestra>{{ . | xml }}</orchestra>
+    {{- end }}
+   </orchestras>
+{{- end -}}
+{{- end -}}

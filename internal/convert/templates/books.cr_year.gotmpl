@@ -1,0 +1,9 @@
+{{- define "books.cr_year" -}}
+{{- with .D "COPYRIGHT_DATE" -}}
+{{- with coalesce .YYYY .Literal }}
+   <cr_years>
+    <cr_year>{{ . | xml }}</cr_year>
+   </cr_years>
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- define "video.alttitle" -}}
+{{- with .L "ALT_TITLE" }}
+   <alttitles>
+    {{- range . }}
+    <alttitle>{{ . | xml }}</alttitle>
+    {{- end }}
+   </alttitles>
+{{- end -}}
+{{- end -}}

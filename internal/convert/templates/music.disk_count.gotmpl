@@ -1,0 +1,5 @@
+{{- define "music.disk_count" -}}
+{{- with .V "DISK_COUNT" }}
+   <disk_count>{{ . | xml }}</disk_count>
+{{- end -}}
+{{- end -}}

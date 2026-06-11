@@ -1,0 +1,5 @@
+{{- define "video.new_count" -}}
+{{- with .V "NEW_COUNT" }}
+   <new_count>{{ . | xml }}</new_count>
+{{- end -}}
+{{- end -}}

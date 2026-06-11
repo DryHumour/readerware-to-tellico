@@ -1,0 +1,9 @@
+{{- define "books.keyword" -}}
+{{- with .L "KEYWORDS" }}
+   <keywords>
+    {{- range . }}
+    <keyword>{{ . | xml }}</keyword>
+    {{- end }}
+   </keywords>
+{{- end -}}
+{{- end -}}

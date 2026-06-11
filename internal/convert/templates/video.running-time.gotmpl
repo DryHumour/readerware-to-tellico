@@ -1,0 +1,7 @@
+{{- define "video.running-time" -}}
+{{- with .V "RUNNING_TIME" -}}
+   {{- if ne . "0:00" }}
+   <running-time>{{ . | xml }}</running-time>
+   {{- end -}}
+{{- end -}}
+{{- end -}}

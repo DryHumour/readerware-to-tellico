@@ -1,0 +1,5 @@
+{{- define "books.sales_rank" -}}
+{{- with .V "SALES_RANK" }}
+   <sales_rank>{{ . | xml }}</sales_rank>
+{{- end -}}
+{{- end -}}

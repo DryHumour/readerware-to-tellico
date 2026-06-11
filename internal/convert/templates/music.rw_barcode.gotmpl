@@ -1,0 +1,5 @@
+{{- define "music.rw_barcode" -}}
+{{- with .V "BARCODE" }}
+   <rw_barcode>{{ . | xml }}</rw_barcode>
+{{- end -}}
+{{- end -}}

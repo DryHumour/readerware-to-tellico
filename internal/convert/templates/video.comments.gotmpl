@@ -1,0 +1,5 @@
+{{- define "video.comments" -}}
+{{- with .V "MY_COMMENTS" }}
+   <comments>{{ . | paragraphs | xml }}</comments>
+{{- end -}}
+{{- end -}}

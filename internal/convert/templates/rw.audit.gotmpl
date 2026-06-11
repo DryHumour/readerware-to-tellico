@@ -1,0 +1,12 @@
+{{- define "rw.audit" -}}
+{{- if .RequiresAudit }}
+   <rw_requires_audit>true</rw_requires_audit>
+   {{- with .AuditReasons }}
+   <rw_audit_reasons>
+    {{- range . }}
+    <rw_audit_reason>{{ . | xml }}</rw_audit_reason>
+    {{- end }}
+   </rw_audit_reasons>
+   {{- end -}}
+{{- end -}}
+{{- end -}}

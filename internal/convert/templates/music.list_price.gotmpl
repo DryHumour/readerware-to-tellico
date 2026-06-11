@@ -1,0 +1,5 @@
+{{- define "music.list_price" -}}
+{{- with .V "LIST_PRICE" }}
+   <list_price>{{ . | xml }}</list_price>
+{{- end -}}
+{{- end -}}

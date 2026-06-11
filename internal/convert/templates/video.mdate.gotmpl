@@ -1,0 +1,5 @@
+{{- define "video.mdate" -}}
+{{- with .D "DATE_LAST_UPDATED" }}
+   <mdate>{{ template "tellico.date" . }}</mdate>
+{{- end -}}
+{{- end -}}

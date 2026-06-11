@@ -1,0 +1,27 @@
+{{- define "books.binding" -}}
+{{- with .V "FORMAT" }}
+{{- $bindings := dict 
+   "Hardcover"                "Hardcover" 
+   "Paperback"                "Paperback" 
+   "Trade Paperback"          "Trade Paperback"
+   "Mass Market Paperback"    "Mass Market Paperback"
+   "Comb Bound"               "Comb Bound"
+   "Spiral Bound"             "Spiral Bound"
+   "Saddle-Stitched"          "Saddle-Stitched"
+   "Side-Stitched"            "Side-Stitched"
+   "Audio CD"                 "Audio CD"
+
+   "Hardback"                 "Hardcover"
+   "Pamphlet"                 "Saddle-Stitched"
+   "Spiral"                   "Spiral Bound"
+   "Spiral-bound"             "Spiral Bound"
+   "Plastic Comb"             "Comb Bound"
+   "CD-ROM"                   "Audio CD"
+-}}
+{{- if hasKey $bindings . }}
+   <binding>{{ index $bindings . | xml }}</binding>
+{{- else -}}
+  {{- printf "[binding] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

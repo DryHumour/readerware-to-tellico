@@ -1,0 +1,5 @@
+{{- define "books.cdate" -}}
+{{- with .D "DATE_ENTERED" }}
+   <cdate>{{ template "tellico.date" . }}</cdate>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- define "video.editor" -}}
+{{- with .Editors }}
+   <editors>
+    {{- range . }}
+    <editor>{{ . | xml }}</editor>
+    {{- end }}
+   </editors>
+{{- end -}}
+{{- end -}}

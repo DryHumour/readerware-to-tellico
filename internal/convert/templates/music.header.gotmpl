@@ -1,0 +1,120 @@
+{{- /* Static header for Tellico Music collection */ -}}
+{{- define "music.header" -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tellico PUBLIC '-//Robby Stephenson/DTD Tellico V11.0//EN' 'http://periapsis.org/tellico/dtd/v11/tellico.dtd'>
+<tellico xmlns="http://periapsis.org/tellico/" syntaxVersion="11">
+ <collection title="My Music" type="4">
+  <fields>
+   <!-- Tellico "music" fields -->
+   <field category="General" description="Title" flags="8" format="1" name="title" title="Album" type="1"/>
+   <field allowed="Compact Disc;DVD;Cassette;Vinyl" category="General" flags="2" format="4" name="medium" title="Medium" type="3"/>
+   <field category="General" flags="7" format="1" name="artist" title="Artist" type="1"/>
+   <field category="General" flags="7" format="0" name="label" title="Label" type="1"/>
+   <field category="General" flags="2" format="4" name="year" title="Year" type="6"/>
+   <field category="General" flags="7" format="0" name="genre" title="Genre" type="1"/>
+   <field category="Tracks" flags="1" format="1" name="track" title="Tracks" type="8">
+    <prop name="column1">Title</prop>
+    <prop name="column2">Artist</prop>
+    <prop name="column3">Length</prop>
+    <prop name="columns">3</prop>
+   </field>
+   <field category="Personal" flags="2" format="4" name="rating" title="Rating" type="14">
+    <prop name="maximum">5</prop>
+    <prop name="minimum">1</prop>
+   </field>
+   <field category="Personal" flags="0" format="3" name="pur_date" title="Purchase Date" type="1"/>
+   <field category="Personal" flags="0" format="4" name="gift" title="Gift" type="4"/>
+   <field category="Personal" flags="0" format="4" name="pur_price" title="Purchase Price" type="1"/>
+   <field category="Personal" flags="0" format="4" name="loaned" title="Loaned" type="4"/>
+   <field category="Personal" flags="7" format="4" name="keyword" title="Keywords" type="1"/>
+   <field category="Cover" flags="0" format="4" name="cover" title="Cover" type="10"/>
+   <field category="Comments" flags="0" format="4" name="comments" title="Comments" type="2"/>
+   <field category="Personal" flags="32" format="4" name="id" title="ID" type="6">
+    <prop name="template">%{@id}</prop>
+   </field>
+   <field category="Personal" flags="16" format="3" name="cdate" title="Date Created" type="12"/>
+   <field category="Personal" flags="16" format="3" name="mdate" title="Date Modified" type="12"/>
+   <!-- Tellico "special" fields for Readerware Music -->
+   <field category="General" flags="1" format="1" name="alttitle" title="Alternate Title" type="1"/>
+   <!-- Custom fields for Readerware Music -->
+   <field category="Other People" flags="7" format="2" name="composer" title="Composer" type="1"/>
+   <field category="Other People" flags="7" format="2" name="conductor" title="Conductor" type="1"/>
+   <field category="Other People" flags="7" format="1" name="orchestra" title="Orchestra" type="1"/>
+   <field category="Other People" flags="7" format="2" name="soloist" title="Soloist" type="1"/>
+   <field category="Details" flags="0" format="3" name="rel_date" title="Release Date" type="12"/>
+   <field category="Details" flags="0" format="3" name="cr_date" title="Copyright Date" type="12"/>
+   <field category="Details" flags="0" format="4" name="running_time" title="Running Time" type="1"/>
+   <field category="Details" flags="7" format="4" name="language" title="Language" type="1"/>
+   <field category="Personal" flags="0" format="4" name="copies" title="Copies" type="6"/>
+   <field category="Details" description="Readerware BARCODE" flags="0" format="4" name="rw_barcode" title="Readerware Barcode" type="1"/>
+   <field category="Details" description="Readerware UPC" flags="0" format="4" name="rw_upc" title="Readerware UPC" type="1"/>
+   <field category="Details" flags="0" format="4" name="lccn" title="LCCN#" type="1"/>
+   <field category="Classification" flags="0" format="0" name="dewey" title="Dewey" type="1"/>
+   <field category="Classification" flags="0" format="4" name="call_number" title="Call Number" type="1"/>
+   <field category="Personal" flags="0" format="4" name="rw_user_number" title="User#" type="1"/>
+   <field category="Classification" flags="6" format="4" name="series" title="Series" type="1"/>
+   <field category="Details" flags="0" format="4" name="sound" title="Sound" type="1"/>
+   <field category="Personal" flags="0" format="4" name="condition" title="Condition" type="1"/>
+   <field category="Personal" flags="0" format="4" name="cover_condition" title="Cover Condition" type="1"/>
+   <field category="Personal" flags="1" format="4" name="rw_category" title="Readerware Categories" type="1"/>
+   <field category="Personal" flags="6" format="4" name="location" title="Location" type="1"/>
+   <field category="Personal" flags="0" format="4" name="played_count" title="Played Count" type="6"/>
+   <field category="Personal" flags="0" format="3" name="date_last_played" title="Date Last Played" type="12"/>
+   <field category="Personal" flags="0" format="4" name="playlist" title="Playlist" type="4"/>
+   <field category="Comments" flags="0" format="4" name="product_info" title="Product Info" type="2"/>
+   <field category="Personal" description="Readerware SOURCE (of Internet update)" flags="0" format="4" name="rw_source" title="Readerware Source" type="1"/>
+   <field category="Details" flags="0" format="4" name="catalog_number" title="Catalog Number" type="1"/>
+   <field category="Details" flags="0" format="4" name="rec_type" title="Recording Type" type="1"/>
+   <field category="Details" flags="0" format="3" name="rec_date" title="Recording Date" type="12"/>
+   <field category="Details" flags="6" format="4" name="rec_place" title="Recording Place" type="1"/>
+   <field category="Personal" flags="6" format="4" name="pur_place" title="Purchase Place" type="1"/>
+   <field category="Commerce" flags="0" format="4" name="list_price" title="List Price" type="1"/>
+   <field category="Personal" flags="0" format="4" name="item_value" title="Item Value" type="1"/>
+   <field category="Personal" flags="0" format="3" name="val_date" title="Valuation Date" type="12"/>
+   <field category="Commerce" flags="0" format="4" name="currency_symbol" title="Currency Symbol" type="1"/>
+   <field category="Personal" flags="0" format="4" name="favorite" title="Favorite" type="4"/>
+   <field category="Details" flags="0" format="4" name="out_of_print" title="Out of Print" type="4"/>
+   <field category="Details" flags="0" format="4" name="media_url" title="Media URL" type="7"/>
+   <field category="Commerce" flags="6" format="4" name="owner" title="Owner" type="1"/>
+   <field category="Personal" flags="4" format="4" name="rw_status" title="Status" type="3"/>
+   <field category="Personal" description="Readerware EXTERNAL_ID" flags="0" format="4" name="rw_external_id" title="External ID" type="1"/>
+   <field category="Audit" description="Readerware INVENTORY (number found during last physical inventory)" flags="0" format="4" name="inventory" title="Inventory" type="1"/>
+   <field category="Details" flags="0" format="4" name="asin" title="ASIN" type="1"/>
+   <field category="Commerce" description="Readerware SALE_PRICE" flags="0" format="4" name="sale_price" title="Sale Price" type="1"/>
+   <field category="Commerce" description="Readerware SALE_DATE" flags="0" format="3" name="sale_date" title="Sale Date" type="12"/>
+   <field category="Commerce" description="Readerware NEW_VALUE" flags="0" format="4" name="new_value" title="New Value" type="1"/>
+   <field category="Commerce" description="Readerware NEW_COUNT" flags="0" format="4" name="new_count" title="New Count" type="6"/>
+   <field category="Commerce" description="Readerware USED_VALUE" flags="0" format="4" name="used_value" title="Used Value" type="1"/>
+   <field category="Commerce" description="Readerware USED_COUNT" flags="0" format="4" name="used_count" title="Used Count" type="6"/>
+   <field category="Commerce" description="Readerware COLLECTIBLE_VALUE" flags="0" format="4" name="collectible_value" title="Collectible Value" type="1"/>
+   <field category="Commerce" description="Readerware COLLECTIBLE_COUNT" flags="0" format="4" name="collectible_count" title="Collectible Count" type="6"/>
+   <field category="Commerce" flags="0" format="4" name="buyer_waiting" title="Buyer Waiting" type="4"/>
+   <field category="Details" flags="0" format="4" name="weight" title="Weight" type="1"/>
+   <field category="Commerce" description="Readerware SALES_RANK" flags="0" format="4" name="sales_rank" title="Sales Rank" type="1"/>
+   <field category="General" flags="0" format="4" name="disk_count" title="Disk Count" type="6"/>
+   <field category="Readerware User Fields" description="Readerware USER1" flags="0" format="4" name="rw_user1" title="User 1" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER2" flags="0" format="4" name="rw_user2" title="User 2" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER3" flags="0" format="4" name="rw_user3" title="User 3" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER4" flags="0" format="4" name="rw_user4" title="User 4" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER5" flags="0" format="4" name="rw_user5" title="User 5" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER6" flags="0" format="4" name="rw_user6" title="User 6" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER7" flags="0" format="4" name="rw_user7" title="User 7" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER8" flags="0" format="4" name="rw_user8" title="User 8" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER9" flags="0" format="4" name="rw_user9" title="User 9" type="1"/>
+   <field category="Readerware User Fields" description="Readerware USER10" flags="0" format="4" name="rw_user10" title="User 10" type="1"/>
+   <!-- Readerware image fields -->
+   <field category="Readerware Images" description="Readerware Image 1" flags="0" format="4" name="rw_image1" title="Image 1" type="10"/>
+   <field category="Readerware Images" description="Readerware Image 2" flags="0" format="4" name="rw_image2" title="Image 2" type="10"/>
+   <field category="Readerware Images" description="Readerware Image 3" flags="0" format="4" name="rw_image3" title="Image 3" type="10"/>
+   <field category="Readerware Images" description="Readerware Image 4" flags="0" format="4" name="rw_image4" title="Image 4" type="10"/>
+   <field category="Readerware Images" description="Readerware Large Image 1" flags="0" format="4" name="rw_large_image1" title="Large image 1" type="10"/>
+   <field category="Readerware Images" description="Readerware Large Image 2" flags="0" format="4" name="rw_large_image2" title="Large image 2" type="10"/>
+   <field category="Readerware Images" description="Readerware Large Image 3" flags="0" format="4" name="rw_large_image3" title="Large image 3" type="10"/>
+   <field category="Readerware Images" description="Readerware Large Image 4" flags="0" format="4" name="rw_large_image4" title="Large image 4" type="10"/>
+   <!-- Computed fields -->
+   <field category="Details" flags="5" format="2" name="credit" title="Credit" type="1"/>
+   <field category="Details" flags="0" format="4" name="barcode" title="Barcode" type="1"/>
+   <field category="Audit" flags="0" format="4" name="rw_requires_audit" title="Requires Audit" type="4"/>
+   <field category="Audit" flags="3" format="4" name="rw_audit_reason" title="Audit Reasons" type="1"/>
+  </fields>
+{{- end -}}

@@ -1,0 +1,11 @@
+{{- define "books.cover_condition" -}}
+{{- with .V "COVER_CONDITION" -}}
+ {{- if ne . "None" }}
+   <cover_condition>{{ . | xml }}</cover_condition>
+ {{- end }}
+{{- else with .L "ITEM_CONDITION" -}}
+ {{- if eq (len .) 2 }}
+   <cover_condition>{{ index . 1 | xml }}</cover_condition>
+ {{- end -}}
+{{- end -}}
+{{- end -}}

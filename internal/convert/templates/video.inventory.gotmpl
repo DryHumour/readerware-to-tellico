@@ -1,0 +1,5 @@
+{{- define "video.inventory" -}}
+{{- with .V "INVENTORY" }}
+   <inventory>{{ . | xml }}</inventory>
+{{- end -}}
+{{- end -}}

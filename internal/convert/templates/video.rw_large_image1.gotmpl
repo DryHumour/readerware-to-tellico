@@ -1,0 +1,7 @@
+{{- define "video.rw_large_image1" -}}
+{{- with .Images.LargeImage 1 -}}
+{{- if not .IsUsed }}
+   <rw_large_image1>{{ .Use.ID }}</rw_large_image1>
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.publisher" -}}
+{{- with .V "PUBLISHER" }}
+   <publisher>{{ . | xml }}</publisher>
+{{- end -}}
+{{- end -}}

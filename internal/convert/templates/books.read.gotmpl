@@ -1,0 +1,7 @@
+{{- define "books.read" -}}
+{{- with .V "READ_COUNT" -}}
+ {{- if ge (int64 .) 1 }}
+   <read>true</read>
+ {{- end -}}
+{{- end -}}
+{{- end -}}

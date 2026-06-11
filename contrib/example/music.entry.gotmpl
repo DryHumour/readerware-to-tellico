@@ -1,0 +1,77 @@
+{{- define "music.entry" -}}
+  {{- template "music.aggregate" . }}
+  <entry id="{{ or (.V "ROWKEY") (.V "ROW#") | xml }}">
+   {{- /* Tellico "music" fields */ -}}
+   {{- template "music.title" . -}}
+   {{- template "music.medium" . -}}
+   {{- template "music.artist" . -}}
+   {{- template "music.label" . -}}
+   {{- template "music.year" . -}}
+   {{- template "music.genre" . -}}
+   {{- template "music.track" . -}}
+   {{- template "music.rating" . -}}
+   {{- template "music.pur_date" . -}}
+   {{- template "music.gift" . -}}
+   {{- template "music.loaned" . -}}
+   {{- template "music.pur_price" . -}}
+   {{- template "music.keyword" . -}}
+   {{- template "music.cover" . -}}
+   {{- template "music.comments" . -}}
+   {{- template "music.cdate" . -}}
+   {{- template "music.mdate" . -}}
+   {{- /* Tellico "special" fields for Readerware Music */ -}}
+   {{- template "music.alttitle" . -}}
+   {{- /* Custom fields for Readerware Music */ -}}
+   {{- template "music.composer" . -}}
+   {{- template "music.conductor" . -}}
+   {{- template "music.orchestra" . -}}
+   {{- template "music.soloist" . -}}
+   {{- template "music.rel_date" . -}}
+   {{- template "music.cr_date" . -}}
+   {{- template "music.running_time" . -}}
+   {{- template "music.language" . -}}
+   {{- template "music.copies" . -}}
+   {{- template "music.lccn" . -}}
+   {{- template "music.dewey" . -}}
+   {{- template "music.call_number" . -}}
+   {{- template "music.series" . -}}
+   {{- template "music.sound" . -}}
+   {{- template "music.condition" . -}}
+   {{- template "music.cover_condition" . -}}
+   {{- template "music.rw_category" . -}}
+   {{- template "music.location" . -}}
+   {{- template "music.product_info" . -}}
+   {{- template "music.catalog_number" . -}}
+   {{- template "music.rec_type" . -}}
+   {{- template "music.rec_date" . -}}
+   {{- template "music.rec_place" . -}}
+   {{- template "music.list_price" . -}}
+   {{- template "music.item_value" . -}}
+   {{- template "music.val_date" . -}}
+   {{- template "music.favorite" . -}}
+   {{- template "music.out_of_print" . -}}
+   {{- template "music.media_url" . -}}
+   {{- template "music.inventory" . -}}
+   {{- template "music.asin" . -}}
+   {{- template "music.weight" . -}}
+   {{- template "music.disk_count" . -}}
+   {{- /* Readerware image fields */ -}}
+   {{- template "music.rw_image1" . -}}
+   {{- template "music.rw_image2" . -}}
+   {{- template "music.rw_image3" . -}}
+   {{- template "music.rw_image4" . -}}
+   {{- template "music.rw_large_image1" . -}}
+   {{- template "music.rw_large_image2" . -}}
+   {{- template "music.rw_large_image3" . -}}
+   {{- template "music.rw_large_image4" . -}}
+   {{- /* Computed fields */ -}}
+   {{- template "music.credit" . -}}
+   {{- template "music.barcode" . -}}
+{{- if and (.V "BARCODE") (.V "UPC") }}{{ .AddAduit (printf "[barcode] both BARCODE %q and UPC %q" (.V "BARCODE") (.V "UPC")) }}{{ end -}}
+{{- if ne (.V "STATUS") "Own" }}{{ .AddAudit (printf "[status] not owned %q" (.V "STATUS")) }}{{ end -}}
+{{- range (list "USER1" "USER2" "USER3" "USER4" "USER5" "USER6" "USER7" "USER8" "USER9" "USER10") -}}
+ {{- if $.V . }}{{ $.AddAudit (printf "[user] %s is not empty %q" . ($.V .)) }}{{ end -}}
+{{- end -}}
+   {{- template "rw.audit" . }}
+  </entry>
+{{- end -}}

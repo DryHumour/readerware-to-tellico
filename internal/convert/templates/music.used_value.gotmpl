@@ -1,0 +1,5 @@
+{{- define "music.used_value" -}}
+{{- with .V "USED_VALUE" }}
+   <used_value>{{ . | xml }}</used_value>
+{{- end -}}
+{{- end -}}

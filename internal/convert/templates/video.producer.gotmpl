@@ -1,0 +1,9 @@
+{{- define "video.producer" -}}
+{{- with .Producers }}
+   <producers>
+    {{- range . }}
+    <producer>{{ . | xml }}</producer>
+    {{- end }}
+   </producers>
+{{- end -}}
+{{- end -}}

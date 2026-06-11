@@ -1,0 +1,5 @@
+{{- define "books.location" -}}
+{{- with .V "LOCATION" }}
+   <location>{{ . | xml }}</location>
+{{- end -}}
+{{- end -}}

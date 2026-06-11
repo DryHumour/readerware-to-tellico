@@ -1,0 +1,5 @@
+{{- define "books.owner" -}}
+{{- with .V "OWNER" }}
+   <owner>{{ . | xml }}</owner>
+{{- end -}}
+{{- end -}}

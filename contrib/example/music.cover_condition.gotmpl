@@ -1,0 +1,21 @@
+{{- define "music.cover_condition" -}}
+{{- with .V "COVER_CONDITION" }}
+{{- $conditions := dict
+    "Mint"           "Mint"
+    "Near Mint"      "Near Mint"
+    "Very Good Plus" "Very Good Plus"
+    "Very Good"      "Very Good"
+    "Good Plus"      "Good Plus"
+    "Good"           "Good"
+    "Fair"           "Fair"
+    "Poor"           "Poor"
+
+    "Like New"       "Very Good Plus"
+-}}
+{{- if hasKey $conditions . }}
+   <cover_condition>{{ index $conditions . | xml }}</cover_condition>
+{{- else -}}
+  {{- printf "[cover_condition] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "music.rw_upc" -}}
+{{- with .V "UPC" }}
+   <rw_upc>{{ . | xml }}</rw_upc>
+{{- end -}}
+{{- end -}}

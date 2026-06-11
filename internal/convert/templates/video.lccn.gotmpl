@@ -1,0 +1,5 @@
+{{- define "video.lccn" -}}
+{{- with .V "LCCN" }}
+   <lccn>{{ . | xml }}</lccn>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- define "music.label" -}}
+{{- with .V "PUBLISHER" }}
+   <labels>
+    {{- range splitList ";" . }}
+    <label>{{ . | squeeze | xml }}</label>
+    {{- end }}
+   </labels>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,11 @@
+{{- define "video.cast" -}}
+{{- with .Cast }}
+   <casts>
+    {{- range . }}
+    <cast>
+     <column>{{ . | xml }}</column>
+    </cast>
+    {{- end }}
+   </casts>
+{{- end -}}
+{{- end -}}

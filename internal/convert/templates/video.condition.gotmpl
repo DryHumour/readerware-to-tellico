@@ -1,0 +1,5 @@
+{{- define "video.condition" -}}
+{{- with .V "ITEM_CONDITION" }}
+   <condition>{{ . | xml }}</condition>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- define "music.artist" -}}
+{{- with .Artists }}
+   <artists>
+    {{- range . }}
+    <artist>{{ . | xml }}</artist>
+    {{- end }}
+   </artists>
+{{- end -}}
+{{- end -}}

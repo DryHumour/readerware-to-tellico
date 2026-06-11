@@ -1,0 +1,9 @@
+{{- define "video.composer" -}}
+{{- with .Composers }}
+   <composers>
+    {{- range . }}
+    <composer>{{ . | xml }}</composer>
+    {{- end }}
+   </composers>
+{{- end -}}
+{{- end -}}

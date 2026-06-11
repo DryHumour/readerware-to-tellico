@@ -1,0 +1,9 @@
+{{- define "books.pub_year" -}}
+{{- with .D "RELEASE_DATE" -}}
+{{- with coalesce .YYYY .Literal }}
+   <pub_years>
+    <pub_year>{{ . | xml }}</pub_year>
+   </pub_years>
+{{- end -}}
+{{- end -}}
+{{- end -}}

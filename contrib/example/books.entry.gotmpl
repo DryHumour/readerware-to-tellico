@@ -1,0 +1,82 @@
+{{- define "books.entry" -}}
+  {{- template "books.aggregate" . }}
+  <entry id="{{ or (.V "ROWKEY") (.V "ROW#") | xml }}">
+   {{- /* Tellico "books" fields */ -}}
+   {{- template "books.title" . -}}
+   {{- template "books.subtitle" . -}}
+   {{- template "books.author" . -}}
+   {{- template "books.editor" . -}}
+   {{- template "books.binding" . -}}
+   {{- template "books.pur_date" . -}}
+   {{- template "books.pur_price" . -}}
+   {{- template "books.publisher" . -}}
+   {{- template "books.edition" . -}}
+   {{- template "books.cr_year" . -}}
+   {{- template "books.pub_year" . -}}
+   {{- template "books.isbn" . -}}
+   {{- template "books.lccn" . -}}
+   {{- template "books.pages" . -}}
+   {{- template "books.translator" . -}}
+   {{- template "books.language" . -}}
+   {{- template "books.genre" . -}}
+   {{- template "books.keyword" . -}}
+   {{- template "books.series" . -}}
+   {{- template "books.series_num" . -}}
+   {{- template "books.condition" . -}}
+   {{- template "books.signed" . -}}
+   {{- template "books.read" . -}}
+   {{- template "books.gift" . -}}
+   {{- template "books.loaned" . -}}
+   {{- template "books.rating" . -}}
+   {{- template "books.cover" . -}}
+   {{- template "books.plot" . -}}
+   {{- template "books.comments" . -}}
+   {{- template "books.cdate" . -}}
+   {{- template "books.mdate" . -}}
+   {{- /* Tellico "special" fields for Readerware Books */ -}}
+   {{- template "books.alttitle" . -}}
+   {{- /* Custom fields for Readerware Books */ -}}
+   {{- template "books.illustrator" . -}}
+   {{- template "books.pub_place" . -}}
+   {{- template "books.rel_date" . -}}
+   {{- template "books.dimensions" . -}}
+   {{- template "books.reading_level" . -}}
+   {{- template "books.lexile_level" . -}}
+   {{- template "books.copies" . -}}
+   {{- template "books.barcode" . -}}
+   {{- template "books.issn" . -}}
+   {{- template "books.dewey" . -}}
+   {{- template "books.cover_condition" . -}}
+   {{- template "books.rw_category" . -}}
+   {{- template "books.location" . -}}
+   {{- template "books.rw_source" . -}}
+   {{- template "books.list_price" . -}}
+   {{- template "books.item_value" . -}}
+   {{- template "books.val_date" . -}}
+   {{- template "books.out_of_print" . -}}
+   {{- template "books.asin" . -}}
+   {{- template "books.volumes" . -}}
+   {{- template "books.media_url" . -}}
+   {{- template "books.call_number" . -}}
+   {{- template "books.favorite" . -}}
+   {{- template "books.inventory" . -}}
+   {{- template "books.weight" . -}}
+   {{- /* Readerware image fields */ -}}
+   {{- template "books.rw_image1" . -}}
+   {{- template "books.rw_image2" . -}}
+   {{- template "books.rw_image3" . -}}
+   {{- template "books.rw_image4" . -}}
+   {{- template "books.rw_large_image1" . -}}
+   {{- template "books.rw_large_image2" . -}}
+   {{- template "books.rw_large_image3" . -}}
+   {{- template "books.rw_large_image4" . -}}
+   {{- /* Computed fields */ -}}
+   {{- template "books.credit" . -}}
+{{- if ne (.V "STATUS") "Own" }}{{ .AddAudit (printf "[status] not owned %q" (.V "STATUS")) }}{{ end -}}
+{{- range (list "USER1" "USER2" "USER3" "USER4" "USER5" "USER6" "USER7" "USER8" "USER10") -}}
+ {{- if $.V . }}{{ $.AddAudit (printf "[user] %s is not empty %q" . ($.V .)) }}{{ end -}}
+{{- end -}}
+{{- if and (.V "USER9") (ne (.V "USER9") (.V "SERIES_NUMBER")) }}{{ .AddAudit (printf "[user9] not empty and not equal to series number %q" (.V "USER9")) }}{{ end -}}
+   {{- template "rw.audit" . }}
+  </entry>
+{{- end -}}

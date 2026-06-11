@@ -1,0 +1,5 @@
+{{- define "music.sale_date" -}}
+{{- with .D "SALE_DATE" }}
+   <sale_date>{{ template "tellico.date" . }}</sale_date>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,18 @@
+{{- define "music.rec_type" -}}
+{{- with .L "RECORDING_TYPE" -}}
+{{- $recordingTypes := dict
+    "Studio"         "Studio"
+    "Live"           "Live"
+    "Demo"           "Demo"
+    "Soundtrack"     "Soundtrack"
+    "Cast Recording" "Cast Recording"
+}}
+   <rec_types>
+    {{- range . -}}
+    {{- if hasKey $recordingTypes . }}
+    <rec_type>{{ index $recordingTypes . | xml }}</rec_type>
+    {{- end -}}
+    {{- end }}
+   </rec_types>
+{{- end -}}
+{{- end -}}

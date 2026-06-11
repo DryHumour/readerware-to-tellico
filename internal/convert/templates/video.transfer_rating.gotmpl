@@ -1,0 +1,5 @@
+{{- define "video.transfer_rating" -}}
+{{- with .V "TRANSFER_RATING" }}
+   <transfer_rating>{{ . | xml }}</transfer_rating>
+{{- end -}}
+{{- end -}}

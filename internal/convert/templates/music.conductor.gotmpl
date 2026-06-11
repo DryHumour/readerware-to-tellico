@@ -1,0 +1,9 @@
+{{- define "music.conductor" -}}
+{{- with .Conductors }}
+   <conductors>
+    {{- range . }}
+    <conductor>{{ . | xml }}</conductor>
+    {{- end }}
+   </conductors>
+{{- end -}}
+{{- end -}}

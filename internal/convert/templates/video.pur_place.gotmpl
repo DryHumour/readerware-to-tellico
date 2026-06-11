@@ -1,0 +1,5 @@
+{{- define "video.pur_place" -}}
+{{- with .V "PURCHASE_PLACE" }}
+   <pur_place>{{ . | xml }}</pur_place>
+{{- end -}}
+{{- end -}}

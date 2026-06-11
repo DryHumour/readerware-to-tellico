@@ -1,0 +1,5 @@
+{{- define "books.binding" -}}
+{{- with .V "FORMAT" }}
+   <binding>{{ . | xml }}</binding>
+{{- end -}}
+{{- end -}}

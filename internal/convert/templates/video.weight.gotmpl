@@ -1,0 +1,5 @@
+{{- define "video.weight" -}}
+{{- with .V "WEIGHT" }}
+   <weight>{{ . | xml }}</weight>
+{{- end -}}
+{{- end -}}

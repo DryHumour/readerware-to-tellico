@@ -1,0 +1,5 @@
+{{- define "video.plot" -}}
+{{- with product_info . (.V "PRODUCT_INFO") }}
+   <plot>{{ . | paragraphs | xml }}</plot>
+{{- end -}}
+{{- end -}}

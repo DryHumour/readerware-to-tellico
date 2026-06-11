@@ -1,0 +1,97 @@
+{{- define "video.entry" -}}
+  {{- template "video.aggregate" . }}
+  <entry id="{{ or (.V "ROWKEY") (.V "ROW#") | xml }}">
+   {{- /* Tellico "video" fields */ -}}
+   {{- template "video.title" . }}
+   {{- template "video.medium" . }}
+   {{- template "video.year" . }}
+   {{- template "video.certification" . }}
+   {{- template "video.genre" . }}
+   {{- template "video.region" . }}
+   {{- template "video.nationality" . }}
+   {{- template "video.format" . }}
+   {{- template "video.cast" . }}
+   {{- template "video.director" . }}
+   {{- template "video.producer" . }}
+   {{- template "video.writer" . }}
+   {{- template "video.composer" . }}
+   {{- template "video.studio" . }}
+   {{- template "video.language" . }}
+   {{- template "video.subtitle" . }}
+   {{- template "video.audio-track" . }}
+   {{- template "video.running-time" . }}
+   {{- template "video.aspect-ratio" . }}
+   {{- template "video.widescreen" . }}
+   {{- template "video.color" . }}
+   {{- template "video.sound" . }}
+   {{- template "video.directors-cut" . }}
+   {{- template "video.plot" . }}
+   {{- template "video.rating" . }}
+   {{- template "video.pur_date" . }}
+   {{- template "video.gift" . }}
+   {{- template "video.pur_price" . }}
+   {{- template "video.loaned" . }}
+   {{- template "video.keyword" . }}
+   {{- template "video.cover" . }}
+   {{- template "video.comments" . }}
+   {{- template "video.cdate" . }}
+   {{- template "video.mdate" . }}
+   {{- /* Tellico "special" fields for Readerware Video */ -}}
+   {{- template "video.alttitle" . }}
+   {{- /* Custom fields for Readerware Video */ -}}
+   {{- template "video.screenwriter" . }}
+   {{- template "video.photographer" . }}
+   {{- template "video.editor" . }}
+   {{- template "video.pub_place" . }}
+   {{- template "video.rel_date" . }}
+   {{- template "video.cr_date" . }}
+   {{- template "video.anamorphic" . }}
+   {{- template "video.subtitled" . }}
+   {{- template "video.closed_cap" . }}
+   {{- template "video.book" . }}
+   {{- template "video.author" . }}
+   {{- template "video.copies" . }}
+   {{- template "video.isbn" . }}
+   {{- template "video.lccn" . }}
+   {{- template "video.dewey" . }}
+   {{- template "video.call_number" . }}
+   {{- template "video.series" . }}
+   {{- template "video.transfer_rating" . }}
+   {{- template "video.condition" . }}
+   {{- template "video.cover_condition" . }}
+   {{- template "video.rw_category" . }}
+   {{- template "video.location" . }}
+   {{- template "video.extras_info" . }}
+   {{- template "video.list_price" . }}
+   {{- template "video.item_value" . }}
+   {{- template "video.val_date" . }}
+   {{- template "video.favorite" . }}
+   {{- template "video.out_of_print" . }}
+   {{- template "video.media_url" . }}
+   {{- template "video.inventory" . }}
+   {{- template "video.asin" . }}
+   {{- template "video.weight" . }}
+   {{- template "video.disk_count" . }}
+   {{- /* Readerware image fields */ -}}
+   {{- template "video.rw_image1" . }}
+   {{- template "video.rw_image2" . }}
+   {{- template "video.rw_image3" . }}
+   {{- template "video.rw_image4" . }}
+   {{- template "video.rw_large_image1" . }}
+   {{- template "video.rw_large_image2" . }}
+   {{- template "video.rw_large_image3" . }}
+   {{- template "video.rw_large_image4" . }}
+   {{- /* Computed fields */ -}}
+   {{- template "video.credit" . -}}
+   {{- template "video.barcode" . -}}
+{{- if and (.V "BARCODE") (.V "UPC") }}{{ .AddAudit (printf "[barcode] both BARCODE %q and UPC %q" (.V "BARCODE") (.V "UPC")) }}{{ end -}}
+{{- if ne (.V "STATUS") "Own" }}{{ .AddAudit (printf "[status] not owned %q" (.V "STATUS")) }}{{ end -}}
+{{- range (list "USER3" "USER4" "USER5" "USER6" "USER7" "USER8" "USER9") -}}
+ {{- if ne ($.V .) "" }}{{ $.AddAudit (printf "[user] %s is not empty %q" . ($.V .)) }}{{ end -}}
+{{- end -}}
+{{- if and (.V "USER1") (not (hasPrefix "Doctor Who" (.V "TITLE"))) }}{{ .AddAudit (printf "[user1] unexpected USER1 %q" (.V "USER1")) }}{{ end -}}
+{{- if and (.V "USER2") (not (hasPrefix "Box " (.V "USER2"))) }}{{ .AddAudit (printf "[user2] unexpected USER2 %q" (.V "USER2")) }}{{ end -}}
+{{- if and (.V "USER10") (not (hasPrefix "Doctor Who" (.V "TITLE"))) (ne (.V "USER10") "1") }}{{ .AddAudit (printf "[user10] unexpected USER10 %q" (.V "USER10")) }}{{ end -}}
+   {{- template "rw.audit" . }}
+  </entry>
+{{- end -}}
