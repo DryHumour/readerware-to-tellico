@@ -1,0 +1,5 @@
+{{- define "video.rw_external_id" -}}
+{{- with .V "EXTERNAL_ID" }}
+   <rw_external_id>{{ . | xml }}</rw_external_id>
+{{- end -}}
+{{- end -}}

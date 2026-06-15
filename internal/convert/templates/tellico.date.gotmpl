@@ -1,0 +1,15 @@
+{{- define "tellico.date" -}}
+{{- with .Literal -}}
+ {{- . | xml -}}
+{{- else -}}
+ {{- with .YYYY }}
+    <year>{{ . | toString | xml }}</year>
+ {{- end }}
+ {{- with .MM }}
+    <month>{{ . | toString | xml }}</month>
+ {{- end }}
+ {{- with .DD }}
+    <day>{{ . | toString | xml }}</day>
+ {{- end }}
+{{- end }}
+{{- end -}}

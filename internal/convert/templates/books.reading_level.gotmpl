@@ -1,0 +1,5 @@
+{{- define "books.reading_level" -}}
+{{- with .V "READING_LEVEL" }}
+   <reading_level>{{ . | xml }}</reading_level>
+{{- end -}}
+{{- end -}}

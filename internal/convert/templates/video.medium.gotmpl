@@ -1,0 +1,5 @@
+{{- define "video.medium" -}}
+{{- with .V "FORMAT" }}
+   <medium>{{ . | xml }}</medium>
+{{- end -}}
+{{- end -}}

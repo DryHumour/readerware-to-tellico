@@ -1,0 +1,16 @@
+{{- define "books.footer" -}}
+{{- if . }}
+  <images>
+{{- range .Images }}
+   <image id="{{ .ID }}" format="{{ .Format }}"/>
+{{- end }}
+  </images>
+{{- end }}
+ </collection>
+ <filters>
+  <filter name="Requires Audit" match="all">
+   <rule field="rw_requires_audit" pattern="true" function="equals"/>
+  </filter>
+ </filters>
+</tellico>
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "music.catalog_number" -}}
+{{- with .V "CATALOG_NUMBER" }}
+   <catalog_number>{{ . | xml }}</catalog_number>
+{{- end -}}
+{{- end -}}

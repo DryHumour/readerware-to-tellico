@@ -1,0 +1,5 @@
+{{- define "books.item_value" -}}
+{{- with .V "ITEM_VALUE" }}
+   <item_value>{{ . | xml }}</item_value>
+{{- end -}}
+{{- end -}}

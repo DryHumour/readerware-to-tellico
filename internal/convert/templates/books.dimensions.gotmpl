@@ -1,0 +1,5 @@
+{{- define "books.dimensions" -}}
+{{- with .V "DIMENSIONS" }}
+   <dimensions>{{ . | xml }}</dimensions>
+{{- end -}}
+{{- end -}}

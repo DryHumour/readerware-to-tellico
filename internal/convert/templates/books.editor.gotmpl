@@ -1,0 +1,9 @@
+{{- define "books.editor" -}}
+{{- with (concat .Editors (.Credits "Revisers" "[rev.]")) }}
+   <editors>
+    {{- range . }}
+    <editor>{{ . | xml }}</editor>
+    {{- end }}
+   </editors>
+{{- end -}}
+{{- end -}}

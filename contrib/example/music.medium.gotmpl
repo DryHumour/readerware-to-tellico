@@ -1,0 +1,19 @@
+{{- define "music.medium" -}}
+{{- with .V "FORMAT" }}
+{{- $media := dict 
+    "Compact Disc" "Compact Disc"
+    "DVD"          "DVD"
+    "Cassette"     "Cassette"
+    "Vinyl"        "Vinyl"
+
+    "Audio CD"     "Compact Disc"
+    "CD"           "Compact Disc"
+    "DVD Audio"    "DVD"
+-}}
+{{- if hasKey $media . }}
+   <medium>{{ index $media . | xml }}</medium>
+{{- else -}}
+  {{- printf "[medium] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

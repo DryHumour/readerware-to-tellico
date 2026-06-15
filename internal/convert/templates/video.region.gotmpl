@@ -1,0 +1,5 @@
+{{- define "video.region" -}}
+{{- with .V "REGION" }}
+   <region>{{ . | xml }}</region>
+{{- end -}}
+{{- end -}}

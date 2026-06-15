@@ -1,0 +1,5 @@
+{{- define "video.book" -}}
+{{- with .V "BOOK" }}
+   <book>{{ . | xml }}</book>
+{{- end -}}
+{{- end -}}

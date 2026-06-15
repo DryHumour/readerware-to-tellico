@@ -1,0 +1,5 @@
+{{- define "music.inventory" -}}
+{{- with .V "INVENTORY" }}
+   <inventory>{{ . | xml }}</inventory>
+{{- end -}}
+{{- end -}}

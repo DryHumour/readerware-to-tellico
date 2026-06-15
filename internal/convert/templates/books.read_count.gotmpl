@@ -1,0 +1,5 @@
+{{- define "books.read_count" -}}
+{{- with .V "READ_COUNT" }}
+   <read_count>{{ . | xml }}</read_count>
+{{- end -}}
+{{- end -}}

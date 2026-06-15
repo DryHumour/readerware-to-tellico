@@ -1,0 +1,9 @@
+{{- define "music.soloist" -}}
+{{- with .Soloists }}
+   <soloists>
+    {{- range . }}
+    <soloist>{{ . | xml }}</soloist>
+    {{- end }}
+   </soloists>
+{{- end -}}
+{{- end -}}

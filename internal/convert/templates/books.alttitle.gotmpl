@@ -1,0 +1,7 @@
+{{- define "books.alttitle" -}}
+{{- with .V "ALT_TITLE" }}
+   <alttitles>
+    <alttitle>{{ . | xml }}</alttitle>
+   </alttitles>
+{{- end -}}
+{{- end -}}

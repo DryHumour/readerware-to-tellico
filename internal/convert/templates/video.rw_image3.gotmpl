@@ -1,0 +1,7 @@
+{{- define "video.rw_image3" -}}
+{{- with .Images.Image 3 -}}
+{{- if not .IsUsed }}
+   <rw_image3>{{ .Use.ID }}</rw_image3>
+{{- end -}}
+{{- end -}}
+{{- end -}}

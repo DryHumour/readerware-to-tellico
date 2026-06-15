@@ -1,0 +1,9 @@
+{{- define "books.language" -}}
+{{- with .L "CONTENT_LANGUAGE" }}
+   <languages>
+   {{- range . }}
+    <language>{{ . | xml }}</language>
+   {{- end }}
+   </languages>
+{{- end -}}
+{{- end -}}

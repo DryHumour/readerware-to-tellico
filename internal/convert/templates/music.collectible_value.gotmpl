@@ -1,0 +1,5 @@
+{{- define "music.collectible_value" -}}
+{{- with .V "COLLECTIBLE_VALUE" }}
+   <collectible_value>{{ . | xml }}</collectible_value>
+{{- end -}}
+{{- end -}}

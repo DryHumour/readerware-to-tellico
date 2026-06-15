@@ -1,0 +1,9 @@
+{{- define "books.illustrator" -}}
+{{- with .Illustrators }}
+   <illustrators>
+    {{- range . }}
+    <illustrator>{{ . | xml }}</illustrator>
+    {{- end }}
+   </illustrators>
+{{- end -}}
+{{- end -}}

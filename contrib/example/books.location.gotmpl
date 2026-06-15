@@ -1,0 +1,20 @@
+{{- define "books.location" -}}
+{{- with .V "LOCATION" -}}
+{{- $locations := dict 
+   "Library"  "Library" 
+   "Study"    "Study" 
+   "Basement" "Basement" 
+   "Craft"    "Craft" 
+   "Guest"    "Guest" 
+   "Master"   "Master" 
+   "Living"   "Living" 
+   "Kitchen"  "Kitchen" 
+   "Hall"     "Hall" 
+   "Other"    "Other" 
+   "Missing"  "Missing" 
+}}
+{{- if hasKey $locations . }}
+   <location>{{ index $locations . | xml }}</location>
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "video.certification" -}}
+{{- with .V "CERTIFICATION" }}
+   <certification>{{ . | xml }}</certification>
+{{- end -}}
+{{- end -}}

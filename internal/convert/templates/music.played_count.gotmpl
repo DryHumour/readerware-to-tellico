@@ -1,0 +1,5 @@
+{{- define "music.played_count" -}}
+{{- with .V "PLAYED_COUNT" }}
+   <played_count>{{ . | xml }}</played_count>
+{{- end -}}
+{{- end -}}

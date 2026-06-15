@@ -1,0 +1,5 @@
+{{- define "books.series" -}}
+{{- with .V "SERIES" }}
+   <series>{{ . | xml }}</series>
+{{- end -}}
+{{- end -}}

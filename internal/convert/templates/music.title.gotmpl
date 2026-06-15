@@ -1,0 +1,5 @@
+{{- define "music.title" -}}
+{{- with .V "TITLE" }}
+   <title>{{ . | xml }}</title>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "music.new_value" -}}
+{{- with .V "NEW_VALUE" }}
+   <new_value>{{ . | xml }}</new_value>
+{{- end -}}
+{{- end -}}

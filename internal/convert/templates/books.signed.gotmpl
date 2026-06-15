@@ -1,0 +1,5 @@
+{{- define "books.signed" -}}
+{{- if or (.Is "SIGNED") (.HasMarker "<signed>") }}
+   <signed>true</signed>
+{{- end -}}
+{{- end -}}

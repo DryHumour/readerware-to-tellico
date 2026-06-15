@@ -1,0 +1,21 @@
+{{- define "music.condition" -}}
+{{- with .V "ITEM_CONDITION" }}
+{{- $conditions := dict
+    "Mint"           "Mint"
+    "Near Mint"      "Near Mint"
+    "Very Good Plus" "Very Good Plus"
+    "Very Good"      "Very Good"
+    "Good Plus"      "Good Plus"
+    "Good"           "Good"
+    "Fair"           "Fair"
+    "Poor"           "Poor"
+
+    "Like New"       "Very Good Plus"
+-}}
+{{- if hasKey $conditions . }}
+   <condition>{{ index $conditions . | xml }}</condition>
+{{- else -}}
+  {{- printf "[condition] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

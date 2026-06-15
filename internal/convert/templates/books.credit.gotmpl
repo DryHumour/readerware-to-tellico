@@ -1,0 +1,13 @@
+{{- define "books.credit" -}}
+{{- with concat 
+      (.Credits "Forwarders" "[fwd.]") 
+      (.Credits "Introducers" "[introd.]") 
+      (.Credits "Contributors" "[contrib.]") 
+}}
+   <credits>
+    {{- range . }}
+    <credit>{{ . | xml }}</credit>
+    {{- end }}
+   </credits>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "video.out_of_print" -}}
+{{- if or (.Is "OUT_OF_PRINT") (.HasMarker "<out_of_print>") }}
+   <out_of_print>true</out_of_print>
+{{- end -}}
+{{- end -}}

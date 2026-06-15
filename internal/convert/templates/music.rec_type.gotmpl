@@ -1,0 +1,5 @@
+{{- define "music.rec_type" -}}
+{{- with .V "RECORDING_TYPE" }}
+   <rec_type>{{ . | xml }}</rec_type>
+{{- end -}}
+{{- end -}}

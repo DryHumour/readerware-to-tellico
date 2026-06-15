@@ -1,0 +1,9 @@
+{{- define "video.director" -}}
+{{- with .Directors }}
+   <directors>
+    {{- range . }}
+    <director>{{ . | xml }}</director>
+    {{- end }}
+   </directors>
+{{- end -}}
+{{- end -}}

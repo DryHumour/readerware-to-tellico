@@ -1,0 +1,9 @@
+{{- define "video.location" -}}
+{{- with .V "LOCATION" -}}
+{{- if contains "Case" . }}
+   <location>Basement</location>
+{{- else }}
+   <location>{{ . | xml }}</location>
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.lexile_level" -}}
+{{- with .V "LEXILE_LEVEL" }}
+   <lexile_level>{{ . | xml }}</lexile_level>
+{{- end -}}
+{{- end -}}

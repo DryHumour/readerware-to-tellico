@@ -1,0 +1,9 @@
+{{- define "video.genre" -}}
+{{- with .Genres }}
+   <genres>
+    {{- range . }}
+    <genre>{{ . | xml }}</genre>
+    {{- end }}
+   </genres>
+{{- end -}}
+{{- end -}}

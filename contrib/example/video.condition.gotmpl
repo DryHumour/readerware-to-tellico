@@ -1,0 +1,16 @@
+{{- define "video.condition" -}}
+{{- with .V "ITEM_CONDITION" }}
+{{- $conditions := dict
+    "Brand New"  "Brand New"
+    "Like New"   "Like New"
+    "Very Good"  "Very Good"
+    "Good"       "Good"
+    "Acceptable" "Acceptable"
+-}}
+{{- if hasKey $conditions . }}
+   <condition>{{ index $conditions . | xml }}</condition>
+{{- else -}}
+  {{- printf "[condition] %s" . | $.AddAudit -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

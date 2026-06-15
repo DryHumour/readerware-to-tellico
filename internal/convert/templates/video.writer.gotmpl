@@ -1,0 +1,9 @@
+{{- define "video.writer" -}}
+{{- with .Writers }}
+   <writers>
+    {{- range . }}
+    <writer>{{ . | xml }}</writer>
+    {{- end }}
+   </writers>
+{{- end -}}
+{{- end -}}

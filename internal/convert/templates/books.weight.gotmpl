@@ -1,0 +1,5 @@
+{{- define "books.weight" -}}
+{{- with .V "WEIGHT" }}
+   <weight>{{ . | xml }}</weight>
+{{- end -}}
+{{- end -}}

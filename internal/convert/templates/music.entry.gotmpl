@@ -1,0 +1,104 @@
+{{- define "music.entry" -}}
+  {{- template "music.aggregate" . }}
+  <entry id="{{ or (.V "ROWKEY") (.V "ROW#") | xml }}">
+   {{- /* Tellico "music" fields */ -}}
+   {{- template "music.title" . -}}
+   {{- template "music.medium" . -}}
+   {{- template "music.artist" . -}}
+   {{- template "music.label" . -}}
+   {{- template "music.year" . -}}
+   {{- template "music.genre" . -}}
+   {{- template "music.track" . -}}
+   {{- template "music.rating" . -}}
+   {{- template "music.pur_date" . -}}
+   {{- template "music.gift" . -}}
+   {{- template "music.loaned" . -}}
+   {{- template "music.pur_price" . -}}
+   {{- template "music.keyword" . -}}
+   {{- template "music.cover" . -}}
+   {{- template "music.comments" . -}}
+   {{- template "music.cdate" . -}}
+   {{- template "music.mdate" . -}}
+   {{- /* Tellico "special" fields for Readerware Music */ -}}
+   {{- template "music.alttitle" . -}}
+   {{- /* Custom fields for Readerware Music */ -}}
+   {{- template "music.composer" . -}}
+   {{- template "music.conductor" . -}}
+   {{- template "music.orchestra" . -}}
+   {{- template "music.soloist" . -}}
+   {{- template "music.rel_date" . -}}
+   {{- template "music.cr_date" . -}}
+   {{- template "music.running_time" . -}}
+   {{- template "music.language" . -}}
+   {{- template "music.copies" . -}}
+   {{- template "music.rw_barcode" . -}}
+   {{- template "music.rw_upc" . -}}
+   {{- template "music.lccn" . -}}
+   {{- template "music.dewey" . -}}
+   {{- template "music.call_number" . -}}
+   {{- template "music.rw_user_number" . -}}
+   {{- template "music.series" . -}}
+   {{- template "music.sound" . -}}
+   {{- template "music.condition" . -}}
+   {{- template "music.cover_condition" . -}}
+   {{- template "music.rw_category" . -}}
+   {{- template "music.location" . -}}
+   {{- template "music.played_count" . -}}
+   {{- template "music.date_last_played" . -}}
+   {{- template "music.playlist" . -}}
+   {{- template "music.product_info" . -}}
+   {{- template "music.rw_source" . -}}
+   {{- template "music.catalog_number" . -}}
+   {{- template "music.rec_type" . -}}
+   {{- template "music.rec_date" . -}}
+   {{- template "music.rec_place" . -}}
+   {{- template "music.pur_place" . -}}
+   {{- template "music.list_price" . -}}
+   {{- template "music.item_value" . -}}
+   {{- template "music.val_date" . -}}
+   {{- template "music.currency_symbol" . -}}
+   {{- template "music.favorite" . -}}
+   {{- template "music.out_of_print" . -}}
+   {{- template "music.media_url" . -}}
+   {{- template "music.owner" . -}}
+   {{- template "music.rw_status" . -}}
+   {{- template "music.rw_external_id" . -}}
+   {{- template "music.inventory" . -}}
+   {{- template "music.asin" . -}}
+   {{- template "music.sale_price" . -}}
+   {{- template "music.sale_date" . -}}
+   {{- template "music.new_value" . -}}
+   {{- template "music.new_count" . -}}
+   {{- template "music.used_value" . -}}
+   {{- template "music.used_count" . -}}
+   {{- template "music.collectible_value" . -}}
+   {{- template "music.collectible_count" . -}}
+   {{- template "music.buyer_waiting" . -}}
+   {{- template "music.weight" . -}}
+   {{- template "music.sales_rank" . -}}
+   {{- template "music.disk_count" . -}}
+   {{- template "music.rw_user1" . -}}
+   {{- template "music.rw_user2" . -}}
+   {{- template "music.rw_user3" . -}}
+   {{- template "music.rw_user4" . -}}
+   {{- template "music.rw_user5" . -}}
+   {{- template "music.rw_user6" . -}}
+   {{- template "music.rw_user7" . -}}
+   {{- template "music.rw_user8" . -}}
+   {{- template "music.rw_user9" . -}}
+   {{- template "music.rw_user10" . -}}
+   {{- /* Readerware image fields */ -}}
+   {{- template "music.rw_image1" . -}}
+   {{- template "music.rw_image2" . -}}
+   {{- template "music.rw_image3" . -}}
+   {{- template "music.rw_image4" . -}}
+   {{- template "music.rw_large_image1" . -}}
+   {{- template "music.rw_large_image2" . -}}
+   {{- template "music.rw_large_image3" . -}}
+   {{- template "music.rw_large_image4" . -}}
+   {{- /* Computed fields */ -}}
+   {{- template "music.credit" . -}}
+   {{- template "music.barcode" . -}}
+   {{- template "rw.audit" . }}
+  </entry>
+{{- end -}}

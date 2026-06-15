@@ -1,0 +1,5 @@
+{{- define "video.sound" -}}
+{{- with .V "SOUND" }}
+   <sound>{{ . | xml }}</sound>
+{{- end -}}
+{{- end -}}

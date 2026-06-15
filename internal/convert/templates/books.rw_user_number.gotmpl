@@ -1,0 +1,5 @@
+{{- define "books.rw_user_number" -}}
+{{- with .V "USER_NUMBER" }}
+   <rw_user_number>{{ . | xml }}</rw_user_number>
+{{- end -}}
+{{- end -}}

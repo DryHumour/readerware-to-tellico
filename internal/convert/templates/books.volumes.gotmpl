@@ -1,0 +1,5 @@
+{{- define "books.volumes" -}}
+{{- with .V "DISK_COUNT" }}
+   <volumes>{{ . | xml }}</volumes>
+{{- end -}}
+{{- end -}}

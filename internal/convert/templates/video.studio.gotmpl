@@ -1,0 +1,5 @@
+{{- define "video.studio" -}}
+{{- with .V "PUBLISHER" }}
+   <studio>{{ . | xml }}</studio>
+{{- end -}}
+{{- end -}}

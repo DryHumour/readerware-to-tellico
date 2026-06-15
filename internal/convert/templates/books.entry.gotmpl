@@ -1,0 +1,105 @@
+{{- define "books.entry" -}}
+  {{- template "books.aggregate" . }}
+  <entry id="{{ or (.V "ROWKEY") (.V "ROW#") | xml }}">
+   {{- /* Tellico "books" fields */ -}}
+   {{- template "books.title" . -}}
+   {{- template "books.subtitle" . -}}
+   {{- template "books.author" . -}}
+   {{- template "books.editor" . -}}
+   {{- template "books.binding" . -}}
+   {{- template "books.pur_date" . -}}
+   {{- template "books.pur_price" . -}}
+   {{- template "books.publisher" . -}}
+   {{- template "books.edition" . -}}
+   {{- template "books.cr_year" . -}}
+   {{- template "books.pub_year" . -}}
+   {{- template "books.isbn" . -}}
+   {{- template "books.lccn" . -}}
+   {{- template "books.pages" . -}}
+   {{- template "books.translator" . -}}
+   {{- template "books.language" . -}}
+   {{- template "books.genre" . -}}
+   {{- template "books.keyword" . -}}
+   {{- template "books.series" . -}}
+   {{- template "books.series_num" . -}}
+   {{- template "books.condition" . -}}
+   {{- template "books.signed" . -}}
+   {{- template "books.read" . -}}
+   {{- template "books.gift" . -}}
+   {{- template "books.loaned" . -}}
+   {{- template "books.rating" . -}}
+   {{- template "books.cover" . -}}
+   {{- template "books.plot" . -}}
+   {{- template "books.comments" . -}}
+   {{- template "books.cdate" . -}}
+   {{- template "books.mdate" . -}}
+   {{- /* Tellico "special" fields for Readerware Books */ -}}
+   {{- template "books.alttitle" . -}}
+   {{- /* Custom fields for Readerware Books */ -}}
+   {{- template "books.illustrator" . -}}
+   {{- template "books.pub_place" . -}}
+   {{- template "books.rel_date" . -}}
+   {{- template "books.dimensions" . -}}
+   {{- template "books.reading_level" . -}}
+   {{- template "books.lexile_level" . -}}
+   {{- template "books.copies" . -}}
+   {{- template "books.barcode" . -}}
+   {{- template "books.issn" . -}}
+   {{- template "books.dewey" . -}}
+   {{- template "books.cover_condition" . -}}
+   {{- template "books.rw_category" . -}}
+   {{- template "books.location" . -}}
+   {{- template "books.rw_source" . -}}
+   {{- template "books.pur_place" . -}}
+   {{- template "books.list_price" . -}}
+   {{- template "books.item_value" . -}}
+   {{- template "books.val_date" . -}}
+   {{- template "books.currency_symbol" . -}}
+   {{- template "books.out_of_print" . -}}
+   {{- template "books.asin" . -}}
+   {{- template "books.volumes" . -}}
+   {{- template "books.media_url" . -}}
+   {{- template "books.call_number" . -}}
+   {{- template "books.rw_user_number" . -}}
+   {{- template "books.read_count" . -}}
+   {{- template "books.date_last_read" . -}}
+   {{- template "books.favorite" . -}}
+   {{- template "books.owner" . -}}
+   {{- template "books.rw_status" . -}}
+   {{- template "books.rw_external_id" . -}}
+   {{- template "books.inventory" . -}}
+   {{- template "books.sale_price" . -}}
+   {{- template "books.sale_date" . -}}
+   {{- template "books.new_value" . -}}
+   {{- template "books.new_count" . -}}
+   {{- template "books.used_value" . -}}
+   {{- template "books.used_count" . -}}
+   {{- template "books.collectible_value" . -}}
+   {{- template "books.collectible_count" . -}}
+   {{- template "books.buyer_waiting" . -}}
+   {{- template "books.weight" . -}}
+   {{- template "books.sales_rank" . -}}
+   {{- template "books.rw_user1" . -}}
+   {{- template "books.rw_user2" . -}}
+   {{- template "books.rw_user3" . -}}
+   {{- template "books.rw_user4" . -}}
+   {{- template "books.rw_user5" . -}}
+   {{- template "books.rw_user6" . -}}
+   {{- template "books.rw_user7" . -}}
+   {{- template "books.rw_user8" . -}}
+   {{- template "books.rw_user9" . -}}
+   {{- template "books.rw_user10" . -}}
+   {{- /* Readerware image fields */ -}}
+   {{- template "books.rw_image1" . -}}
+   {{- template "books.rw_image2" . -}}
+   {{- template "books.rw_image3" . -}}
+   {{- template "books.rw_image4" . -}}
+   {{- template "books.rw_large_image1" . -}}
+   {{- template "books.rw_large_image2" . -}}
+   {{- template "books.rw_large_image3" . -}}
+   {{- template "books.rw_large_image4" . -}}
+   {{- /* Computed fields */ -}}
+   {{- template "books.credit" . -}}
+   {{- template "rw.audit" . }}
+  </entry>
+{{- end -}}

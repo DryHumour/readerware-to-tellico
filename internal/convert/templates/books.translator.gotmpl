@@ -1,0 +1,9 @@
+{{- define "books.translator" -}}
+{{- with .Translators }}
+   <translators>
+    {{- range . }}
+    <translator>{{ . | xml }}</translator>
+    {{- end }}
+   </translators>
+{{- end -}}
+{{- end -}}

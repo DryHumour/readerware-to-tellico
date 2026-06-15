@@ -1,0 +1,5 @@
+{{- define "video.widescreen" -}}
+{{- if or (.Is "ANAMORPHIC") (.V "ASPECT_RATIO" | lower | contains "wide") }}
+   <widescreen>true</widescreen>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{- define "books.pur_date" -}}
+{{- with .D "PURCHASE_DATE" }}
+   <pur_date>{{ template "tellico.date" . }}</pur_date>
+{{- end -}}
+{{- end -}}

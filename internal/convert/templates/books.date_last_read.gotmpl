@@ -1,0 +1,5 @@
+{{- define "books.date_last_read" -}}
+{{- with .D "DATE_LAST_READ" }}
+   <date_last_read>{{ template "tellico.date" . }}</date_last_read>
+{{- end -}}
+{{- end -}}

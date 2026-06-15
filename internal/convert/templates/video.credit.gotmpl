@@ -1,0 +1,9 @@
+{{- define "video.credit" -}}
+{{- with .Credits "Contributors" "[contrib.]" }}
+   <credits>
+    {{- range . }}
+    <credit>{{ . | xml }}</credit>
+    {{- end }}
+   </credits>
+{{- end -}}
+{{- end -}}

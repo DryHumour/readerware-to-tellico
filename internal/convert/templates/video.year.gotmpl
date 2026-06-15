@@ -1,0 +1,5 @@
+{{- define "video.year" -}}
+{{- with coalesce (.D "RELEASE_DATE") (.D "COPYRIGHT_DATE") }}
+   <year>{{ coalesce .YYYY .Literal | toString | xml }}</year>
+{{- end -}}
+{{- end -}}

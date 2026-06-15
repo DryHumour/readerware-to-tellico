@@ -1,0 +1,5 @@
+{{- define "books.val_date" -}}
+{{- with .D "VALUATION_DATE" }}
+   <val_date>{{ template "tellico.date" . }}</val_date>
+{{- end -}}
+{{- end -}}

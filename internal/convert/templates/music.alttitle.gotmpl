@@ -1,0 +1,7 @@
+{{- define "music.alttitle" -}}
+{{- with .V "WORK_TITLE" }}
+   <alttitles>
+    <alttitle>{{ . | xml }}</alttitle>
+   </alttitles>
+{{- end -}}
+{{- end -}}

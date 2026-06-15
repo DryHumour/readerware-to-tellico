@@ -1,0 +1,5 @@
+{{- define "video.pub_place" -}}
+{{- with .V "PUB_PLACE" }}
+   <pub_place>{{ . | xml }}</pub_place>
+{{- end -}}
+{{- end -}}

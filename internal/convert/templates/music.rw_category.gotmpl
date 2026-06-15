@@ -1,0 +1,9 @@
+{{- define "music.rw_category" -}}
+{{- with .Categories }}
+   <rw_categories>
+    {{- range . }}
+    <rw_category>{{ . | xml }}</rw_category>
+    {{- end }}
+   </rw_categories>
+{{- end -}}
+{{- end -}}

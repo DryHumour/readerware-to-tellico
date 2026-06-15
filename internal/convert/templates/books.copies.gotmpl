@@ -1,0 +1,5 @@
+{{- define "books.copies" -}}
+{{- with .V "COPIES" }}
+   <copies>{{ . | xml }}</copies>
+{{- end -}}
+{{- end -}}

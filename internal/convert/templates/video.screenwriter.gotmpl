@@ -1,0 +1,9 @@
+{{- define "video.screenwriter" -}}
+{{- with .Screenwriters }}
+   <screenwriters>
+    {{- range . }}
+    <screenwriter>{{ . | xml }}</screenwriter>
+    {{- end }}
+   </screenwriters>
+{{- end -}}
+{{- end -}}

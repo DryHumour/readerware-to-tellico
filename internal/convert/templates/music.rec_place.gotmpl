@@ -1,0 +1,5 @@
+{{- define "music.rec_place" -}}
+{{- with .V "RECORDING_PLACE" }}
+   <rec_place>{{ . | xml }}</rec_place>
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- define "video.photographer" -}}
+{{- with .Photographers }}
+   <photographers>
+    {{- range . }}
+    <photographer>{{ . | xml }}</photographer>
+    {{- end }}
+   </photographers>
+{{- end -}}
+{{- end -}}

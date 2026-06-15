@@ -1,0 +1,7 @@
+{{- define "books.series_num" -}}
+{{- with .V "SERIES_NUMBER" -}}
+ {{- if ne . "0" }}
+   <series_num>{{ . | xml }}</series_num>
+ {{- end -}}
+{{- end -}}
+{{- end -}}

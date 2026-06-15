@@ -1,0 +1,7 @@
+{{- define "books.rw_large_image4" -}}
+{{- with .Images.LargeImage 4 -}}
+{{- if not .IsUsed }}
+   <rw_large_image4>{{ .Use.ID }}</rw_large_image4>
+{{- end -}}
+{{- end -}}
+{{- end -}}

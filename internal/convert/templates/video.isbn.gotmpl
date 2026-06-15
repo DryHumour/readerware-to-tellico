@@ -1,0 +1,5 @@
+{{- define "video.isbn" -}}
+{{- with .V "ISBN" }}
+   <isbn>{{ isbn_hyphenator $ . | xml }}</isbn>
+{{- end -}}
+{{- end -}}

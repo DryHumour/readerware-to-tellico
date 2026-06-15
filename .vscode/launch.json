@@ -1,0 +1,50 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Books",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "args": [
+                "books",
+                "--log-level=warn",
+                "--input-file=/home/nschelle/exports/Books/export.csv",
+                "--output-file=/home/nschelle/exports/Books/books.tc",
+                "--extracted-images-dir=/home/nschelle/exports/Books"
+            ],
+            "showLog": true
+        },
+        {
+            "name": "Launch Music",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "args": [
+                "music",
+                "--log-level=warn",
+                "--input-file=/home/nschelle/exports/Music/export.csv",
+                "--output-file=/home/nschelle/exports/Music/music.tc",
+                "--extracted-images-dir=/home/nschelle/exports/Music"
+            ],
+            "showLog": true
+        },
+        {
+            "name": "Launch Video",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "args": [
+                "video",
+                "--log-level=warn",
+                "--input-file=/home/nschelle/exports/Video/export.csv",
+                "--output-file=/home/nschelle/exports/Video/video.tc",
+                "--extracted-images-dir=/home/nschelle/exports/Video"
+            ],
+            "showLog": true
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+{{- define "books.currency_symbol" -}}
+{{- with .V "CURRENCY_SYMBOL" }}
+   <currency_symbol>{{ . | xml }}</currency_symbol>
+{{- end -}}
+{{- end -}}

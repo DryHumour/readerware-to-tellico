@@ -1,0 +1,7 @@
+{{- define "music.running_time" -}}
+{{- with .V "RUNNING_TIME" }}
+   {{- if ne . "0:00" }}
+   <running_time>{{ . | xml }}</running_time>
+   {{- end -}}
+{{- end -}}
+{{- end -}}

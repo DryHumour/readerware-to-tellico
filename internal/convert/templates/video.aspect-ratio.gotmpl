@@ -1,0 +1,9 @@
+{{- define "video.aspect-ratio" -}}
+{{- with .L "ASPECT_RATIO" }}
+   <aspect-ratios>
+   {{- range . }}
+    <aspect-ratio>{{ . | xml }}</aspect-ratio>
+   {{- end }}
+   </aspect-ratios>
+{{- end -}}
+{{- end -}}

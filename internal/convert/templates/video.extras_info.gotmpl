@@ -1,0 +1,5 @@
+{{- define "video.extras_info" -}}
+{{- with .V "EXTRAS_INFO" }}
+   <extras_info>{{ . | paragraphs | xml }}</extras_info>
+{{- end -}}
+{{- end -}}

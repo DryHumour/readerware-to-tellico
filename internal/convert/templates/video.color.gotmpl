@@ -1,0 +1,5 @@
+{{- define "video.color" -}}
+{{- with .V "COLOR" }}
+   <color>{{ . | xml }}</color>
+{{- end -}}
+{{- end -}}

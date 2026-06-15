@@ -1,0 +1,5 @@
+{{- define "video.rw_status" -}}
+{{- with .V "STATUS" }}
+   <rw_status>{{ . | xml }}</rw_status>
+{{- end -}}
+{{- end -}}
