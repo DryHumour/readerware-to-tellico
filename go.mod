@@ -48,7 +48,7 @@ require (
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jaytaylor/html2text v0.0.0-20260303211410-1a4bdc82ecec
-	github.com/lmittmann/tint v1.1.3
+	github.com/lmittmann/tint v1.2.0
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.3.1 // indirect
