@@ -6,7 +6,7 @@ tool github.com/spf13/cobra-cli
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
-	github.com/bartventer/httpcache v0.13.0
+	github.com/bartventer/httpcache v0.14.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/stretchr/testify v1.11.1
