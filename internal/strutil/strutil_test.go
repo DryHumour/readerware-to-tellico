@@ -34,7 +34,6 @@ func TestCheckbox(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Checkbox(tc.input)
@@ -62,7 +61,6 @@ func TestDimensions(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Dimensions(tc.input)
@@ -104,7 +102,6 @@ func TestHTMLToText(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := HTMLToText(tc.input)
@@ -138,7 +135,6 @@ func TestKeywords(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Keywords(tc.input)
@@ -165,7 +161,6 @@ func TestPrice(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Price(tc.input)
@@ -200,7 +195,6 @@ func TestRating1to5(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Rating1to5(tc.input)
@@ -230,7 +224,6 @@ func TestSqueeze(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Squeeze(tc.input)
@@ -259,7 +252,6 @@ func TestXMLEscape(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := XMLEscape(tc.input)
@@ -292,7 +284,6 @@ func TestContainsHTML(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := ContainsHTML(tc.input)
@@ -324,7 +315,6 @@ func TestExtractAndSqueeze(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			clean, matches := ExtractAndSqueeze(tc.input, re)
@@ -355,7 +345,6 @@ func TestExtractAndSqueezePreserveNewlines(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			clean, matches := ExtractAndSqueezePreserveNewlines(tc.input, re)
@@ -383,7 +372,6 @@ func TestJoinParts(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := JoinParts(tc.parts...)
@@ -410,7 +398,6 @@ func TestParagraphs(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := Paragraphs(tc.input)
@@ -440,7 +427,6 @@ func TestReplaceAndSqueeze(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := ReplaceAndSqueeze(tc.input, re)
@@ -469,7 +455,6 @@ func TestReplaceAndSqueezePreserveNewlines(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := ReplaceAndSqueezePreserveNewlines(tc.input, re)
@@ -510,7 +495,6 @@ func TestSplitList(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := SplitList(tc.input)
@@ -542,7 +526,6 @@ func TestSqueezePreserveNewlines(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result := SqueezePreserveNewlines(tc.input)
@@ -573,7 +556,6 @@ func TestToStringSlice(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result, err := ToStringSlice(tc.input)
@@ -609,7 +591,6 @@ func TestToStringStringMap(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			result, err := ToStringStringMap(tc.input)

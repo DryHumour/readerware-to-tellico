@@ -26,7 +26,6 @@ func TestRowError_Error(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if got := tt.err.Error(); got != tt.want {
@@ -91,7 +90,6 @@ func TestWrapColumnErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got := wrapColumnErrors(tt.line, tt.err)

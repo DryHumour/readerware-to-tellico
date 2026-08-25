@@ -72,10 +72,8 @@ func (a *aggregation) AddCredit(role, name string) (_ Nothing) {
 	if a.credits[role] == nil {
 		a.credits[role] = []string{}
 	}
-	for _, existing := range a.credits[role] {
-		if existing == name {
-			return
-		}
+	if slices.Contains(a.credits[role], name) {
+		return
 	}
 	a.credits[role] = append(a.credits[role], name)
 	return

@@ -11,7 +11,7 @@ var (
 	// payloadPool is a sync.Pool for reusing payload objects to reduce GC pressure.
 	// Oversized buffers are dropped in releasePayload instead of being returned.
 	payloadPool = sync.Pool{
-		New: func() interface{} {
+		New: func() any {
 			return &payload{Data: make([]byte, copier.MaxReaderwareImageSize)}
 		},
 	}

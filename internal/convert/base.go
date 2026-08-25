@@ -104,7 +104,7 @@ func Load(t *template.Template, fsys fs.FS, pattern ...string) (*template.Templa
 }
 
 // requiredFunc halts template execution and returns an error if the value is empty/nil.
-func requiredFunc(warn string, val interface{}) (interface{}, error) {
+func requiredFunc(warn string, val any) (any, error) {
 	if val == nil {
 		return nil, errors.New(warn)
 	}
@@ -125,8 +125,8 @@ func requiredFunc(warn string, val interface{}) (interface{}, error) {
 
 // includeFunc renders a named template and returns it as a string, allowing it to be piped.
 // e.g., {{ include "my-template" . | indent 4 }}
-func includeFunc(t *template.Template) func(name string, data interface{}) (string, error) {
-	return func(name string, data interface{}) (string, error) {
+func includeFunc(t *template.Template) func(name string, data any) (string, error) {
+	return func(name string, data any) (string, error) {
 		var b strings.Builder
 		// We execute the named template into our builder.
 		// If the template doesn't exist, ExecuteTemplate returns a clean error.
@@ -140,8 +140,8 @@ func includeFunc(t *template.Template) func(name string, data interface{}) (stri
 
 // tplFunc takes a raw string containing template syntax, compiles it on the fly,
 // and executes it using the provided data context.
-func tplFunc(t *template.Template) func(tplString string, data interface{}) (string, error) {
-	return func(tplString string, data interface{}) (string, error) {
+func tplFunc(t *template.Template) func(tplString string, data any) (string, error) {
+	return func(tplString string, data any) (string, error) {
 		// CRITICAL: We must Clone() the root template.
 		// This ensures the inline template inherits all other parsed templates
 		// and the FuncMap, but doesn't permanently pollute the root engine.

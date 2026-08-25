@@ -30,7 +30,7 @@ func (c Config) Validate() error {
 
 	// Tell validator to read mapstructure tags instead of Go struct field names
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-		name := strings.SplitN(fld.Tag.Get("mapstructure"), ",", 2)[0]
+		name, _, _ := strings.Cut(fld.Tag.Get("mapstructure"), ",")
 		if name == "-" {
 			return ""
 		}

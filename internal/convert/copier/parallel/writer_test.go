@@ -38,11 +38,9 @@ func TestWriterRun(t *testing.T) {
 		p.Data = []byte("data")
 
 		var wg sync.WaitGroup
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			w.Run(ctx)
-		}()
+		})
 		writerC <- p
 		close(writerC)
 		wg.Wait()
@@ -88,4 +86,4 @@ func (d dummyFileInfo) Size() int64        { return d.size }
 func (d dummyFileInfo) Mode() os.FileMode  { return 0 }
 func (d dummyFileInfo) ModTime() time.Time { return time.Now() }
 func (d dummyFileInfo) IsDir() bool        { return false }
-func (d dummyFileInfo) Sys() interface{}   { return nil }
+func (d dummyFileInfo) Sys() any           { return nil }

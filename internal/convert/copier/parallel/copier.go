@@ -71,13 +71,11 @@ func (p parallelCopier) CopyAll(ctx context.Context, entries iter.Seq[*images.Ma
 
 		// start the (sole) writer (zip cannot be written to in parallel)
 		var wrG sync.WaitGroup
-		wrG.Add(1)
-		go func() {
-			defer wrG.Done()
+		wrG.Go(func() {
 			logger := p.logger.With("writer", 1)
 			defer logger.DebugContext(ctx, "writer done")
 			newWriter(logger, p.tcf, resultC, writerC).Run(ctx)
-		}()
+		})
 
 		// start the coordinator
 		go func() {

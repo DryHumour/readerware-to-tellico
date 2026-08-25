@@ -58,7 +58,7 @@ func main() {
 			failed = append(failed, part)
 		}
 		for _, part := range failed {
-			for _, field := range strings.Fields(part) {
+			for field := range strings.FieldsSeq(part) {
 				if i, err := try(field); err == nil {
 					hyphenate(i)
 				} else {

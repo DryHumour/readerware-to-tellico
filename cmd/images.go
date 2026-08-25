@@ -57,8 +57,7 @@ func Extract(cmd *cobra.Command, dbPath string, outputPath string) error {
 		return err
 	}
 	if err := extract.Images(ctx, dbPath, outputPath, javaPath); err != nil {
-		var exitErr *exec.ExitError
-		if errors.As(err, &exitErr) {
+		if _, ok := errors.AsType[*exec.ExitError](err); ok {
 			return fmt.Errorf("Readerware image extraction failed. The Java process exited with error: %w\n\n"+
 				"Please verify that:\n"+
 				"  1. The database path %q is correct and points to a valid Readerware HSQLDB database.\n"+

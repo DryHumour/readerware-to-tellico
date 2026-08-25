@@ -117,7 +117,6 @@ func TestSlot_String(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.expected, func(t *testing.T) {
 			t.Parallel()
 			require.Equal(t, tc.expected, tc.slot.String())
