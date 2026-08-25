@@ -1,5 +1,5 @@
 {{- define "books.barcode" -}}
-{{- with .V "BARCODE" }}
+{{- with coalesce (.V "BARCODE") (.V "ISBN") }}
    <barcode>{{ . | xml }}</barcode>
 {{- end -}}
 {{- end -}}

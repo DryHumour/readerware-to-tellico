@@ -43,7 +43,7 @@
    {{- template "books.reading_level" . -}}
    {{- template "books.lexile_level" . -}}
    {{- template "books.copies" . -}}
-   {{- template "books.barcode" . -}}
+   {{- template "books.rw_barcode" . -}}
    {{- template "books.issn" . -}}
    {{- template "books.dewey" . -}}
    {{- template "books.cover_condition" . -}}
@@ -100,6 +100,7 @@
    {{- template "books.rw_large_image4" . -}}
    {{- /* Computed fields */ -}}
    {{- template "books.credit" . -}}
+   {{- template "books.barcode" . -}}
    {{- template "rw.audit" . }}
   </entry>
 {{- end -}}
