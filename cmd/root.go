@@ -149,7 +149,7 @@ func initLogging(cmd *cobra.Command, v *viper.Viper) {
 	if level > slog.LevelInfo && v.GetBool(ns+".verbose") {
 		level = slog.LevelInfo
 	}
-	handler := tint.NewHandler(os.Stderr, &tint.Options{
+	handler := tint.NewTextHandler(cmd.ErrOrStderr(), &tint.Options{
 		Level:      level,
 		TimeFormat: time.RFC3339Nano,
 		NoColor:    false,

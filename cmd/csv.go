@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"os"
 	"slices"
 
 	"github.com/spf13/cobra"
@@ -54,7 +53,10 @@ func init() {
 }
 
 func runListCSV(cmd *cobra.Command) error {
-	reader := bufio.NewReader(os.Stdin)
+	in := cmd.InOrStdin()
+	out := cmd.OutOrStdout()
+
+	reader := bufio.NewReader(in)
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
@@ -76,10 +78,10 @@ func runListCSV(cmd *cobra.Command) error {
 
 	for _, col := range header {
 		if raw {
-			fmt.Println(col)
+			fmt.Fprintln(out, col)
 		} else {
 			jsonBytes, _ := json.Marshal(col)
-			fmt.Println(string(jsonBytes))
+			fmt.Fprintln(out, string(jsonBytes))
 		}
 	}
 
@@ -87,7 +89,10 @@ func runListCSV(cmd *cobra.Command) error {
 }
 
 func runGetCSV(cmd *cobra.Command, columnName string) error {
-	reader := bufio.NewReader(os.Stdin)
+	in := cmd.InOrStdin()
+	out := cmd.OutOrStdout()
+
+	reader := bufio.NewReader(in)
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
@@ -119,10 +124,10 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 		}
 		if colIndex < len(row) {
 			if raw {
-				fmt.Println(row[colIndex])
+				fmt.Fprintln(out, row[colIndex])
 			} else {
 				jsonBytes, _ := json.Marshal(row[colIndex])
-				fmt.Println(string(jsonBytes))
+				fmt.Fprintln(out, string(jsonBytes))
 			}
 		}
 	}

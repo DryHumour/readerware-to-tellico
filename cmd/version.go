@@ -21,10 +21,11 @@ var versionCmd = &cobra.Command{
 	Long:  `Prints the version, commit, build date, and builder information.`,
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, _ []string) {
-		fmt.Println(cmd.Root().Name(), "version", version)
-		fmt.Println("commit:", commit)
-		fmt.Println("built at:", date)
-		fmt.Println("built by:", builtBy)
+		out := cmd.OutOrStdout()
+		fmt.Fprintln(out, cmd.Root().Name(), "version", version)
+		fmt.Fprintln(out, "commit:", commit)
+		fmt.Fprintln(out, "built at:", date)
+		fmt.Fprintln(out, "built by:", builtBy)
 	},
 }
 
