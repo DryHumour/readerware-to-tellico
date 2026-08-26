@@ -20,14 +20,17 @@ import (
 //   - Discards all Unicode category Cf (format) characters.
 //   - Uppercases all applicable characters.
 //
-// If the returned string is fewer than 10 characters, note that it cannot
-// possibly represent a valid ISBN.
+// A string of fewer than 10 characters — before or after cleaning — can never
+// be a valid ISBN; the returned value may not have been fully cleaned.
 func Clean(s string) string {
+	if len(s) < 10 {
+		return s // too short to be a valid ISBN, so no point in cleaning
+	}
 	s = strings.TrimFunc(s, func(r rune) bool {
 		return unicode.IsSpace(r) || unicode.Is(unicode.Cf, r) || unicode.Is(unicode.P, r)
 	})
 	if len(s) < 10 {
-		return s // too short to be a valid ISBN, so no point in cleaning
+		return s // now too short to be a valid ISBN, so no point in cleaning
 	}
 	firstBad := -1
 	for i, r := range s {
@@ -47,7 +50,7 @@ func Clean(s string) string {
 		switch {
 		case r >= '0' && r <= '9', r == 'X', r == 'x':
 			// Pass through (handled below)
-		case isHyphen(r) || unicode.IsSpace(r):
+		case isHyphen(r), unicode.IsSpace(r):
 			if !inWS {
 				b.WriteByte(' ')
 				inWS = true

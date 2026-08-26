@@ -135,6 +135,25 @@ func New(candidate string) (ISBN, error) {
 	return parsed, nil
 }
 
+// Make10 returns the ISBN-10 for a 9-digit body, computing the check digit.
+// The body must consist of exactly nine ASCII digits.  Note that the check
+// digit may be 'X' (representing 10, per the ISBN-10 specification).
+func Make10(body string) (ISBN, error) {
+	if len(body) != 9 || !isDigits(body) {
+		return ISBN{}, fmt.Errorf("%w: expected a 9-digit body: %q", ErrInvalidISBN10, body)
+	}
+	return appendCheck(body, mod11(body)), nil
+}
+
+// Make13 returns the ISBN-13 for a 12-digit body, computing the check digit.
+// The body must consist of exactly twelve ASCII digits.
+func Make13(body string) (ISBN, error) {
+	if len(body) != 12 || !isDigits(body) {
+		return ISBN{}, fmt.Errorf("%w: expected a 12-digit body: %q", ErrInvalidISBN13, body)
+	}
+	return appendCheck(body, mod10(body)), nil
+}
+
 // String returns the string representation of the ISBN.
 // String implements the fmt.Stringer interface.
 func (i ISBN) String() string {
