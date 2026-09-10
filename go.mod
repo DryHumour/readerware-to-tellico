@@ -9,7 +9,7 @@ require (
 	github.com/bartventer/httpcache v0.14.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.30.3
+	github.com/go-playground/validator/v10 v10.30.4
 	github.com/jaytaylor/html2text v0.0.0-20260303211410-1a4bdc82ecec
 	github.com/lmittmann/tint v1.2.0
 	github.com/spf13/cobra v1.10.2
