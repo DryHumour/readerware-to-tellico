@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -114,13 +115,24 @@ func initConfig() {
 	}
 }
 
+// flagNamespace returns the viper key prefix for a command's flags, built from
+// the command's full ancestry below the root (e.g. "images.extract.").
+func flagNamespace(cmd *cobra.Command) string {
+	var names []string
+	for c := cmd; c != nil && c.Parent() != nil; c = c.Parent() {
+		names = append(names, c.Name())
+	}
+	if len(names) == 0 {
+		return ""
+	}
+	slices.Reverse(names)
+	return strings.Join(names, ".") + "."
+}
+
 // Bind each cobra flag to its associated viper configuration (config file, environment variable, etc.).
 // (I really wish viper.Sub() were sane....)
 func bindFlags(cmd *cobra.Command, v *viper.Viper) (err error) {
-	path := ""
-	if cmd.Parent() != nil {
-		path = cmd.Name() + "."
-	}
+	path := flagNamespace(cmd)
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		if err != nil {
 			return
@@ -144,9 +156,9 @@ func bindFlags(cmd *cobra.Command, v *viper.Viper) (err error) {
 }
 
 func initLogging(cmd *cobra.Command, v *viper.Viper) {
-	ns := cmd.Name()
-	level := parseLogLevel(v.GetString(ns + ".log-level"))
-	if level > slog.LevelInfo && v.GetBool(ns+".verbose") {
+	ns := flagNamespace(cmd)
+	level := parseLogLevel(v.GetString(ns + "log-level"))
+	if level > slog.LevelInfo && v.GetBool(ns+"verbose") {
 		level = slog.LevelInfo
 	}
 	handler := tint.NewTextHandler(cmd.ErrOrStderr(), &tint.Options{

@@ -48,13 +48,15 @@ Before you can run the conversion tool, you must export your collection data fro
 
 Readerware has a somewhat idiosyncratic way of handling images. It stores images in its database in two groups of four: up to four normal (thumbnail) images; and up to four large images.
 
-Readerware does support exporting images via its File Export mechanism.  Unfortunately it requires the export to be run separately for each of the eight possible images.  This is rather tedious and can be error prone if one accidentally forgets to place each export in its own directory.  As an alternative, this tool can automatically extract images from the Readerware database directly.
+Readerware does support exporting images via its File Export mechanism.  Unfortunately it requires the export to be run separately for each of the eight possible images.  This is rather tedious and can be error prone if one accidentally forgets to place each export in its own directory.  As an alternative, this tool can automatically extract images from Readerware's HSQLDB database directly.
 
 **NOTE:** Because the storage requirements for images can be very large, it is strongly recommended *not* to choose output directories that are backed up to a cloud service e.g. OneDrive, Google Drive, etc.  Note that on Windows it is often the case that a user's Documents, Desktop, Pictures, etc. folders are backed up using OneDrive.
 
 #### Automatically Extracting Images
 
 Instead of exporting each image category manually, you can use the built-in `images extract` command to pull all image blobs directly from the Readerware database.
+
+The `images extract` command reads Readerware's embedded HSQLDB database files directly. Readerware Client/Server editions that store data on an external database server (e.g. MySQL) are not supported — use Readerware's File Export for your images instead, as described below.
 
 ```bash
 readerware-to-tellico images extract /path/to/readerware/database /path/to/extracted_images
