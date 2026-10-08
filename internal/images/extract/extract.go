@@ -56,16 +56,14 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 
 	cmd := command(ctx, javaExec, jarPath, dbStem, dst)
 	if err := cmd.Run(); err != nil {
-		if errors.Is(err, exec.ErrNotFound) {
-			return fmt.Errorf("failed to run Readerware image extraction: %w: %w", ErrJavaNotFound, err)
-		}
 		return fmt.Errorf("failed to run Readerware image extraction using %q: %w", javaExec, err)
 	}
 
 	return nil
 }
 
-// findJava resolves the path to the Java executable.
+// findJava resolves the path to the Java executable, returning a validated
+// absolute path or an error wrapping ErrJavaNotFound.
 func findJava(customPath string) (string, error) {
 	// 1. Explicit Custom Path
 	if customPath != "" {
@@ -73,40 +71,33 @@ func findJava(customPath string) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrJavaNotFound, err)
 		}
-		return path, nil
+		return filepath.Abs(path)
 	}
 
 	// 2. Windows Registry Lookup (no-op on non-Windows)
 	if installDir := findReaderwareInstallDir(); installDir != "" {
 		target := filepath.Join(installDir, "jre", "bin", javaProg)
 		if _, err := os.Stat(target); err == nil {
-			return target, nil
+			return filepath.Abs(target)
 		}
 	}
 
-	// 3. JAVA_HOME Environment Variable
-	if jh := os.Getenv("JAVA_HOME"); jh != "" {
-		target := filepath.Join(jh, "bin", javaProg)
-		if _, err := os.Stat(target); err == nil {
-			return target, nil
+	// 3. JAVA_HOME / JRE_HOME Environment Variables
+	for _, env := range []string{"JAVA_HOME", "JRE_HOME"} {
+		if home := os.Getenv(env); home != "" {
+			target := filepath.Join(home, "bin", javaProg)
+			if _, err := os.Stat(target); err == nil {
+				return filepath.Abs(target)
+			}
 		}
 	}
 
-	// 4. JRE_HOME Environment Variable
-	if jh := os.Getenv("JRE_HOME"); jh != "" {
-		target := filepath.Join(jh, "bin", javaProg)
-		if _, err := os.Stat(target); err == nil {
-			return target, nil
-		}
-	}
-
-	// 5. System PATH via exec.LookPath
+	// 4. System PATH via exec.LookPath
 	if p, err := exec.LookPath(javaProg); err == nil {
-		return p, nil
+		return filepath.Abs(p)
 	}
 
-	// 6. Default Fallback
-	return javaProg, nil
+	return "", fmt.Errorf("%w: not found in Readerware installation, JAVA_HOME, JRE_HOME, or PATH", ErrJavaNotFound)
 }
 
 // resolveDBPath resolves the HSQLDB database file stem.
@@ -176,9 +167,6 @@ func setup(dir string) (string, error) {
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
 func command(ctx context.Context, javaExec, jarPath, src, dst string) *exec.Cmd {
 	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst)
-	if errors.Is(cmd.Err, exec.ErrDot) {
-		cmd.Err = nil // allow java in current directory
-	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd
