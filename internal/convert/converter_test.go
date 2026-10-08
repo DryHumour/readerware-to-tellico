@@ -113,8 +113,7 @@ func TestConverter_Run_EmptyInput(t *testing.T) {
 			runErr = err
 		}
 	}
-	// Empty file causes BOM peek to fail with EOF
-	assert.ErrorContains(t, runErr, "EOF", "empty file should fail with EOF error")
+	assert.ErrorIs(t, runErr, ErrEmptyInputFile, "empty file should fail with ErrEmptyInputFile")
 }
 
 func TestConverter_Run_ContextCancellation(t *testing.T) {
