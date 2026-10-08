@@ -42,5 +42,4 @@ dist/
 /isbn_clean
 /ol_dump_editions
 
-/internal/images/extract/ImageDumper.class
-/internal/images/extract/hsqldb.jar
+/internal/images/extract/imagedumper.jar

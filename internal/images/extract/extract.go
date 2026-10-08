@@ -10,8 +10,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-
-	"golang.org/x/sync/errgroup"
 )
 
 //go:generate go run gen.go
@@ -19,10 +17,8 @@ import (
 var (
 	// dbExts are the extensions of the files expected in the Readerware database directory.
 	dbExts = [...]string{".data", ".properties", ".script"}
-	//go:embed ImageDumper.class
-	imageDumperClass []byte
-	//go:embed hsqldb.jar
-	hsqldbJar []byte
+	//go:embed imagedumper.jar
+	imageDumperJar []byte
 
 	// ErrJavaNotFound indicates that no usable Java executable could be located.
 	ErrJavaNotFound = errors.New("java executable not found")
@@ -53,11 +49,12 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	if err := setup(tmpDir); err != nil {
+	jarPath, err := setup(tmpDir)
+	if err != nil {
 		return err
 	}
 
-	cmd := command(ctx, javaExec, tmpDir, dbStem, dst)
+	cmd := command(ctx, javaExec, jarPath, dbStem, dst)
 	if err := cmd.Run(); err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
 			return fmt.Errorf("failed to run Readerware image extraction: %w: %w", ErrJavaNotFound, err)
@@ -167,33 +164,21 @@ func validateOutputPath(dst string) error {
 	}
 }
 
-// setup writes the embedded ImageDumper.class and hsqldb.jar files to the specified directory.
-func setup(dir string) error {
-	var g errgroup.Group
-	g.Go(func() error {
-		return os.WriteFile(filepath.Join(dir, "ImageDumper.class"), imageDumperClass, 0o644)
-	})
-	g.Go(func() error {
-		return os.WriteFile(filepath.Join(dir, "hsqldb.jar"), hsqldbJar, 0o644)
-	})
-	return g.Wait()
+// setup writes the embedded self-contained imagedumper.jar to the specified directory.
+func setup(dir string) (string, error) {
+	jarPath := filepath.Join(dir, "imagedumper.jar")
+	if err := os.WriteFile(jarPath, imageDumperJar, 0o644); err != nil {
+		return "", fmt.Errorf("failed to write image dumper jar: %w", err)
+	}
+	return jarPath, nil
 }
 
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
-func command(ctx context.Context, javaExec, path, src, dst string) *exec.Cmd {
-	cmd := exec.CommandContext(ctx, javaExec, "ImageDumper", src, dst)
+func command(ctx context.Context, javaExec, jarPath, src, dst string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst)
 	if errors.Is(cmd.Err, exec.ErrDot) {
 		cmd.Err = nil // allow java in current directory
 	}
-	parts := []string{filepath.Join(path, "hsqldb.jar"), path}
-	if classpath := os.Getenv("CLASSPATH"); classpath != "" {
-		// honour user's CLASSPATH, but add our dependencies
-		parts = append([]string{classpath}, parts...)
-	}
-	if cmd.Env == nil {
-		cmd.Env = os.Environ()
-	}
-	cmd.Env = append(cmd.Env, "CLASSPATH="+strings.Join(parts, string(filepath.ListSeparator)))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd
