@@ -32,6 +32,9 @@ reads those image blobs and writes them as files into the specified output
 directory, making them available to be mapped and referenced by subsequent 
 conversion sub-commands (using --extracted-images-dir).
 
+Only the embedded HSQLDB database format is supported; Client/Server
+deployments using an external database server cannot be read.
+
 Arguments:
   db-path      Path to the Readerware database file or directory.
   output-path  Directory where the extracted images will be saved.
