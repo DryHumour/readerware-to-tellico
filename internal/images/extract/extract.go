@@ -5,13 +5,12 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-
-	"golang.org/x/sync/errgroup"
 )
 
 //go:generate go run gen.go
@@ -19,10 +18,8 @@ import (
 var (
 	// dbExts are the extensions of the files expected in the Readerware database directory.
 	dbExts = [...]string{".data", ".properties", ".script"}
-	//go:embed ImageDumper.class
-	imageDumperClass []byte
-	//go:embed hsqldb.jar
-	hsqldbJar []byte
+	//go:embed imagedumper.jar
+	imageDumperJar []byte
 
 	// ErrJavaNotFound indicates that no usable Java executable could be located.
 	ErrJavaNotFound = errors.New("java executable not found")
@@ -53,63 +50,64 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	if err := setup(tmpDir); err != nil {
+	jarPath, err := setup(tmpDir)
+	if err != nil {
 		return err
 	}
 
-	cmd := command(ctx, javaExec, tmpDir, dbStem, dst)
+	stderr := newTailBuffer(4 << 10)
+	cmd := command(ctx, javaExec, jarPath, dbStem, dst)
+	cmd.Stderr = io.MultiWriter(os.Stderr, stderr)
 	if err := cmd.Run(); err != nil {
-		if errors.Is(err, exec.ErrNotFound) {
-			return fmt.Errorf("failed to run Readerware image extraction: %w: %w", ErrJavaNotFound, err)
+		err = fmt.Errorf("java extraction failed: %w", err)
+		if tail := strings.TrimSpace(stderr.String()); tail != "" {
+			err = fmt.Errorf("%w\njava stderr: %s", err, tail)
 		}
-		return fmt.Errorf("failed to run Readerware image extraction using %q: %w", javaExec, err)
+		return err
 	}
 
 	return nil
 }
 
-// findJava resolves the path to the Java executable.
+// findJava resolves the path to the Java executable, returning a validated
+// absolute path or an error wrapping ErrJavaNotFound.
 func findJava(customPath string) (string, error) {
 	// 1. Explicit Custom Path
 	if customPath != "" {
 		path, err := findJavaCustomPath(customPath)
 		if err != nil {
-			return "", fmt.Errorf("%w: %w", ErrJavaNotFound, err)
+			if perr, ok := errors.AsType[*fs.PathError](err); ok {
+				err = perr.Err // drop the syscall op ("stat") for a friendlier message
+			}
+			return "", fmt.Errorf("%w %q: %w", ErrJavaNotFound, customPath, err)
 		}
-		return path, nil
+		return filepath.Abs(path)
 	}
 
 	// 2. Windows Registry Lookup (no-op on non-Windows)
 	if installDir := findReaderwareInstallDir(); installDir != "" {
 		target := filepath.Join(installDir, "jre", "bin", javaProg)
 		if _, err := os.Stat(target); err == nil {
-			return target, nil
+			return filepath.Abs(target)
 		}
 	}
 
-	// 3. JAVA_HOME Environment Variable
-	if jh := os.Getenv("JAVA_HOME"); jh != "" {
-		target := filepath.Join(jh, "bin", javaProg)
-		if _, err := os.Stat(target); err == nil {
-			return target, nil
+	// 3. JAVA_HOME / JRE_HOME Environment Variables
+	for _, env := range []string{"JAVA_HOME", "JRE_HOME"} {
+		if home := os.Getenv(env); home != "" {
+			target := filepath.Join(home, "bin", javaProg)
+			if _, err := os.Stat(target); err == nil {
+				return filepath.Abs(target)
+			}
 		}
 	}
 
-	// 4. JRE_HOME Environment Variable
-	if jh := os.Getenv("JRE_HOME"); jh != "" {
-		target := filepath.Join(jh, "bin", javaProg)
-		if _, err := os.Stat(target); err == nil {
-			return target, nil
-		}
-	}
-
-	// 5. System PATH via exec.LookPath
+	// 4. System PATH via exec.LookPath
 	if p, err := exec.LookPath(javaProg); err == nil {
-		return p, nil
+		return filepath.Abs(p)
 	}
 
-	// 6. Default Fallback
-	return javaProg, nil
+	return "", fmt.Errorf("%w: checked JAVA_HOME, JRE_HOME, and PATH", ErrJavaNotFound)
 }
 
 // resolveDBPath resolves the HSQLDB database file stem.
@@ -167,33 +165,41 @@ func validateOutputPath(dst string) error {
 	}
 }
 
-// setup writes the embedded ImageDumper.class and hsqldb.jar files to the specified directory.
-func setup(dir string) error {
-	var g errgroup.Group
-	g.Go(func() error {
-		return os.WriteFile(filepath.Join(dir, "ImageDumper.class"), imageDumperClass, 0o644)
-	})
-	g.Go(func() error {
-		return os.WriteFile(filepath.Join(dir, "hsqldb.jar"), hsqldbJar, 0o644)
-	})
-	return g.Wait()
+// setup writes the embedded self-contained imagedumper.jar to the specified directory.
+func setup(dir string) (string, error) {
+	jarPath := filepath.Join(dir, "imagedumper.jar")
+	if err := os.WriteFile(jarPath, imageDumperJar, 0o644); err != nil {
+		return "", fmt.Errorf("failed to write image dumper jar: %w", err)
+	}
+	return jarPath, nil
+}
+
+// tailBuffer is an io.Writer that retains only the last max bytes written,
+// for surfacing subprocess output in error messages after a failure.
+type tailBuffer struct {
+	buf []byte
+	max int
+}
+
+func newTailBuffer(max int) *tailBuffer {
+	return &tailBuffer{max: max}
+}
+
+func (t *tailBuffer) Write(p []byte) (int, error) {
+	t.buf = append(t.buf, p...)
+	if len(t.buf) > t.max {
+		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.max:]...)
+	}
+	return len(p), nil
+}
+
+func (t *tailBuffer) String() string {
+	return string(t.buf)
 }
 
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
-func command(ctx context.Context, javaExec, path, src, dst string) *exec.Cmd {
-	cmd := exec.CommandContext(ctx, javaExec, "ImageDumper", src, dst)
-	if errors.Is(cmd.Err, exec.ErrDot) {
-		cmd.Err = nil // allow java in current directory
-	}
-	parts := []string{filepath.Join(path, "hsqldb.jar"), path}
-	if classpath := os.Getenv("CLASSPATH"); classpath != "" {
-		// honour user's CLASSPATH, but add our dependencies
-		parts = append([]string{classpath}, parts...)
-	}
-	if cmd.Env == nil {
-		cmd.Env = os.Environ()
-	}
-	cmd.Env = append(cmd.Env, "CLASSPATH="+strings.Join(parts, string(filepath.ListSeparator)))
+func command(ctx context.Context, javaExec, jarPath, src, dst string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd

@@ -36,6 +36,7 @@ public class ImageDumper {
             }
         } catch (Exception e) {
             System.err.println("Fatal Database Error: " + e.getMessage());
+            System.exit(1);
         }
     }
 
