@@ -3,7 +3,6 @@ package copier
 import (
 	"errors"
 	"fmt"
-	"io"
 
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
@@ -23,9 +22,9 @@ var (
 	ErrFileEmpty = errors.New("file is empty")
 )
 
-// NewFileEmptyError creates an error for an empty file, joining the file path error with io.EOF.
+// NewFileEmptyError creates an error for an empty file.
 func NewFileEmptyError(entry *images.ManifestEntry) error {
-	return errors.Join(fmt.Errorf("%s: %w", entry.Path, ErrFileEmpty), io.EOF)
+	return fmt.Errorf("%s: %w", entry.Path, ErrFileEmpty)
 }
 
 // NewFileError creates a file-related error with context text and the file path.
