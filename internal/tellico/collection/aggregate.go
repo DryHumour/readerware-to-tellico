@@ -1,6 +1,9 @@
 package collection
 
 import (
+	"maps"
+	"slices"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
@@ -45,8 +48,8 @@ func AggregateNames(agg nameAggregatorHelper, names *normalize.Names) {
 	var crossRoleQueue []crossRoleEntry
 
 	// Iterate over roles first, then columns in order
-	for defaultRole, columnList := range columns.Names {
-		for _, col := range columnList {
+	for _, defaultRole := range slices.Sorted(maps.Keys(columns.Names)) {
+		for _, col := range columns.Names[defaultRole] {
 			val := clean[col]
 			if val == "" {
 				continue
@@ -98,7 +101,7 @@ func AggregateMarkers(agg markerAggregatorHelper, markers *normalize.Markers) {
 		columns = agg.Columns()
 		clean   = agg.Clean()
 	)
-	for col := range columns.Markers {
+	for _, col := range slices.Sorted(maps.Keys(columns.Markers)) {
 		val := clean[col]
 		if val == "" {
 			continue

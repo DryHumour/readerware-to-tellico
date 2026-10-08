@@ -56,7 +56,7 @@ func (a *aggregation) Credits(role, abbrev string) []string {
 
 // Markers returns a slice of marker strings.
 func (a *aggregation) Markers() []string {
-	return slices.Collect(maps.Keys(a.markers))
+	return slices.Sorted(maps.Keys(a.markers))
 }
 
 // HasMarker reports whether the given entry-level metadata flag was detected

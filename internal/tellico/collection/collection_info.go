@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"maps"
+	"slices"
 
 	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
@@ -201,8 +202,8 @@ func asStringSliceMap(name string, v any) (map[string][]string, error) {
 	}
 	// Validate that no column appears in multiple roles
 	columnToRoles := make(map[string]string)
-	for role, columns := range m {
-		for _, col := range columns {
+	for _, role := range slices.Sorted(maps.Keys(m)) {
+		for _, col := range m[role] {
 			if existingRole, ok := columnToRoles[col]; ok {
 				return nil, fmt.Errorf("%s: column %q appears in both %q and %q", name, col, existingRole, role)
 			}
