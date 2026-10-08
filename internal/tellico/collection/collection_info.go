@@ -33,9 +33,10 @@ type collectionInfo struct {
 
 func (c *collectionInfo) Kind() Kind                   { return c.kind }
 func (c *collectionInfo) TemplateNames() TemplateNames { return c.templateNames }
-func (c *collectionInfo) Columns() ColumnConfig        { return c.columns.Clone() }
-func (c *collectionInfo) Blocklist() map[string]bool   { return maps.Clone(c.blocklist) }
-func (c *collectionInfo) Data() any                    { return (*collectionInfoDataView)(c) }
+
+func (c *collectionInfo) Columns() ColumnConfig      { return c.columns.Clone() }
+func (c *collectionInfo) Blocklist() map[string]bool { return maps.Clone(c.blocklist) }
+func (c *collectionInfo) Data() any                  { return (*collectionInfoDataView)(c) }
 
 func (c *collectionInfo) Normalize() (result Normalize, err error) {
 	var errs []error
@@ -75,6 +76,7 @@ type collectionInfoColumnView collectionInfo
 
 func (c *collectionInfoColumnView) Names(v any) (_ Nothing, err error) {
 	c.columns.Names, err = asStringSliceMap("Columns.Names", v)
+	c.columns.columnRoleReverse = newColumnRoleReverse(c.columns.Names)
 	return
 }
 
