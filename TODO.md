@@ -28,7 +28,7 @@
 - [ ] Ensure that slog is handled in all test cases
 - [ ] Add support for loans
 - [ ] Remove stray file `internal/convert/templates/clean.PLAYED_COUNT copy.gotmpl` (accidental editor copy)
-- [ ] Rename `internal/tellico/collection/teliico_date_test.go` (typo: "teliico")
+- [x] Rename `internal/tellico/collection/teliico_date_test.go` (typo: "teliico")
 - [ ] Remove commented-out debug `fmt.Printf` lines in collection_info.go
 - [ ] Remove `"extract"` from `extractCmd`'s own alias list (cmd/images.go)
 - [ ] Remove `.cobra.yaml` (leftover generator scaffolding)
