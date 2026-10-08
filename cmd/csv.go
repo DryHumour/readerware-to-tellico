@@ -5,7 +5,9 @@ import (
 	"bytes"
 	"encoding/csv"
 	json "encoding/json/v2"
+	"errors"
 	"fmt"
+	"io"
 	"slices"
 
 	"github.com/spf13/cobra"
@@ -119,8 +121,11 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 
 	for {
 		row, err := csvReader.Read()
-		if err != nil {
+		if errors.Is(err, io.EOF) {
 			break
+		}
+		if err != nil {
+			return fmt.Errorf("error reading CSV row: %w", err)
 		}
 		if colIndex < len(row) {
 			if raw {
