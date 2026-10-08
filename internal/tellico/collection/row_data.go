@@ -71,7 +71,7 @@ func (d *rowData) Is(col string) bool {
 // Categories returns the plain-text Readerware category values for this entry.
 func (d *rowData) Categories() []string {
 	var cats []string
-	for col := range d.columns.Categories {
+	for _, col := range slices.Sorted(maps.Keys(d.columns.Categories)) {
 		if v := d.clean[col]; v != "" {
 			cats = append(cats, v)
 		}
@@ -98,5 +98,5 @@ func (d *rowData) Genres() []string {
 			uniq[trimmed] = struct{}{}
 		}
 	}
-	return slices.Collect(maps.Keys(uniq))
+	return slices.Sorted(maps.Keys(uniq))
 }

@@ -1,5 +1,5 @@
 ## High Priority
-- [ ] Fix non-deterministic output ordering caused by map iteration (breaks diffing/reproducibility of generated tellico.xml):
+- [x] Fix non-deterministic output ordering caused by map iteration (breaks diffing/reproducibility of generated tellico.xml):
     - `rowData.Categories()` iterates `map[string]bool` (row_data.go)
     - `rowData.Genres()` returns `slices.Collect(maps.Keys(uniq))` (row_data.go)
     - `aggregation.Markers()` returns `slices.Collect(maps.Keys(...))` (aggregation.go)
