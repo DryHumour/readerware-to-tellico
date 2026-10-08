@@ -11,7 +11,7 @@
 - [x] Fix `csv get` silently truncating on parse errors: the read loop breaks on any error, not just `io.EOF` (cmd/csv.go).
 - [ ] Stop joining `io.EOF` into `NewFileEmptyError` — makes `errors.Is(err, io.EOF)` true for a semantic error (copier/errors.go).
 - [ ] Fix misleading JRE help text in `images extract`: any non-`exec.ExitError` failure (e.g. db path validation) gets the "requires a JRE" blurb appended (cmd/images.go).
-- [ ] Report real CSV line numbers in row errors: `lineNumber` counts records, not file lines; multi-line fields drift. Use `csv.Reader.FieldPos(0)` (converter_convert.go).
+- [x] Report real CSV line numbers in row errors: `lineNumber` counts records, not file lines; multi-line fields drift. Use `csv.Reader.FieldPos(0)` (converter_convert.go).
 
 ## Medium Priority
 - [ ] Add descriptions to all Readerware fields in Tellico

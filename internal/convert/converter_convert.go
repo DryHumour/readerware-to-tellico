@@ -125,6 +125,7 @@ func (c *Converter) convertAllEntries(ctx context.Context, reader io.Reader) ite
 			logger: logger,
 		}
 
+		records := 0
 		for {
 			if err := context.Cause(ctx); err != nil {
 				yield(Report{}, err)
@@ -132,31 +133,41 @@ func (c *Converter) convertAllEntries(ctx context.Context, reader io.Reader) ite
 			}
 
 			//
-			// Report progress.
-			//
-
-			lineNumber++
-			if lineNumber%progressStep == 0 {
-				if !yield(newProgressReport(lineNumber), nil) {
-					return
-				}
-			}
-
-			//
 			// Read a row from the CSV.
 			//
 
 			record, err := csvReader.Read()
-			if err != nil {
-				if errors.Is(err, io.EOF) {
-					if !yield(newCompletionReport(lineNumber), nil) {
-						return
-					}
-					break // finished processing records
-				}
-				if !yield(Report{}, newRowError("failed to read CSV row", lineNumber, err)) {
+			if errors.Is(err, io.EOF) {
+				if !yield(newCompletionReport(records, lineNumber), nil) {
 					return
 				}
+				break // finished processing records
+			}
+
+			records++
+			if err != nil {
+				var perr *csv.ParseError
+				if errors.As(err, &perr) {
+					lineNumber = perr.StartLine
+				}
+				if !yield(Report{}, newRowError("failed to read CSV row", records, lineNumber, err)) {
+					return
+				}
+			} else {
+				lineNumber, _ = csvReader.FieldPos(0)
+			}
+
+			//
+			// Report progress.
+			//
+
+			if records%progressStep == 0 {
+				if !yield(newProgressReport(records), nil) {
+					return
+				}
+			}
+
+			if err != nil {
 				continue // Keep going, best effort; process as many rows as possible for reporting
 			}
 
@@ -173,7 +184,7 @@ func (c *Converter) convertAllEntries(ctx context.Context, reader io.Reader) ite
 			}
 			clean, err := cleaner.CleanRow(ctx, row)
 			if err != nil {
-				if !yield(Report{}, wrapColumnErrors(lineNumber, err)) {
+				if !yield(Report{}, wrapColumnErrors(records, lineNumber, err)) {
 					return
 				}
 				continue // Keep going, best effort; process as many entries as possible for reporting
@@ -185,14 +196,14 @@ func (c *Converter) convertAllEntries(ctx context.Context, reader io.Reader) ite
 
 			data, err := c.policy.NewEntry(clean, c.rowImages(clean["ROWKEY"]))
 			if err != nil {
-				if !yield(Report{}, newRowError("failed to create entry", lineNumber, err)) {
+				if !yield(Report{}, newRowError("failed to create entry", records, lineNumber, err)) {
 					return
 				}
 				continue // Keep going, best effort; process as many entries as possible for reporting
 			}
 
 			if err := executeTemplate(ctx, xmlFile, tmpl, names.Entry, data); err != nil {
-				if !yield(Report{}, newRowError("failed to render Tellico XML entry", lineNumber, err)) {
+				if !yield(Report{}, newRowError("failed to render Tellico XML entry", records, lineNumber, err)) {
 					return
 				}
 				continue // Keep going, best effort; process as many entries as possible for reporting

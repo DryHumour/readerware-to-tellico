@@ -23,6 +23,16 @@ func TestRowError_Error(t *testing.T) {
 			err:  RowError{Line: 10, Err: errors.New("parse error")},
 			want: "10: parse error",
 		},
+		{
+			name: "with record",
+			err:  RowError{Record: 4, Line: 6, Err: errors.New("parse error")},
+			want: "record 4 (line 6): parse error",
+		},
+		{
+			name: "with record and column",
+			err:  RowError{Record: 4, Line: 6, Column: "title", Err: errors.New("invalid")},
+			want: "record 4 (line 6):title: invalid",
+		},
 	}
 
 	for _, tt := range tests {
@@ -92,7 +102,7 @@ func TestWrapColumnErrors(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got := wrapColumnErrors(tt.line, tt.err)
+			got := wrapColumnErrors(0, tt.line, tt.err)
 			if (got == nil) != (tt.want == nil) {
 				t.Errorf("wrapColumnErrors() = %v, want %v", got, tt.want)
 				return
