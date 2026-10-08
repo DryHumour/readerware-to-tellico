@@ -101,20 +101,30 @@ func (c *Converter) Run(ctx context.Context) iter.Seq2[Report, error] {
 		defer reader.Close()
 
 		// Ensure the output directory exists.
-		if dir := filepath.Dir(c.cfg.OutputFile); dir != "." {
+		dir := filepath.Dir(c.cfg.OutputFile)
+		if dir != "." {
 			if err := os.MkdirAll(dir, 0755); err != nil {
 				yield(Report{}, fmt.Errorf("failed to create output directory: %w", err))
 				return
 			}
 		}
 
-		// Open the output file.
-		writer, err := os.Create(c.cfg.OutputFile)
+		// Write to a temp file alongside the target, renamed into place on
+		// success: os.Create would truncate the target up front, leaving a
+		// corrupt partial zip behind on failure. The name keeps the target's
+		// basename so PathErrors stay legible to users.
+		writer, err := os.CreateTemp(dir, filepath.Base(c.cfg.OutputFile)+"-*.tmp")
 		if err != nil {
 			yield(Report{}, fmt.Errorf("failed to create output file: %w", err))
 			return
 		}
-		defer writer.Close()
+		committed := false
+		defer func() {
+			writer.Close()
+			if !committed {
+				os.Remove(writer.Name())
+			}
+		}()
 
 		// Apply extracted images dir fallback to image dirs.
 		imageDirs := c.cfg.ImagesDirs.DefaultToExtracted(c.cfg.ExtractedImagesDir)
@@ -159,5 +169,22 @@ func (c *Converter) Run(ctx context.Context) iter.Seq2[Report, error] {
 			yield(Report{}, fmt.Errorf("failed to close TC file: %w", err))
 			return
 		}
+
+		// Commit the completed archive to the requested output path.
+		if err := writer.Sync(); err != nil {
+			yield(Report{}, fmt.Errorf("failed to write output file: %w", err))
+			return
+		}
+		// best-effort: CreateTemp's 0600 is stricter than os.Create's umask-derived mode
+		writer.Chmod(0o644)
+		if err := writer.Close(); err != nil {
+			yield(Report{}, fmt.Errorf("failed to write output file: %w", err))
+			return
+		}
+		if err := os.Rename(writer.Name(), c.cfg.OutputFile); err != nil {
+			yield(Report{}, fmt.Errorf("failed to finalize output file: %w", err))
+			return
+		}
+		committed = true
 	}
 }
