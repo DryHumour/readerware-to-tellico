@@ -9,7 +9,6 @@
 - [ ] Fix env var mismatch for `java-path`: `bindFlags` binds nested commands under `extract.java-path` (env `RW2TC_EXTRACT_JAVA_PATH`), but the error message in cmd/images.go tells users to set `RW2TC_IMAGES_EXTRACT_JAVA_PATH`. Use full command ancestry for the namespace or fix the message.
 - [ ] Fix `buffered_file.go`: `Peek(3)` fails on files < 3 bytes, so an empty CSV reports "failed to peek file for BOM: EOF" instead of `ErrEmptyInputFile`.
 - [ ] Fix `csv get` silently truncating on parse errors: the read loop breaks on any error, not just `io.EOF` (cmd/csv.go).
-- [ ] Remove dead error aggregation in `Books()`/`Music()`/`Video()`: nothing ever produces a Report with `Level >= slog.LevelError`, so `conversion failed with %d errors` is unreachable.
 - [ ] Stop joining `io.EOF` into `NewFileEmptyError` — makes `errors.Is(err, io.EOF)` true for a semantic error (copier/errors.go).
 - [ ] Fix misleading JRE help text in `images extract`: any non-`exec.ExitError` failure (e.g. db path validation) gets the "requires a JRE" blurb appended (cmd/images.go).
 - [ ] Report real CSV line numbers in row errors: `lineNumber` counts records, not file lines; multi-line fields drift. Use `csv.Reader.FieldPos(0)` (converter_convert.go).
@@ -27,13 +26,9 @@
 ## Low Priority
 - [ ] Ensure that slog is handled in all test cases
 - [ ] Add support for loans
-- [x] Rename stray file `internal/convert/templates/clean.PLAYED_COUNT copy.gotmpl` (accidental editor copy, but it defines the live `clean.PLAYED_COUNT` template)
-- [x] Rename `internal/tellico/collection/teliico_date_test.go` (typo: "teliico")
 - [ ] Remove commented-out debug `fmt.Printf` lines in collection_info.go
 - [ ] Remove `"extract"` from `extractCmd`'s own alias list (cmd/images.go)
-- [ ] Remove `.cobra.yaml` (leftover generator scaffolding)
 - [ ] Add lint/staticcheck step to CI (currently only build + `go test -race`)
 - [ ] Document that `--concurrency 0` selects the simple (sequential) copier
 - [ ] Consider hoisting the validator+translator construction in `config.Validate()` out of the per-call path
 - [ ] Unify the two BOM-strip implementations (cmd/csv.go vs convert/buffered_file.go)
-- [ ] Resolve redundancy between `rootCmd.Version` and the `version` subcommand
