@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"runtime"
 
 	"github.com/DryHumour/readerware-to-tellico/internal/images/extract"
 	"github.com/spf13/cobra"
@@ -61,20 +62,16 @@ func Extract(cmd *cobra.Command, dbPath string, outputPath string) error {
 	}
 	if err := extract.Images(ctx, dbPath, outputPath, javaPath); err != nil {
 		if _, ok := errors.AsType[*exec.ExitError](err); ok {
-			return fmt.Errorf("Readerware image extraction failed. The Java process exited with error: %w\n\n"+
-				"Please verify that:\n"+
-				"  1. The database path %q is correct and points to a valid Readerware HSQLDB database.\n"+
-				"  2. The output directory %q exists and is writable.\n"+
-				"  3. You have appropriate read/write permissions for these paths.", err, dbPath, outputPath)
+			return fmt.Errorf("%w\n\nPlease verify that the database path %q points to a valid Readerware HSQLDB database and that the output directory %q is writable.", err, dbPath, outputPath)
 		}
 
 		if errors.Is(err, extract.ErrJavaNotFound) {
-			return fmt.Errorf("%w\n\nReaderware image extraction requires a Java Runtime Environment (JRE).\n"+
-				"Please perform one of the following actions:\n"+
-				"  1. Install a JRE (or JDK) and make sure it is on your system PATH.\n"+
-				"  2. If Readerware 4 is installed, ensure it is in its default directory (e.g. C:\\Program Files\\Readerware 4).\n"+
-				"  3. Set the RW2TC_IMAGES_EXTRACT_JAVA_PATH environment variable to the path of your java executable.\n"+
-				"  4. Provide the --java-path flag to this command with the absolute path to your java executable.", err)
+			var bundledHint string
+			if runtime.GOOS == "windows" {
+				bundledHint = " If Readerware 4 is installed in its default directory, its bundled JRE will be found automatically."
+			}
+			return fmt.Errorf("%w\n\nReaderware image extraction requires a Java Runtime Environment (JRE).%s\n"+
+				"Install a JRE (or JDK), set JAVA_HOME, or provide the path to your java executable via --java-path or the RW2TC_IMAGES_EXTRACT_JAVA_PATH environment variable.", err, bundledHint)
 		}
 
 		return err
