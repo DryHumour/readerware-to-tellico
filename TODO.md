@@ -27,7 +27,7 @@
 - [ ] Ensure that slog is handled in all test cases
 - [ ] Add support for loans
 - [ ] Remove commented-out debug `fmt.Printf` lines in collection_info.go
-- [ ] Remove `"extract"` from `extractCmd`'s own alias list (cmd/images.go)
+- [x] Remove `"extract"` from `extractCmd`'s own alias list (cmd/images.go)
 - [ ] Add lint/staticcheck step to CI (currently only build + `go test -race`)
 - [ ] Document that `--concurrency 0` selects the simple (sequential) copier
 - [ ] Consider hoisting the validator+translator construction in `config.Validate()` out of the per-call path

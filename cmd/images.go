@@ -23,7 +23,7 @@ Readerware database, preparing them for conversion.`,
 // extractCmd represents the extract command
 var extractCmd = &cobra.Command{
 	Use:     "extract <db-path> <output-path>",
-	Aliases: []string{"extract", "ext", "export", "exp", "dump", "e", "x", "d"},
+	Aliases: []string{"ext", "export", "exp", "dump", "e", "x", "d"},
 	Short:   "Extract Readerware Images",
 	Long: `Extracts binary image blobs directly from a Readerware HSQLDB database.
 
