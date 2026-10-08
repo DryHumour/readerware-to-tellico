@@ -23,6 +23,9 @@ var (
 	imageDumperClass []byte
 	//go:embed hsqldb.jar
 	hsqldbJar []byte
+
+	// ErrJavaNotFound indicates that no usable Java executable could be located.
+	ErrJavaNotFound = errors.New("java executable not found")
 )
 
 // Images extracts images from a Readerware database using the ImageDumper tool.
@@ -32,7 +35,7 @@ var (
 func Images(ctx context.Context, src, dst, javaPath string) error {
 	javaExec, err := findJava(javaPath)
 	if err != nil {
-		return fmt.Errorf("failed to locate Java executable: %w", err)
+		return err // already wrapped with ErrJavaNotFound
 	}
 
 	dbStem, err := resolveDBPath(src)
@@ -56,6 +59,9 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 
 	cmd := command(ctx, javaExec, tmpDir, dbStem, dst)
 	if err := cmd.Run(); err != nil {
+		if errors.Is(err, exec.ErrNotFound) {
+			return fmt.Errorf("failed to run Readerware image extraction: %w: %w", ErrJavaNotFound, err)
+		}
 		return fmt.Errorf("failed to run Readerware image extraction using %q: %w", javaExec, err)
 	}
 
@@ -66,7 +72,11 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 func findJava(customPath string) (string, error) {
 	// 1. Explicit Custom Path
 	if customPath != "" {
-		return findJavaCustomPath(customPath)
+		path, err := findJavaCustomPath(customPath)
+		if err != nil {
+			return "", fmt.Errorf("%w: %w", ErrJavaNotFound, err)
+		}
+		return path, nil
 	}
 
 	// 2. Windows Registry Lookup (no-op on non-Windows)

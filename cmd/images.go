@@ -65,13 +65,16 @@ func Extract(cmd *cobra.Command, dbPath string, outputPath string) error {
 				"  3. You have appropriate read/write permissions for these paths.", err, dbPath, outputPath)
 		}
 
-		// Otherwise, assume it's a Java execution/lookup failure and show the JRE help.
-		return fmt.Errorf("%w\n\nReaderware image extraction requires a Java Runtime Environment (JRE).\n"+
-			"Please perform one of the following actions:\n"+
-			"  1. Install a JRE (or JDK) and make sure it is on your system PATH.\n"+
-			"  2. If Readerware 4 is installed, ensure it is in its default directory (e.g. C:\\Program Files\\Readerware 4).\n"+
-			"  3. Set the RW2TC_IMAGES_EXTRACT_JAVA_PATH environment variable to the path of your java executable.\n"+
-			"  4. Provide the --java-path flag to this command with the absolute path to your java executable.", err)
+		if errors.Is(err, extract.ErrJavaNotFound) {
+			return fmt.Errorf("%w\n\nReaderware image extraction requires a Java Runtime Environment (JRE).\n"+
+				"Please perform one of the following actions:\n"+
+				"  1. Install a JRE (or JDK) and make sure it is on your system PATH.\n"+
+				"  2. If Readerware 4 is installed, ensure it is in its default directory (e.g. C:\\Program Files\\Readerware 4).\n"+
+				"  3. Set the RW2TC_IMAGES_EXTRACT_JAVA_PATH environment variable to the path of your java executable.\n"+
+				"  4. Provide the --java-path flag to this command with the absolute path to your java executable.", err)
+		}
+
+		return err
 	}
 	return nil
 }
