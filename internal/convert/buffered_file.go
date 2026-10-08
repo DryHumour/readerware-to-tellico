@@ -3,7 +3,9 @@ package convert
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -27,11 +29,11 @@ func newBufferedFile(path string) (*bufferedFile, error) {
 	// Skip the UTF-8 Byte Order Mark (BOM) if present.
 	reader := bufio.NewReader(f)
 	peek, err := reader.Peek(3)
-	if err != nil {
+	if err != nil && !errors.Is(err, io.EOF) {
 		f.Close()
 		return nil, fmt.Errorf("failed to peek file for BOM: %w", err)
 	}
-	if bytes.Equal(peek[:3], byteOrderMarkUTF8) {
+	if bytes.Equal(peek, byteOrderMarkUTF8) {
 		reader.Discard(3)
 	}
 

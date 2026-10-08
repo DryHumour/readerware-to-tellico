@@ -64,6 +64,41 @@ func TestNewBufferedFile(t *testing.T) {
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "failed to open file")
 	})
+
+	t.Run("empty file", func(t *testing.T) {
+		t.Parallel()
+
+		tmpDir := t.TempDir()
+		testFile := filepath.Join(tmpDir, "test.txt")
+		require.NoError(t, os.WriteFile(testFile, []byte{}, 0644))
+
+		rc, err := newBufferedFile(testFile)
+		require.NoError(t, err)
+		require.NotNil(t, rc)
+		require.NoError(t, rc.Close())
+	})
+
+	t.Run("file shorter than BOM", func(t *testing.T) {
+		t.Parallel()
+
+		tmpDir := t.TempDir()
+		testFile := filepath.Join(tmpDir, "test.txt")
+		content := []byte{0xEF, 0xBB}
+		require.NoError(t, os.WriteFile(testFile, content, 0644))
+
+		rc, err := newBufferedFile(testFile)
+		require.NoError(t, err)
+		require.NotNil(t, rc)
+
+		// Content must not be eaten as a partial BOM
+		buf := make([]byte, len(content))
+		n, err := rc.Read(buf)
+		require.NoError(t, err)
+		require.Equal(t, len(content), n)
+		require.Equal(t, content, buf)
+
+		require.NoError(t, rc.Close())
+	})
 }
 
 func TestBufferedFile_Read(t *testing.T) {
