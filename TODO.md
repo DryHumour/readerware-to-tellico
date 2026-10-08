@@ -4,7 +4,7 @@
     - `rowData.Genres()` returns `slices.Collect(maps.Keys(uniq))` (row_data.go)
     - `aggregation.Markers()` returns `slices.Collect(maps.Keys(...))` (aggregation.go)
     - `AggregateNames` iterates `columns.Names` map; cross-role credit order varies (aggregate.go)
-- [ ] Stop integration tests from hitting the real network: `convert_integration_test.go` uses `NewConverter` without `WithHTTPClient`, so `isbn.LoadHyphenator` runs against `http.DefaultClient` (no timeout). Inject a stub client or short-circuit.
+- [x] Stop integration tests from hitting the real network: `convert_integration_test.go` uses `NewConverter` without `WithHTTPClient`, so `isbn.LoadHyphenator` runs against `http.DefaultClient` (no timeout). Inject a stub client or short-circuit.
 - [ ] Write output atomically: `os.Create` truncates the `.tc` before input is even validated, leaving a corrupt partial zip on failure. Write to a temp file and rename on success (converter.go).
 - [ ] Fix env var mismatch for `java-path`: `bindFlags` binds nested commands under `extract.java-path` (env `RW2TC_EXTRACT_JAVA_PATH`), but the error message in cmd/images.go tells users to set `RW2TC_IMAGES_EXTRACT_JAVA_PATH`. Use full command ancestry for the namespace or fix the message.
 - [ ] Fix `buffered_file.go`: `Peek(3)` fails on files < 3 bytes, so an empty CSV reports "failed to peek file for BOM: EOF" instead of `ErrEmptyInputFile`.
