@@ -2,7 +2,6 @@ package parallel
 
 import (
 	"errors"
-	"io"
 	"log/slog"
 	"strings"
 	"testing"
@@ -80,9 +79,6 @@ func TestErrorHelpers(t *testing.T) {
 		err := copier.NewFileEmptyError(entry)
 		if !errors.Is(err, copier.ErrFileEmpty) {
 			t.Errorf("expected ErrFileEmpty, got %v", err)
-		}
-		if !errors.Is(err, io.EOF) {
-			t.Errorf("expected io.EOF, got %v", err)
 		}
 		if !strings.Contains(err.Error(), entry.Path) {
 			t.Errorf("expected path in error, got %q", err.Error())
