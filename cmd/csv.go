@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	"encoding/json"
+	json "encoding/json/v2"
 	"fmt"
 	"slices"
 

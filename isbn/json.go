@@ -2,7 +2,8 @@ package isbn
 
 import (
 	_ "embed"
-	"encoding/json"
+	"encoding/json/jsontext"
+	json "encoding/json/v2"
 	"fmt"
 )
 
@@ -39,28 +40,29 @@ type GroupRule struct {
 // as a single object and sometimes as an array.
 type RangeRuleList []RangeRule
 
-func (l *RangeRuleList) UnmarshalJSON(data []byte) error {
-	if len(data) == 0 {
-		*l = nil
-		return nil
-	}
-	switch data[0] {
-	case '{':
+// UnmarshalJSONFrom implements json.UnmarshalerFrom for the object-or-array
+// encoding used by the ISBN ranges document. It must read exactly one JSON
+// value from the decoder; nested values are handled by UnmarshalDecode.
+func (l *RangeRuleList) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	switch dec.PeekKind() {
+	case jsontext.KindNull:
+		return dec.SkipValue()
+	case jsontext.KindBeginObject:
 		var r RangeRule
-		if err := json.Unmarshal(data, &r); err != nil {
+		if err := json.UnmarshalDecode(dec, &r); err != nil {
 			return err
 		}
 		*l = RangeRuleList{r}
 		return nil
-	case '[':
+	case jsontext.KindBeginArray:
 		var rs []RangeRule
-		if err := json.Unmarshal(data, &rs); err != nil {
+		if err := json.UnmarshalDecode(dec, &rs); err != nil {
 			return err
 		}
 		*l = RangeRuleList(rs)
 		return nil
 	default:
-		return fmt.Errorf("unexpected JSON token %q", data[0])
+		return fmt.Errorf("unexpected JSON token %s", dec.PeekKind())
 	}
 }
 
