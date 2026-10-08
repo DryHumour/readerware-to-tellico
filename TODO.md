@@ -29,6 +29,6 @@
 - [ ] Remove commented-out debug `fmt.Printf` lines in collection_info.go
 - [x] Remove `"extract"` from `extractCmd`'s own alias list (cmd/images.go)
 - [ ] Add lint/staticcheck step to CI (currently only build + `go test -race`)
-- [ ] Document that `--concurrency 0` selects the simple (sequential) copier
+- [x] Document that `--concurrency 0` selects the simple (sequential) copier
 - [ ] Consider hoisting the validator+translator construction in `config.Validate()` out of the per-call path
 - [ ] Unify the two BOM-strip implementations (cmd/csv.go vs convert/buffered_file.go)

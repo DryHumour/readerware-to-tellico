@@ -182,6 +182,8 @@ Image copying is fully parallelized. By default, it uses 16 concurrent workers, 
 readerware-to-tellico books --concurrency 8
 ```
 
+Set `--concurrency 0` to disable parallel copying entirely and process images sequentially — useful for debugging or on very slow storage.
+
 ### Custom Templates
 
 For advanced users, the formatting and mapping pipeline can be customized. You can provide directories containing custom Go HTML/text templates using the `--template-dirs` flag:
