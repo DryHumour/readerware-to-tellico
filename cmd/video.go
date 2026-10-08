@@ -58,7 +58,7 @@ func init() {
 	videoCmd.MarkPersistentFlagDirname("extracted-images-dir")
 	videoCmd.PersistentFlags().StringSlice("template-dirs", nil, "Directories containing user-provided Tellico templates (optional)")
 	videoCmd.MarkPersistentFlagDirname("template-dirs")
-	videoCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (default is 16)")
+	videoCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
 func Video(cmd *cobra.Command) error {

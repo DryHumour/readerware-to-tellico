@@ -58,7 +58,7 @@ func init() {
 	musicCmd.MarkPersistentFlagDirname("extracted-images-dir")
 	musicCmd.PersistentFlags().StringSlice("template-dirs", nil, "Directories containing user-provided Tellico templates (optional)")
 	musicCmd.MarkPersistentFlagDirname("template-dirs")
-	musicCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (default is 16)")
+	musicCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
 func Music(cmd *cobra.Command) error {

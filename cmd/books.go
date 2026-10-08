@@ -58,7 +58,7 @@ func init() {
 	booksCmd.MarkPersistentFlagDirname("extracted-images-dir")
 	booksCmd.PersistentFlags().StringSlice("template-dirs", nil, "Directories containing user-provided Tellico templates (optional)")
 	booksCmd.MarkPersistentFlagDirname("template-dirs")
-	booksCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (default is 16)")
+	booksCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
 func Books(cmd *cobra.Command) error {
