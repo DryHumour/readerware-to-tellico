@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -54,9 +55,15 @@ func Images(ctx context.Context, src, dst, javaPath string) error {
 		return err
 	}
 
+	stderr := newTailBuffer(4 << 10)
 	cmd := command(ctx, javaExec, jarPath, dbStem, dst)
+	cmd.Stderr = io.MultiWriter(os.Stderr, stderr)
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to run Readerware image extraction using %q: %w", javaExec, err)
+		err = fmt.Errorf("failed to run Readerware image extraction using %q: %w", javaExec, err)
+		if tail := strings.TrimSpace(stderr.String()); tail != "" {
+			err = fmt.Errorf("%w\njava stderr: %s", err, tail)
+		}
+		return err
 	}
 
 	return nil
@@ -162,6 +169,29 @@ func setup(dir string) (string, error) {
 		return "", fmt.Errorf("failed to write image dumper jar: %w", err)
 	}
 	return jarPath, nil
+}
+
+// tailBuffer is an io.Writer that retains only the last max bytes written,
+// for surfacing subprocess output in error messages after a failure.
+type tailBuffer struct {
+	buf []byte
+	max int
+}
+
+func newTailBuffer(max int) *tailBuffer {
+	return &tailBuffer{max: max}
+}
+
+func (t *tailBuffer) Write(p []byte) (int, error) {
+	t.buf = append(t.buf, p...)
+	if len(t.buf) > t.max {
+		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.max:]...)
+	}
+	return len(p), nil
+}
+
+func (t *tailBuffer) String() string {
+	return string(t.buf)
 }
 
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
