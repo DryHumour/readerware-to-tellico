@@ -50,11 +50,37 @@ archives:
 
 changelog:
   sort: asc
+  abbrev: 7
   filters:
     exclude:
       - '^chore\b'
       - '^docs\b'
       - '^test\b'
+      - '^Merge (pull request|branch|remote-tracking branch)\b'
+      - '^Squashed commit\b'
+  # Group regexps are mutually exclusive (a "!" breaking marker is matched
+  # only by the first group), so matching order cannot change the result.
+  groups:
+    - title: "Breaking Changes"
+      regexp: '^[a-z]+(\([^)]*\))?!:'
+      order: 0
+    - title: "Features"
+      regexp: '^feat(\([^)]*\))?:'
+      order: 1
+    - title: "Bug Fixes"
+      regexp: '^fix(\([^)]*\))?:'
+      order: 2
+    - title: "Performance"
+      regexp: '^perf(\([^)]*\))?:'
+      order: 3
+    - title: "Refactoring"
+      regexp: '^refactor(\([^)]*\))?:'
+      order: 4
+    - title: "Dependencies"
+      regexp: '^build\(deps\)'
+      order: 5
+    - title: "Other"
+      order: 999
 
 release:
   footer: >-
