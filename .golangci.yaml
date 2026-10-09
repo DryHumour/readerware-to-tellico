@@ -1,0 +1,126 @@
+version: "2"
+
+run:
+  timeout: 5m
+  build-tags: []
+
+issues:
+  # Show every finding: truncated reports hide real counts.
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  # Enumerate explicitly so upstream default changes cannot affect us.
+  default: none
+  enable:
+    # Correctness
+    - govet
+    - staticcheck
+    - errcheck
+    - errorlint
+    - copyloopvar
+    - unparam
+    - unconvert
+    - unused
+    - bodyclose
+    - noctx
+    - nilerr
+    - durationcheck
+    - makezero
+    - gosec
+    # Style / idiom
+    - gocritic
+    - revive
+    - misspell
+    - perfsprint
+    - intrange
+    - modernize
+    # Tests
+    - usetesting
+    - testifylint
+    - paralleltest
+    - thelper
+    - tparallel
+  settings:
+    errcheck:
+      check-type-assertions: true
+      exclude-functions:
+        # cobra flag-marking helpers only fail if the named flag does not exist.
+        - (*github.com/spf13/cobra.Command).MarkFlagDirname
+        - (*github.com/spf13/cobra.Command).MarkFlagFilename
+        - (*github.com/spf13/cobra.Command).MarkPersistentFlagDirname
+        - (*github.com/spf13/cobra.Command).MarkPersistentFlagFilename
+    gocritic:
+      enabled-tags: [diagnostic, style, performance]
+      disabled-checks:
+        - hugeParam
+        - importShadow
+        - unnamedResult
+        - whyNoLint
+    gosec:
+      excludes:
+        - G104 # unhandled errors: errcheck already covers this
+        - G301 # directory permissions: 0755 is intentional for user-facing output
+        - G304 # file inclusion via variable: this tool's whole job is reading user-named files
+        - G306 # file permissions: 0644 is intentional for user-facing output
+        - G703 # path traversal: paths come from the user's own command line
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+    staticcheck:
+      checks: ["all"]
+    testifylint:
+      enable-all: true
+      disable:
+        - require-error # project style: assert by default, require only for setup
+    usetesting:
+      context-background: true
+      context-todo: true
+  exclusions:
+    generated: lax
+    presets:
+      - std-error-handling
+    paths:
+      - third_party
+      - java
+    rules:
+      - path: _test\.go
+        linters: [gosec, unparam]
+      # Doc comments on every exported identifier are not worth it inside internal/.
+      - path: ^internal/
+        linters: [revive]
+        text: "^exported:"
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/DryHumour/readerware-to-tellico
+  exclusions:
+    paths:
+      - third_party
+      - java

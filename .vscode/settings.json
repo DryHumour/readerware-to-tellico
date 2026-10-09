@@ -2,5 +2,15 @@
     "go.testFlags": [
         "-race",
         "-v"
-    ]
+    ],
+    "gopls": {
+        "formatting.gofumpt": true,
+        "formatting.local": "github.com/DryHumour/readerware-to-tellico"
+    },
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    }
 }
