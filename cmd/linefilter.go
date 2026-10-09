@@ -25,8 +25,9 @@ type lineFilterOptions struct {
 // per arg), applies convert to each, and writes exactly one output line per
 // input.  Blank lines and lines beginning with '#' pass through verbatim
 // (stdin only).  A line beginning with '"' is treated as a JSON string literal
-// and decoded before conversion.  On conversion failure the original input is
-// echoed (JSON-quoted unless raw), an error is logged identifying the line or
+// and decoded before conversion.  On conversion failure the input value is
+// echoed (decoded if it was a JSON literal, JSON-quoted unless raw), an error
+// is logged identifying the line or
 // argument, and processing continues; the function returns an error at the
 // end if any input failed ("%d of %d inputs failed to convert").
 //
@@ -50,7 +51,7 @@ func runLineFilter(cmd *cobra.Command, args []string, convert func(string) (isbn
 		if err != nil {
 			failed++
 			logger.ErrorContext(ctx, "conversion failed", label, n, "input", raw, "error", err)
-			s = raw
+			s = text
 		} else {
 			hyph, herr := opts.hyphenator.Hyphenate(i)
 			var problem error
@@ -63,7 +64,7 @@ func runLineFilter(cmd *cobra.Command, args []string, convert func(string) (isbn
 			if problem != nil && opts.strict {
 				failed++
 				logger.ErrorContext(ctx, "output is not a valid, range-resolvable ISBN", label, n, "input", raw, "isbn", i.String(), "error", problem)
-				s = raw
+				s = text
 			} else {
 				s = i.String()
 				if problem != nil {

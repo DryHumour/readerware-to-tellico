@@ -79,11 +79,12 @@ func TestRunISBNTo13Raw(t *testing.T) {
 	defer slog.SetDefault(old)
 	slog.SetDefault(slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
 
-	cmd, out, _ := newISBNTo13TestCmd("0306406152\n", true, false, false)
+	cmd, out, _ := newISBNTo13TestCmd("0306406152\n"+`"bogus"`+"\n", true, false, false)
 	cmd.SetContext(t.Context())
 
-	assert.NoError(t, runISBNTo13(cmd, nil, isbn.DefaultHyphenator()), "raw run should not error")
-	assert.Equal(t, "9780306406157\n", out.String(), "raw output should be unquoted")
+	assert.ErrorContains(t, runISBNTo13(cmd, nil, isbn.DefaultHyphenator()), "1 of 2 inputs failed",
+		"one bad line should fail the command")
+	assert.Equal(t, "9780306406157\nbogus\n", out.String(), "raw output should be unquoted, failed input echoed decoded")
 }
 
 func TestRunISBNTo13Hyphenate(t *testing.T) {
@@ -162,7 +163,7 @@ func TestRunISBNTo13Args(t *testing.T) {
 	cmd, out, _ := newISBNTo13TestCmd("", false, false, false)
 	cmd.SetContext(t.Context())
 
-	assert.ErrorContains(t, runISBNTo13(cmd, []string{"0306406152", "bogus"}, isbn.DefaultHyphenator()),
+	assert.ErrorContains(t, runISBNTo13(cmd, []string{"0306406152", `"bogus"`}, isbn.DefaultHyphenator()),
 		"1 of 2 inputs failed", "one bad arg should fail the command")
 	assert.Equal(t, `"9780306406157"`+"\n"+`"bogus"`+"\n", out.String(), "stdout output mismatch")
 }
