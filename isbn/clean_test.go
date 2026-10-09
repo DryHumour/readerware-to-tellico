@@ -130,13 +130,23 @@ func TestClean(t *testing.T) {
 			expected: "",
 		},
 		{
-			name:     "only whitespace",
+			name:     "only whitespace, verbatim under 10 chars",
 			input:    "   ",
+			expected: "   ",
+		},
+		{
+			name:     "only hyphens, verbatim under 10 chars",
+			input:    "---",
+			expected: "---",
+		},
+		{
+			name:     "only whitespace",
+			input:    "          ",
 			expected: "",
 		},
 		{
 			name:     "only hyphens",
-			input:    "---",
+			input:    "----------",
 			expected: "",
 		},
 		{

@@ -361,6 +361,96 @@ func TestISBN_To10(t *testing.T) {
 	}
 }
 
+func TestMake10(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		body     string
+		expected ISBN
+		errIs    error
+	}{
+		{
+			name:     "valid body",
+			body:     "030640615",
+			expected: ni("0306406152"),
+		},
+		{
+			name:     "X check digit",
+			body:     "080442957",
+			expected: ni("080442957X"),
+		},
+		{
+			name:  "too short",
+			body:  "12345",
+			errIs: ErrInvalidISBN10,
+		},
+		{
+			name:  "too long",
+			body:  "0306406157",
+			errIs: ErrInvalidISBN10,
+		},
+		{
+			name:  "non-digit character",
+			body:  "03064061X",
+			errIs: ErrInvalidISBN10,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			result, err := Make10(tt.body)
+			assert.Equal(t, tt.expected, result)
+			if tt.errIs != nil {
+				require.Error(t, err)
+				assert.ErrorIs(t, err, tt.errIs)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMake13(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		body     string
+		expected ISBN
+		errIs    error
+	}{
+		{
+			name:     "valid body",
+			body:     "978030640615",
+			expected: ni("9780306406157"),
+		},
+		{
+			name:  "too short",
+			body:  "97803064061",
+			errIs: ErrInvalidISBN13,
+		},
+		{
+			name:  "non-digit character",
+			body:  "97803064061X",
+			errIs: ErrInvalidISBN13,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			result, err := Make13(tt.body)
+			assert.Equal(t, tt.expected, result)
+			if tt.errIs != nil {
+				require.Error(t, err)
+				assert.ErrorIs(t, err, tt.errIs)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
 func TestISBN_Split(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
