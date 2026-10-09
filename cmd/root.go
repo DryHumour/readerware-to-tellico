@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"log/slog"
 	"os"
@@ -183,4 +184,12 @@ func parseLogLevel(level string) slog.Level {
 	default:
 		return slog.LevelWarn
 	}
+}
+
+// writeLine writes s followed by a newline to w.
+func writeLine(w io.Writer, s string) error {
+	if _, err := fmt.Fprintln(w, s); err != nil {
+		return fmt.Errorf("writing output: %w", err)
+	}
+	return nil
 }
