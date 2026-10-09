@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"maps"
 	"reflect"
 	"slices"
@@ -87,8 +89,11 @@ hyphenated form where the range data allows it.  An ISBN with an invalid
 check digit passes through unchanged but logs a warning.  A value that
 fails conversion prints unchanged and an error is logged to stderr
 identifying the input line or argument.  An ISBN that does not resolve in
-the ISBN range data is still printed, with a warning.  --strict fails any
-output that is not a valid, range-resolvable ISBN.  If any value fails, the
+the ISBN range data is still printed, with a warning.  A value that is one
+digit short of an ISBN-10, UPC-12, or UPC-12 with add-on is retried with a
+leading zero (spreadsheets commonly strip it); a successful retry logs a
+warning.  --strict fails any output that is not a valid, range-resolvable
+ISBN.  If any value fails, the
 command exits non-zero after all inputs have been processed.`,
 	Args:         cobra.ArbitraryArgs,
 	SilenceUsage: true,
@@ -230,9 +235,36 @@ func runUPCToISBN(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 	if err != nil {
 		return err
 	}
+	ctx := cmd.Context()
+	logger := slog.Default()
 	return runLineFilter(cmd, args, func(s string) (isbn.ISBN, error) {
-		return upcToISBN(s, table, h, opts.strict)
+		return upcToISBNRestoringZero(ctx, logger, s, table, h, opts.strict)
 	}, opts)
+}
+
+// upcToISBNRestoringZero wraps upcToISBN with a leading-zero recovery retry:
+// spreadsheet exports commonly strip leading zeros, leaving ISBN-10, UPC-12,
+// and UPC-12+add-on values one digit short (9, 11, or 16 digits).  A failure
+// at one of those lengths is retried with a "0" prepended; a successful retry
+// logs a warning.  Other lengths return the original error untouched.
+func upcToISBNRestoringZero(ctx context.Context, logger *slog.Logger, s string, table map[string][]string, h *isbn.Hyphenator, strict bool) (isbn.ISBN, error) {
+	i, err := upcToISBN(s, table, h, strict)
+	if err == nil {
+		return i, nil
+	}
+	digits := extractDigits(s)
+	switch len(digits) {
+	case 9, 11, 16:
+		// A lost leading zero: ISBN-10, UPC-12, or UPC-12 with add-on one digit short.
+	default:
+		return isbn.ISBN{}, err
+	}
+	padded, perr := upcToISBN("0"+digits, table, h, strict)
+	if perr != nil {
+		return isbn.ISBN{}, fmt.Errorf("%w (also tried with a leading zero: %w)", err, perr)
+	}
+	logger.WarnContext(ctx, "restored a lost leading zero", "input", s, "isbn", padded.String())
+	return padded, nil
 }
 
 // upcToISBN converts a single UPC/EAN/ISBN string into its ISBN representation.
