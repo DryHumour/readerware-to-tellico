@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -62,6 +61,9 @@ func init() {
 	upcCmd.AddCommand(upcListCmd)
 	upcListCmd.AddCommand(upcListDefaultCmd)
 	upcListCmd.PersistentFlags().BoolP("raw", "r", false, "Output unquoted \"key value\" pairs instead of a YAML config fragment")
+	upcISBNCmd.Flags().BoolP("raw", "r", false, "Output bare values instead of JSON string literals")
+	upcISBNCmd.Flags().BoolP("hyphenate", "H", false, "Output hyphenated ISBNs where the range data allows")
+	upcISBNCmd.Flags().Bool("strict", false, "Fail outputs that are not valid, range-resolvable ISBNs")
 }
 
 // upcISBNCmd represents the UPC to ISBN convert command
@@ -74,21 +76,33 @@ With no arguments, reads UPC/EAN/ISBN values from stdin, one per line.  With
 one or more arguments, each argument is treated as a value to convert.
 Accepted inputs are ISBN-10, ISBN-13 (which may carry a 5-digit add-on), and
 UPC-12 with a 5-digit add-on; punctuation and formatting characters are
-ignored.  A UPC-12 without its add-on cannot be converted: the add-on carries
-the title digits of the ISBN.
+ignored.  An EAN-13-encoded UPC-A (a leading zero followed by the UPC-12,
+optionally with a 5-digit add-on) is also accepted: the leading zero is
+stripped and the value converts like the equivalent UPC-12.  A UPC-12
+without its add-on cannot be converted: the add-on carries the title digits
+of the ISBN.
 
-Each input produces exactly one output line: valid ISBNs print in normalized
-form and resolvable UPCs print their ISBN-10.  A value that fails conversion
-prints unchanged and an error is logged to stderr identifying the input line
-or argument.  If any value fails, the command exits non-zero after all
-inputs have been processed.`,
+Each input produces exactly one output line as a JSON string literal (--raw
+prints bare text instead): valid ISBNs print in normalized form and
+resolvable UPCs print their ISBN-10.  With --hyphenate, output ISBNs print in
+hyphenated form where the range data allows it.  An ISBN with an invalid
+check digit passes through unchanged but logs a warning.  A value that
+fails conversion prints unchanged and an error is logged to stderr
+identifying the input line or argument.  An ISBN that does not resolve in
+the ISBN range data is still printed, with a warning.  A value that is one
+digit short of an ISBN-10, UPC-12, or UPC-12 with add-on is retried with a
+leading zero (spreadsheets commonly strip it); a successful retry logs a
+warning.  --strict fails any output that is not a valid, range-resolvable
+ISBN.  If any value fails, the
+command exits non-zero after all inputs have been processed.`,
 	Args:         cobra.ArbitraryArgs,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return runUPCToISBNFromStdin(cmd)
+		h, err := loadHyphenator(cmd)
+		if err != nil {
+			return err
 		}
-		return runUPCToISBNFromArgs(cmd, args)
+		return runUPCToISBN(cmd, args, h)
 	},
 }
 
@@ -212,125 +226,114 @@ func printUPCTable(w io.Writer, table map[string][]string, raw bool) error {
 	return nil
 }
 
-func runUPCToISBNFromStdin(cmd *cobra.Command) error {
+func runUPCToISBN(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 	table, err := effectiveUPCTable()
 	if err != nil {
 		return err
 	}
-
+	opts, err := lineFilterOptionsFromFlags(cmd, h)
+	if err != nil {
+		return err
+	}
 	ctx := cmd.Context()
-	in := cmd.InOrStdin()
-	out := cmd.OutOrStdout()
 	logger := slog.Default()
-
-	var total, failed int
-	scanner := bufio.NewScanner(in)
-	for n := 1; scanner.Scan(); n++ {
-		if err := context.Cause(ctx); err != nil {
-			return err
-		}
-		raw := scanner.Text()
-		trimmed := strings.TrimSpace(raw)
-		if trimmed == "" || strings.HasPrefix(trimmed, "#") {
-			if err := writeLine(out, raw); err != nil {
-				return err
-			}
-			continue
-		}
-		total++
-		if res, err := upcToISBN(raw, table); err == nil {
-			raw = res
-		} else {
-			failed++
-			logger.ErrorContext(ctx, "conversion failed", "line", n, "input", raw, "error", err)
-		}
-		if err := writeLine(out, raw); err != nil {
-			return err
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("reading stdin: %w", err)
-	}
-	if failed > 0 {
-		return fmt.Errorf("%d of %d inputs failed to convert", failed, total)
-	}
-	return nil
+	return runLineFilter(cmd, args, func(s string) (isbn.ISBN, error) {
+		return upcToISBNRestoringZero(ctx, logger, s, table, h, opts.strict)
+	}, opts)
 }
 
-func runUPCToISBNFromArgs(cmd *cobra.Command, args []string) error {
-	table, err := effectiveUPCTable()
-	if err != nil {
-		return err
+// upcToISBNRestoringZero wraps upcToISBN with a leading-zero recovery retry:
+// spreadsheet exports commonly strip leading zeros, leaving ISBN-10, UPC-12,
+// and UPC-12+add-on values one digit short (9, 11, or 16 digits).  A failure
+// at one of those lengths is retried with a "0" prepended; a successful retry
+// logs a warning.  Other lengths return the original error untouched.
+func upcToISBNRestoringZero(ctx context.Context, logger *slog.Logger, s string, table map[string][]string, h *isbn.Hyphenator, strict bool) (isbn.ISBN, error) {
+	i, err := upcToISBN(s, table, h, strict)
+	if err == nil {
+		return i, nil
 	}
-
-	ctx := cmd.Context()
-	out := cmd.OutOrStdout()
-	logger := slog.Default()
-
-	var failed int
-	for i, arg := range args {
-		if err := context.Cause(ctx); err != nil {
-			return err
-		}
-		if res, err := upcToISBN(arg, table); err == nil {
-			arg = res
-		} else {
-			failed++
-			logger.ErrorContext(ctx, "conversion failed", "arg", i+1, "input", arg, "error", err)
-		}
-		if err := writeLine(out, arg); err != nil {
-			return err
-		}
+	digits := extractDigits(s)
+	switch len(digits) {
+	case 9, 11, 16:
+		// A lost leading zero: ISBN-10, UPC-12, or UPC-12 with add-on one digit short.
+	default:
+		return isbn.ISBN{}, err
 	}
-	if failed > 0 {
-		return fmt.Errorf("%d of %d inputs failed to convert", failed, len(args))
+	padded, perr := upcToISBN("0"+digits, table, h, strict)
+	if perr != nil {
+		return isbn.ISBN{}, fmt.Errorf("%w (also tried with a leading zero: %w)", err, perr)
 	}
-	return nil
+	logger.WarnContext(ctx, "restored a lost leading zero", "input", s, "isbn", padded.String())
+	return padded, nil
 }
 
 // upcToISBN converts a single UPC/EAN/ISBN string into its ISBN representation.
 // It passes through valid ISBN-10 and ISBN-13 values (an ISBN-13 may carry a
 // 5-digit add-on, which is discarded), converts UPC-12 values with an
 // accompanying UPC-5 add-on to ISBN-10, and returns an error for unrecognised
-// inputs.
-func upcToISBN(s string, table map[string][]string) (string, error) {
+// inputs.  An ISBN with a bad check digit passes through with a warning
+// unless strict is set, in which case it fails like any other invalid ISBN.
+// An EAN-13-encoded UPC-A (leading zero, which can never be a Bookland
+// ISBN-13) is re-dispatched after stripping the zero.
+func upcToISBN(s string, table map[string][]string, h *isbn.Hyphenator, strict bool) (isbn.ISBN, error) {
 	digits := extractDigits(s)
 
 	switch len(digits) {
-	case 10, 13:
-		if _, err := isbn.New(digits); err != nil && !errors.Is(err, isbn.ErrInvalidCheckDigit) {
-			return "", fmt.Errorf("invalid ISBN: %w", err)
+	case 10:
+		return tolerantISBN(digits, strict)
+	case 13, 18:
+		if digits[0] == '0' {
+			// A Bookland ISBN-13 always starts with 978/979, so a leading
+			// zero marks an EAN-13-encoded UPC-A: strip it and re-dispatch
+			// (13 digits → 12, 18 digits → 17).
+			return upcToISBN(digits[1:], table, h, strict)
 		}
-		return digits, nil
+		// For 18 digits this is an ISBN-13 with a 5-digit price add-on:
+		// validate and keep the ISBN-13, discard the add-on.
+		i, err := tolerantISBN(digits[:13], strict)
+		if err != nil {
+			return isbn.ISBN{}, err
+		}
+		if _, herr := h.Hyphenate(i); errors.Is(herr, isbn.ErrRegistrationGroupNotFound) {
+			return isbn.ISBN{}, fmt.Errorf("unrecognised EAN-13 prefix %s: not a book ISBN: %w", digits[:3], herr)
+		}
+		return i, nil
 	case 12:
 		if !isDigits(digits) {
-			return "", fmt.Errorf("unexpected 'X' in UPC input %q", digits)
+			return isbn.ISBN{}, fmt.Errorf("unexpected 'X' in UPC input %q", digits)
 		}
 		if err := validUPC12(digits); err != nil {
-			return "", err
+			return isbn.ISBN{}, err
 		}
-		return "", errors.New("UPC-12 requires a 5-digit add-on")
+		return isbn.ISBN{}, errors.New("UPC-12 requires a 5-digit add-on")
 	case 17:
 		if !isDigits(digits) {
-			return "", fmt.Errorf("unexpected 'X' in UPC input %q", digits)
+			return isbn.ISBN{}, fmt.Errorf("unexpected 'X' in UPC input %q", digits)
 		}
 		upc12 := digits[:12]
 		upc5 := digits[12:]
 		if err := validUPC12(upc12); err != nil {
-			return "", err
+			return isbn.ISBN{}, err
 		}
 		return isbn10FromUPC(upc12, upc5, table)
-	case 18:
-		// ISBN-13 with a 5-digit price add-on: validate and keep the ISBN-13,
-		// discard the add-on.
-		if _, err := isbn.New(digits[:13]); err != nil && !errors.Is(err, isbn.ErrInvalidCheckDigit) {
-			return "", fmt.Errorf("invalid ISBN: %w", err)
-		}
-		return digits[:13], nil
 	default:
-		return "", fmt.Errorf("unrecognized input format: %d digits extracted (expected ISBN-10, ISBN-13, ISBN-13+5, or UPC-12+5)", len(digits))
+		return isbn.ISBN{}, fmt.Errorf("unrecognized input format: %d digits extracted (expected ISBN-10, ISBN-13, ISBN-13+5, or UPC-12+5)", len(digits))
 	}
+}
+
+// tolerantISBN parses an ISBN-10 or ISBN-13, tolerating a bad check digit:
+// the structurally valid ISBN is returned without error and runLineFilter
+// reports it — unless strict is set, in which case the check-digit failure
+// is fatal like any other parse error.
+func tolerantISBN(digits string, strict bool) (isbn.ISBN, error) {
+	i, err := isbn.New(digits)
+	if errors.Is(err, isbn.ErrInvalidCheckDigit) && !strict {
+		return i, nil
+	}
+	if err != nil {
+		return isbn.ISBN{}, fmt.Errorf("invalid ISBN: %w", err)
+	}
+	return i, nil
 }
 
 // extractDigits returns a string containing only the digit and 'X'/'x' runes
@@ -375,17 +378,17 @@ func validUPC12(s string) error {
 // the add-on is overloaded to carry the trailing ISBN title digits rather than
 // a price.  A UPC prefix may map to more than one publisher prefix; the first
 // usable candidate wins.
-func isbn10FromUPC(upc12, upc5 string, table map[string][]string) (string, error) {
+func isbn10FromUPC(upc12, upc5 string, table map[string][]string) (isbn.ISBN, error) {
 	if len(upc12) != 12 {
-		return "", fmt.Errorf("expected 12 UPC digits, got %d", len(upc12))
+		return isbn.ISBN{}, fmt.Errorf("expected 12 UPC digits, got %d", len(upc12))
 	}
 	if len(upc5) != 5 {
-		return "", fmt.Errorf("expected 5 add-on digits, got %d", len(upc5))
+		return isbn.ISBN{}, fmt.Errorf("expected 5 add-on digits, got %d", len(upc5))
 	}
 
 	pubs := table[upc12[:6]]
 	if len(pubs) == 0 {
-		return "", fmt.Errorf("unknown UPC prefix %s (add a mapping via \"upc.table\" in the config file)", upc12[:6])
+		return isbn.ISBN{}, fmt.Errorf("unknown UPC prefix %s (add a mapping via \"upc.table\" in the config file)", upc12[:6])
 	}
 
 	var errs []error
@@ -401,10 +404,10 @@ func isbn10FromUPC(upc12, upc5 string, table map[string][]string) (string, error
 			errs = append(errs, fmt.Errorf("invalid ISBN body %q for %s: %w", body, upc12[:6], err))
 			continue
 		}
-		return isbn10.String(), nil
+		return isbn10, nil
 	}
 
-	return "", fmt.Errorf("no usable ISBN publisher prefix for %s: %w", upc12[:6], errors.Join(errs...))
+	return isbn.ISBN{}, fmt.Errorf("no usable ISBN publisher prefix for %s: %w", upc12[:6], errors.Join(errs...))
 }
 
 // effectiveUPCTable returns the UPC/ISBN prefix table used by the upc

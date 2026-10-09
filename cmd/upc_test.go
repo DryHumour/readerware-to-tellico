@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -136,7 +137,7 @@ func TestIsbn10FromUPC(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err, "upc12: %q upc5: %q", tt.upc12, tt.upc5)
-			assert.Equal(t, tt.expected, got, "upc12: %q upc5: %q", tt.upc12, tt.upc5)
+			assert.Equal(t, tt.expected, got.String(), "upc12: %q upc5: %q", tt.upc12, tt.upc5)
 		})
 	}
 }
@@ -278,6 +279,9 @@ func TestEffectiveUPCTable(t *testing.T) {
 func TestRunUPCToISBN(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", false, "")
 
 	var out, errBuf bytes.Buffer
 	cmd.SetIn(strings.NewReader("9780306406157\n" +
@@ -293,6 +297,15 @@ func TestRunUPCToISBN(t *testing.T) {
 		"07099300595X\n" +
 		"0 70993 00595 5 3574x\n" +
 		"99999999999312345\n" +
+		"0070993005955\n" +
+		"0070993005950\n" +
+		"0 070993 005955 35740\n" +
+		"4006381333931\n" +
+		"0306406153\n" +
+		"9781060000001\n" +
+		"812532570\n" +
+		"70999003757\n" +
+		"7099900375735740\n" +
 		"not a barcode\n"))
 	cmd.SetOut(&out)
 
@@ -300,31 +313,174 @@ func TestRunUPCToISBN(t *testing.T) {
 	slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
 	defer slog.SetDefault(old)
 
-	assert.ErrorContains(t, runUPCToISBNFromStdin(cmd), "5 of 12 inputs failed to convert",
+	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "9 of 21 inputs failed to convert",
 		"unconvertible inputs should fail the command after all lines are processed")
 
 	expectedOut := strings.Join([]string{
-		"9780306406157",
-		"9780306406157",
-		"0306406152",
+		`"9780306406157"`,
+		`"9780306406157"`,
+		`"0306406152"`,
 		"",
 		"# comment",
-		"070993005955",
-		"0446357405",
-		"1595123458",
-		"034512345X",
-		"0931873452",
-		"07099300595X",
-		"0 70993 00595 5 3574x",
-		"99999999999312345",
-		"not a barcode",
+		`"070993005955"`,
+		`"0446357405"`,
+		`"1595123458"`,
+		`"034512345X"`,
+		`"0931873452"`,
+		`"07099300595X"`,
+		`"0 70993 00595 5 3574x"`,
+		`"99999999999312345"`,
+		`"0070993005955"`,
+		`"0070993005950"`,
+		`"0446357405"`,
+		`"4006381333931"`,
+		`"0306406153"`,
+		`"9781060000001"`,
+		`"0812532570"`,
+		`"70999003757"`,
+		`"034535740X"`,
+		`"not a barcode"`,
 	}, "\n") + "\n"
 
 	assert.Equal(t, expectedOut, out.String(), "stdout output mismatch")
 
 	errOut := errBuf.String()
 	assert.Contains(t, errOut, "requires a 5-digit add-on", "bare UPC-12 should require its add-on")
+	assert.Contains(t, errOut, "invalid UPC-A check digit", "bad-check-digit UPC should report its own error")
 	assert.Contains(t, errOut, "unexpected 'X'", "X in UPC input should report a non-digit error")
 	assert.Contains(t, errOut, "unknown UPC prefix 999999", "missing UPC error message")
+	assert.Contains(t, errOut, "unrecognised EAN-13 prefix 400", "missing EAN-13 prefix error message")
 	assert.Contains(t, errOut, "unrecognized input format", "missing format error message")
+	assert.Equal(t, 2, strings.Count(errOut, "output is not a valid, range-resolvable ISBN"),
+		"bad-check ISBN-10 and unassigned publisher block should each warn once")
+	assert.Contains(t, errOut, "invalid ISBN check digit", "check-digit problem should be named in the error attribute")
+	assert.Contains(t, errOut, "restored a lost leading zero", "a successful zero-restore retry should warn")
+	assert.Contains(t, errOut, "also tried with a leading zero", "a failed zero-restore retry should join both errors")
+}
+
+func TestRunUPCToISBNStrict(t *testing.T) {
+	// Not parallel: mutates the global slog logger.
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", true, "")
+
+	var out, errBuf bytes.Buffer
+	cmd.SetIn(strings.NewReader("0306406153\n" +
+		"0 70993 00595 5 35740\n" +
+		"9781060000001\n"))
+	cmd.SetOut(&out)
+
+	old := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
+	defer slog.SetDefault(old)
+
+	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "2 of 3 inputs failed to convert",
+		"strict mode should fail bad-check and unassigned-publisher outputs")
+
+	assert.Equal(t, `"0306406153"`+"\n"+`"0446357405"`+"\n"+`"9781060000001"`+"\n",
+		out.String(), "stdout output mismatch")
+
+	errOut := errBuf.String()
+	assert.Contains(t, errOut, "invalid ISBN check digit", "strict bad-check ISBN should fail in convert")
+	assert.Contains(t, errOut, "output is not a valid, range-resolvable ISBN", "strict unassigned publisher block should fail in the filter")
+	assert.NotContains(t, errOut, "passing through ISBN with invalid check digit",
+		"strict mode should not warn-and-passthrough on check digit failures")
+}
+
+func TestRunUPCToISBNRaw(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", true, "")
+	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", false, "")
+
+	var out bytes.Buffer
+	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n0306406152\n"))
+	cmd.SetOut(&out)
+
+	assert.NoError(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()),
+		"raw run should not error")
+	assert.Equal(t, "0446357405\n0306406152\n", out.String(), "raw output should be unquoted")
+}
+
+func TestRunUPCToISBNHyphenate(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", true, "")
+	cmd.Flags().Bool("strict", false, "")
+
+	var out bytes.Buffer
+	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n"))
+	cmd.SetOut(&out)
+
+	assert.NoError(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()),
+		"hyphenate run should not error")
+	assert.Equal(t, `"0-446-35740-5"`+"\n", out.String(), "hyphenated ISBN-10 output mismatch")
+}
+func TestUPCToISBNRestoringZero(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		input    string
+		strict   bool
+		expected string
+		wantErr  string
+		notErr   string
+		wantWarn bool
+	}{
+		{
+			name:     "9-digit ISBN-10 restores a leading zero",
+			input:    "812532570",
+			expected: "0812532570",
+			wantWarn: true,
+		},
+		{
+			name:    "9-digit with bad check digit after padding",
+			input:   "812532571",
+			strict:  true,
+			wantErr: "also tried with a leading zero",
+		},
+		{
+			name:    "11-digit UPC-12 still needs its add-on",
+			input:   "70999003757",
+			wantErr: "requires a 5-digit add-on",
+		},
+		{
+			name:     "16-digit UPC-12 with add-on restores a leading zero",
+			input:    "7099900375735740",
+			expected: "034535740X",
+			wantWarn: true,
+		},
+		{
+			name:    "8-digit input does not retry",
+			input:   "12345678",
+			wantErr: "unrecognized input format",
+			notErr:  "also tried",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var errBuf bytes.Buffer
+			logger := slog.New(slog.NewTextHandler(&errBuf, nil))
+			got, err := upcToISBNRestoringZero(t.Context(), logger, tt.input, upcToISBNPrefix, isbn.DefaultHyphenator(), tt.strict)
+			if tt.wantErr != "" {
+				assert.ErrorContains(t, err, tt.wantErr, "input %q", tt.input)
+				if tt.notErr != "" {
+					assert.NotContains(t, err.Error(), tt.notErr, "input %q", tt.input)
+				}
+				return
+			}
+			assert.NoError(t, err, "input %q", tt.input)
+			assert.Equal(t, tt.expected, got.String(), "input %q", tt.input)
+			if tt.wantWarn {
+				assert.Contains(t, errBuf.String(), "restored a lost leading zero", "input %q", tt.input)
+			}
+		})
+	}
 }

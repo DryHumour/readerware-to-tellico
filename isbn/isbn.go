@@ -257,6 +257,9 @@ func (i ISBN) IsValid() bool {
 // An ISBN-13 with the 978 prefix is converted to the equivalent ISBN-10.  The
 // conversion will occur even if the original check digit is incorrect.
 // An ISBN-13 that cannot be converted to ISBN-10 returns an error.
+// Non-978 prefixes (including 979) are refused by design: dropping the prefix
+// would map both 978-B and 979-B to the same ISBN-10 body, so the conversion
+// is not invertible.
 // The zero value returns an error wrapping ErrInvalidISBN.
 func (i ISBN) To10() (ISBN, error) {
 	switch len(i.s) {
