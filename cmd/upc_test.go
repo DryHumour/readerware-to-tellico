@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -136,7 +137,7 @@ func TestIsbn10FromUPC(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err, "upc12: %q upc5: %q", tt.upc12, tt.upc5)
-			assert.Equal(t, tt.expected, got, "upc12: %q upc5: %q", tt.upc12, tt.upc5)
+			assert.Equal(t, tt.expected, got.String(), "upc12: %q upc5: %q", tt.upc12, tt.upc5)
 		})
 	}
 }
@@ -278,6 +279,8 @@ func TestEffectiveUPCTable(t *testing.T) {
 func TestRunUPCToISBN(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", false, "")
 
 	var out, errBuf bytes.Buffer
 	cmd.SetIn(strings.NewReader("9780306406157\n" +
@@ -293,6 +296,11 @@ func TestRunUPCToISBN(t *testing.T) {
 		"07099300595X\n" +
 		"0 70993 00595 5 3574x\n" +
 		"99999999999312345\n" +
+		"0070993005955\n" +
+		"0070993005950\n" +
+		"0 070993 005955 35740\n" +
+		"4006381333931\n" +
+		"0306406153\n" +
 		"not a barcode\n"))
 	cmd.SetOut(&out)
 
@@ -300,31 +308,70 @@ func TestRunUPCToISBN(t *testing.T) {
 	slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
 	defer slog.SetDefault(old)
 
-	assert.ErrorContains(t, runUPCToISBNFromStdin(cmd), "5 of 12 inputs failed to convert",
+	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "8 of 17 inputs failed to convert",
 		"unconvertible inputs should fail the command after all lines are processed")
 
 	expectedOut := strings.Join([]string{
-		"9780306406157",
-		"9780306406157",
-		"0306406152",
+		`"9780306406157"`,
+		`"9780306406157"`,
+		`"0306406152"`,
 		"",
 		"# comment",
-		"070993005955",
-		"0446357405",
-		"1595123458",
-		"034512345X",
-		"0931873452",
-		"07099300595X",
-		"0 70993 00595 5 3574x",
-		"99999999999312345",
-		"not a barcode",
+		`"070993005955"`,
+		`"0446357405"`,
+		`"1595123458"`,
+		`"034512345X"`,
+		`"0931873452"`,
+		`"07099300595X"`,
+		`"0 70993 00595 5 3574x"`,
+		`"99999999999312345"`,
+		`"0070993005955"`,
+		`"0070993005950"`,
+		`"0446357405"`,
+		`"4006381333931"`,
+		`"0306406153"`,
+		`"not a barcode"`,
 	}, "\n") + "\n"
 
 	assert.Equal(t, expectedOut, out.String(), "stdout output mismatch")
 
 	errOut := errBuf.String()
 	assert.Contains(t, errOut, "requires a 5-digit add-on", "bare UPC-12 should require its add-on")
+	assert.Contains(t, errOut, "invalid UPC-A check digit", "bad-check-digit UPC should report its own error")
 	assert.Contains(t, errOut, "unexpected 'X'", "X in UPC input should report a non-digit error")
 	assert.Contains(t, errOut, "unknown UPC prefix 999999", "missing UPC error message")
+	assert.Contains(t, errOut, "unrecognised EAN-13 prefix 400", "missing EAN-13 prefix error message")
 	assert.Contains(t, errOut, "unrecognized input format", "missing format error message")
+	assert.Equal(t, 1, strings.Count(errOut, "passing through ISBN with invalid check digit"),
+		"only the bad-check ISBN-10 should warn; a zero-padded UPC should reroute before parsing as ISBN")
+}
+
+func TestRunUPCToISBNRaw(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", true, "")
+	cmd.Flags().Bool("hyphenate", false, "")
+
+	var out bytes.Buffer
+	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n0306406152\n"))
+	cmd.SetOut(&out)
+
+	assert.NoError(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()),
+		"raw run should not error")
+	assert.Equal(t, "0446357405\n0306406152\n", out.String(), "raw output should be unquoted")
+}
+
+func TestRunUPCToISBNHyphenate(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", true, "")
+
+	var out bytes.Buffer
+	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n"))
+	cmd.SetOut(&out)
+
+	assert.NoError(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()),
+		"hyphenate run should not error")
+	assert.Equal(t, `"0-446-35740-5"`+"\n", out.String(), "hyphenated ISBN-10 output mismatch")
 }

@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	json "encoding/json/v2"
 	"errors"
 	"fmt"
 	"io"
 	"slices"
 
+	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/spf13/cobra"
 )
 
@@ -83,11 +83,7 @@ func runListCSV(cmd *cobra.Command) error {
 	for _, col := range header {
 		data := col
 		if !raw {
-			jsonBytes, err := json.Marshal(data)
-			if err != nil {
-				return fmt.Errorf("error encoding column name %q: %w", col, err)
-			}
-			data = string(jsonBytes)
+			data = strutil.QuoteJSON(data)
 		}
 		if err := writeLine(out, data); err != nil {
 			return err
@@ -137,11 +133,7 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 		if colIndex < len(row) {
 			data := row[colIndex]
 			if !raw {
-				jsonBytes, err := json.Marshal(data)
-				if err != nil {
-					return fmt.Errorf("error encoding column %q value: %w", columnName, err)
-				}
-				data = string(jsonBytes)
+				data = strutil.QuoteJSON(data)
 			}
 			if err := writeLine(out, data); err != nil {
 				return err
