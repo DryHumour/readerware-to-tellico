@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
@@ -37,8 +36,9 @@ allows it.
 Check-digit failures are failures: a structurally invalid ISBN is never
 repaired.  ISBN-13 prefixes not found in the ISBN range data (e.g. non-book
 EAN-13 codes) are also failures.  An ISBN in a known registration group but
-an unassigned publisher block is accepted with a warning unless --strict is
-given.
+an unassigned publisher block is accepted with a warning; --strict
+additionally fails any output whose check digit is invalid or that does not
+resolve in the ISBN range data (e.g. an unassigned publisher block).
 
 A value that fails conversion prints unchanged and an error is logged to
 stderr identifying the input line or argument.  If any value fails, the
@@ -59,7 +59,7 @@ func init() {
 	isbnCmd.AddCommand(isbnTo13Cmd)
 	isbnTo13Cmd.Flags().BoolP("raw", "r", false, "Output bare ISBNs instead of JSON string literals")
 	isbnTo13Cmd.Flags().BoolP("hyphenate", "H", false, "Output hyphenated ISBNs where the range data allows")
-	isbnTo13Cmd.Flags().Bool("strict", false, "Reject ISBNs whose publisher block is unassigned in the range data")
+	isbnTo13Cmd.Flags().Bool("strict", false, "Fail outputs that are not valid, range-resolvable ISBNs")
 }
 
 func runISBNTo13(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
@@ -67,13 +67,6 @@ func runISBNTo13(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 	if err != nil {
 		return err
 	}
-	strict, err := cmd.Flags().GetBool("strict")
-	if err != nil {
-		return fmt.Errorf("failed to read --strict flag: %w", err)
-	}
-
-	ctx := cmd.Context()
-	logger := slog.Default()
 
 	return runLineFilter(cmd, args, func(s string) (isbn.ISBN, error) {
 		i, err := isbn.New(s)
@@ -83,16 +76,10 @@ func runISBNTo13(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 		i = i.To13()
 		_, err = h.Hyphenate(i)
 		switch {
-		case err == nil:
+		case err == nil, errors.Is(err, isbn.ErrPublisherRangeNotFound), errors.Is(err, isbn.ErrInvalidPublisherLength):
 			return i, nil
 		case errors.Is(err, isbn.ErrRegistrationGroupNotFound):
 			return isbn.ISBN{}, fmt.Errorf("not a book ISBN prefix: %w", err)
-		case errors.Is(err, isbn.ErrPublisherRangeNotFound), errors.Is(err, isbn.ErrInvalidPublisherLength):
-			if strict {
-				return isbn.ISBN{}, err
-			}
-			logger.WarnContext(ctx, "ISBN publisher block is unassigned in the range data", "isbn", i.String(), "error", err)
-			return i, nil
 		default:
 			return isbn.ISBN{}, err
 		}

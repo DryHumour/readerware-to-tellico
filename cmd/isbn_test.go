@@ -123,11 +123,12 @@ func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) {
 		assert.NoError(t, runISBNTo13(cmd, nil, isbn.DefaultHyphenator()),
 			"unassigned publisher block should be accepted by default")
 		assert.Equal(t, `"`+unassigned+`"`+"\n", out.String(), "output mismatch")
-		assert.Contains(t, errBuf.String(), "unassigned", "a warning should be logged")
+		assert.Contains(t, errBuf.String(), "output is not a valid, range-resolvable ISBN", "a warning should be logged")
 	})
 
 	t.Run("strict rejects", func(t *testing.T) {
-		slog.SetDefault(slog.New(slog.NewTextHandler(&bytes.Buffer{}, nil)))
+		var errBuf bytes.Buffer
+		slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
 
 		cmd, out, _ := newISBNTo13TestCmd(unassigned+"\n", false, false, true)
 		cmd.SetContext(t.Context())
@@ -135,6 +136,7 @@ func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) {
 		assert.ErrorContains(t, runISBNTo13(cmd, nil, isbn.DefaultHyphenator()), "1 of 1 inputs failed",
 			"strict mode should reject the unassigned publisher block")
 		assert.Equal(t, `"`+unassigned+`"`+"\n", out.String(), "failed input should echo unchanged")
+		assert.Contains(t, errBuf.String(), "output is not a valid, range-resolvable ISBN", "strict failure should be logged")
 	})
 
 	t.Run("hyphenate falls back to bare digits", func(t *testing.T) {
@@ -147,7 +149,7 @@ func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) {
 		assert.NoError(t, runISBNTo13(cmd, nil, isbn.DefaultHyphenator()),
 			"unassigned publisher block should be accepted by default")
 		assert.Equal(t, `"`+unassigned+`"`+"\n", out.String(), "output should be unhyphenated digits")
-		assert.Contains(t, errBuf.String(), "hyphenation unavailable", "a warning should be logged")
+		assert.Contains(t, errBuf.String(), "output is not a valid, range-resolvable ISBN", "a warning should be logged")
 	})
 }
 

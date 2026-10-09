@@ -17,6 +17,7 @@ import (
 type lineFilterOptions struct {
 	raw        bool             // print bare text instead of JSON string literals
 	hyphenate  bool             // print hyphenated ISBNs when the range data allows it
+	strict     bool             // every output must be a valid ISBN that resolves in the range data
 	hyphenator *isbn.Hyphenator // required; used for hyphenation output only
 }
 
@@ -28,6 +29,11 @@ type lineFilterOptions struct {
 // echoed (JSON-quoted unless raw), an error is logged identifying the line or
 // argument, and processing continues; the function returns an error at the
 // end if any input failed ("%d of %d inputs failed to convert").
+//
+// A successful conversion whose ISBN has a bad check digit or does not
+// resolve in the range data is printed unhyphenated with a warning; under
+// opts.strict such outputs count as failures and echo the input instead.
+// With opts.hyphenate, resolvable ISBNs print in hyphenated form.
 func runLineFilter(cmd *cobra.Command, args []string, convert func(string) (isbn.ISBN, error), opts lineFilterOptions) error {
 	ctx := cmd.Context()
 	out := cmd.OutOrStdout()
@@ -46,12 +52,24 @@ func runLineFilter(cmd *cobra.Command, args []string, convert func(string) (isbn
 			logger.ErrorContext(ctx, "conversion failed", label, n, "input", raw, "error", err)
 			s = raw
 		} else {
-			s = i.String()
-			if opts.hyphenate {
-				if h, herr := opts.hyphenator.Hyphenate(i); herr == nil {
-					s = h
-				} else {
-					logger.WarnContext(ctx, "hyphenation unavailable, printing unhyphenated", label, n, "isbn", i.String(), "error", herr)
+			hyph, herr := opts.hyphenator.Hyphenate(i)
+			var problem error
+			switch {
+			case !i.IsValid():
+				problem = fmt.Errorf("%w: %s", isbn.ErrInvalidCheckDigit, i)
+			case herr != nil:
+				problem = herr
+			}
+			if problem != nil && opts.strict {
+				failed++
+				logger.ErrorContext(ctx, "output is not a valid, range-resolvable ISBN", label, n, "input", raw, "isbn", i.String(), "error", problem)
+				s = raw
+			} else {
+				s = i.String()
+				if problem != nil {
+					logger.WarnContext(ctx, "output is not a valid, range-resolvable ISBN", label, n, "isbn", i.String(), "error", problem)
+				} else if opts.hyphenate {
+					s = hyph
 				}
 			}
 		}
@@ -111,8 +129,8 @@ func loadHyphenator(cmd *cobra.Command) (*isbn.Hyphenator, error) {
 	return h, nil
 }
 
-// lineFilterOptionsFromFlags reads the --raw and --hyphenate flags shared by
-// the line-filter commands.
+// lineFilterOptionsFromFlags reads the --raw, --hyphenate and --strict flags
+// shared by the line-filter commands.
 func lineFilterOptionsFromFlags(cmd *cobra.Command, h *isbn.Hyphenator) (lineFilterOptions, error) {
 	raw, err := cmd.Flags().GetBool("raw")
 	if err != nil {
@@ -122,5 +140,9 @@ func lineFilterOptionsFromFlags(cmd *cobra.Command, h *isbn.Hyphenator) (lineFil
 	if err != nil {
 		return lineFilterOptions{}, fmt.Errorf("failed to read --hyphenate flag: %w", err)
 	}
-	return lineFilterOptions{raw: raw, hyphenate: hyphenate, hyphenator: h}, nil
+	strict, err := cmd.Flags().GetBool("strict")
+	if err != nil {
+		return lineFilterOptions{}, fmt.Errorf("failed to read --strict flag: %w", err)
+	}
+	return lineFilterOptions{raw: raw, hyphenate: hyphenate, strict: strict, hyphenator: h}, nil
 }

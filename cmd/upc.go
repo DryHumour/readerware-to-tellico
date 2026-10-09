@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"maps"
 	"reflect"
 	"slices"
@@ -62,6 +61,7 @@ func init() {
 	upcListCmd.PersistentFlags().BoolP("raw", "r", false, "Output unquoted \"key value\" pairs instead of a YAML config fragment")
 	upcISBNCmd.Flags().BoolP("raw", "r", false, "Output bare values instead of JSON string literals")
 	upcISBNCmd.Flags().BoolP("hyphenate", "H", false, "Output hyphenated ISBNs where the range data allows")
+	upcISBNCmd.Flags().Bool("strict", false, "Fail outputs that are not valid, range-resolvable ISBNs")
 }
 
 // upcISBNCmd represents the UPC to ISBN convert command
@@ -86,8 +86,10 @@ resolvable UPCs print their ISBN-10.  With --hyphenate, output ISBNs print in
 hyphenated form where the range data allows it.  An ISBN with an invalid
 check digit passes through unchanged but logs a warning.  A value that
 fails conversion prints unchanged and an error is logged to stderr
-identifying the input line or argument.  If any value fails, the command
-exits non-zero after all inputs have been processed.`,
+identifying the input line or argument.  An ISBN that does not resolve in
+the ISBN range data is still printed, with a warning.  --strict fails any
+output that is not a valid, range-resolvable ISBN.  If any value fails, the
+command exits non-zero after all inputs have been processed.`,
 	Args:         cobra.ArbitraryArgs,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -229,7 +231,7 @@ func runUPCToISBN(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 		return err
 	}
 	return runLineFilter(cmd, args, func(s string) (isbn.ISBN, error) {
-		return upcToISBN(s, table, h)
+		return upcToISBN(s, table, h, opts.strict)
 	}, opts)
 }
 
@@ -237,25 +239,26 @@ func runUPCToISBN(cmd *cobra.Command, args []string, h *isbn.Hyphenator) error {
 // It passes through valid ISBN-10 and ISBN-13 values (an ISBN-13 may carry a
 // 5-digit add-on, which is discarded), converts UPC-12 values with an
 // accompanying UPC-5 add-on to ISBN-10, and returns an error for unrecognised
-// inputs.  An ISBN with a bad check digit passes through with a warning.
+// inputs.  An ISBN with a bad check digit passes through with a warning
+// unless strict is set, in which case it fails like any other invalid ISBN.
 // An EAN-13-encoded UPC-A (leading zero, which can never be a Bookland
 // ISBN-13) is re-dispatched after stripping the zero.
-func upcToISBN(s string, table map[string][]string, h *isbn.Hyphenator) (isbn.ISBN, error) {
+func upcToISBN(s string, table map[string][]string, h *isbn.Hyphenator, strict bool) (isbn.ISBN, error) {
 	digits := extractDigits(s)
 
 	switch len(digits) {
 	case 10:
-		return tolerantISBN(digits)
+		return tolerantISBN(digits, strict)
 	case 13, 18:
 		if digits[0] == '0' {
 			// A Bookland ISBN-13 always starts with 978/979, so a leading
 			// zero marks an EAN-13-encoded UPC-A: strip it and re-dispatch
 			// (13 digits → 12, 18 digits → 17).
-			return upcToISBN(digits[1:], table, h)
+			return upcToISBN(digits[1:], table, h, strict)
 		}
 		// For 18 digits this is an ISBN-13 with a 5-digit price add-on:
 		// validate and keep the ISBN-13, discard the add-on.
-		i, err := tolerantISBN(digits[:13])
+		i, err := tolerantISBN(digits[:13], strict)
 		if err != nil {
 			return isbn.ISBN{}, err
 		}
@@ -287,12 +290,12 @@ func upcToISBN(s string, table map[string][]string, h *isbn.Hyphenator) (isbn.IS
 }
 
 // tolerantISBN parses an ISBN-10 or ISBN-13, tolerating a bad check digit:
-// the structurally valid ISBN is returned with a warning logged rather than
-// an error.  Any other parse failure is fatal.
-func tolerantISBN(digits string) (isbn.ISBN, error) {
+// the structurally valid ISBN is returned without error and runLineFilter
+// reports it — unless strict is set, in which case the check-digit failure
+// is fatal like any other parse error.
+func tolerantISBN(digits string, strict bool) (isbn.ISBN, error) {
 	i, err := isbn.New(digits)
-	if errors.Is(err, isbn.ErrInvalidCheckDigit) {
-		slog.Default().Warn("passing through ISBN with invalid check digit", "isbn", i.String())
+	if errors.Is(err, isbn.ErrInvalidCheckDigit) && !strict {
 		return i, nil
 	}
 	if err != nil {

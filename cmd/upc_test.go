@@ -281,6 +281,7 @@ func TestRunUPCToISBN(t *testing.T) {
 	cmd.SetContext(t.Context())
 	cmd.Flags().Bool("raw", false, "")
 	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", false, "")
 
 	var out, errBuf bytes.Buffer
 	cmd.SetIn(strings.NewReader("9780306406157\n" +
@@ -301,6 +302,7 @@ func TestRunUPCToISBN(t *testing.T) {
 		"0 070993 005955 35740\n" +
 		"4006381333931\n" +
 		"0306406153\n" +
+		"9781060000001\n" +
 		"not a barcode\n"))
 	cmd.SetOut(&out)
 
@@ -308,7 +310,7 @@ func TestRunUPCToISBN(t *testing.T) {
 	slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
 	defer slog.SetDefault(old)
 
-	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "8 of 17 inputs failed to convert",
+	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "8 of 18 inputs failed to convert",
 		"unconvertible inputs should fail the command after all lines are processed")
 
 	expectedOut := strings.Join([]string{
@@ -330,6 +332,7 @@ func TestRunUPCToISBN(t *testing.T) {
 		`"0446357405"`,
 		`"4006381333931"`,
 		`"0306406153"`,
+		`"9781060000001"`,
 		`"not a barcode"`,
 	}, "\n") + "\n"
 
@@ -342,8 +345,40 @@ func TestRunUPCToISBN(t *testing.T) {
 	assert.Contains(t, errOut, "unknown UPC prefix 999999", "missing UPC error message")
 	assert.Contains(t, errOut, "unrecognised EAN-13 prefix 400", "missing EAN-13 prefix error message")
 	assert.Contains(t, errOut, "unrecognized input format", "missing format error message")
-	assert.Equal(t, 1, strings.Count(errOut, "passing through ISBN with invalid check digit"),
-		"only the bad-check ISBN-10 should warn; a zero-padded UPC should reroute before parsing as ISBN")
+	assert.Equal(t, 2, strings.Count(errOut, "output is not a valid, range-resolvable ISBN"),
+		"bad-check ISBN-10 and unassigned publisher block should each warn once")
+	assert.Contains(t, errOut, "invalid ISBN check digit", "check-digit problem should be named in the error attribute")
+}
+
+func TestRunUPCToISBNStrict(t *testing.T) {
+	// Not parallel: mutates the global slog logger.
+	cmd := &cobra.Command{}
+	cmd.SetContext(t.Context())
+	cmd.Flags().Bool("raw", false, "")
+	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", true, "")
+
+	var out, errBuf bytes.Buffer
+	cmd.SetIn(strings.NewReader("0306406153\n" +
+		"0 70993 00595 5 35740\n" +
+		"9781060000001\n"))
+	cmd.SetOut(&out)
+
+	old := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&errBuf, nil)))
+	defer slog.SetDefault(old)
+
+	assert.ErrorContains(t, runUPCToISBN(cmd, nil, isbn.DefaultHyphenator()), "2 of 3 inputs failed to convert",
+		"strict mode should fail bad-check and unassigned-publisher outputs")
+
+	assert.Equal(t, `"0306406153"`+"\n"+`"0446357405"`+"\n"+`"9781060000001"`+"\n",
+		out.String(), "stdout output mismatch")
+
+	errOut := errBuf.String()
+	assert.Contains(t, errOut, "invalid ISBN check digit", "strict bad-check ISBN should fail in convert")
+	assert.Contains(t, errOut, "output is not a valid, range-resolvable ISBN", "strict unassigned publisher block should fail in the filter")
+	assert.NotContains(t, errOut, "passing through ISBN with invalid check digit",
+		"strict mode should not warn-and-passthrough on check digit failures")
 }
 
 func TestRunUPCToISBNRaw(t *testing.T) {
@@ -351,6 +386,7 @@ func TestRunUPCToISBNRaw(t *testing.T) {
 	cmd.SetContext(t.Context())
 	cmd.Flags().Bool("raw", true, "")
 	cmd.Flags().Bool("hyphenate", false, "")
+	cmd.Flags().Bool("strict", false, "")
 
 	var out bytes.Buffer
 	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n0306406152\n"))
@@ -366,6 +402,7 @@ func TestRunUPCToISBNHyphenate(t *testing.T) {
 	cmd.SetContext(t.Context())
 	cmd.Flags().Bool("raw", false, "")
 	cmd.Flags().Bool("hyphenate", true, "")
+	cmd.Flags().Bool("strict", false, "")
 
 	var out bytes.Buffer
 	cmd.SetIn(strings.NewReader("0 70993 00595 5 35740\n"))
