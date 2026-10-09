@@ -26,10 +26,11 @@ var csvCmd = &cobra.Command{
 
 // csvListCmd represents the CSV list command
 var csvListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List the column names from a CSV file on stdin",
-	Long:  `List the column names from a CSV file on stdin, one per line, as JSON strings.`,
-	Args:  cobra.NoArgs,
+	Use:          "list",
+	Short:        "List the column names from a CSV file on stdin",
+	Long:         `List the column names from a CSV file on stdin, one per line, as JSON strings.`,
+	Args:         cobra.NoArgs,
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		return runListCSV(cmd)
 	},
@@ -37,10 +38,11 @@ var csvListCmd = &cobra.Command{
 
 // csvGetCmd represents the CSV get command
 var csvGetCmd = &cobra.Command{
-	Use:   "get <column-name>",
-	Short: "Get a specific column from a CSV file on stdin",
-	Long:  `Get a specific column from a CSV file on stdin, printing each row's value as a JSON string.`,
-	Args:  cobra.ExactArgs(1),
+	Use:          "get <column-name>",
+	Short:        "Get a specific column from a CSV file on stdin",
+	Long:         `Get a specific column from a CSV file on stdin, printing each row's value as a JSON string.`,
+	Args:         cobra.ExactArgs(1),
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runGetCSV(cmd, args[0])
 	},
@@ -79,11 +81,16 @@ func runListCSV(cmd *cobra.Command) error {
 	}
 
 	for _, col := range header {
-		if raw {
-			fmt.Fprintln(out, col)
-		} else {
-			jsonBytes, _ := json.Marshal(col)
-			fmt.Fprintln(out, string(jsonBytes))
+		data := col
+		if !raw {
+			jsonBytes, err := json.Marshal(data)
+			if err != nil {
+				return fmt.Errorf("error encoding column name %q: %w", col, err)
+			}
+			data = string(jsonBytes)
+		}
+		if err := writeLine(out, data); err != nil {
+			return err
 		}
 	}
 
@@ -128,11 +135,16 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 			return fmt.Errorf("error reading CSV row: %w", err)
 		}
 		if colIndex < len(row) {
-			if raw {
-				fmt.Fprintln(out, row[colIndex])
-			} else {
-				jsonBytes, _ := json.Marshal(row[colIndex])
-				fmt.Fprintln(out, string(jsonBytes))
+			data := row[colIndex]
+			if !raw {
+				jsonBytes, err := json.Marshal(data)
+				if err != nil {
+					return fmt.Errorf("error encoding column %q value: %w", columnName, err)
+				}
+				data = string(jsonBytes)
+			}
+			if err := writeLine(out, data); err != nil {
+				return err
 			}
 		}
 	}
