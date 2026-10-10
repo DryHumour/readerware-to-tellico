@@ -62,6 +62,8 @@ func init() {
 	musicCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
+// Music runs the music conversion: it reads the Readerware music CSV export and
+// writes a Tellico music collection to the configured output file.
 func Music(cmd *cobra.Command) error {
 	ctx := cmd.Context()
 	logger := slog.Default()

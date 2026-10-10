@@ -62,6 +62,8 @@ func init() {
 	booksCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
+// Books runs the books conversion: it reads the Readerware book CSV export and
+// writes a Tellico book collection to the configured output file.
 func Books(cmd *cobra.Command) error {
 	ctx := cmd.Context()
 	logger := slog.Default()

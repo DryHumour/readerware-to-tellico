@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"sync"
 
+	"github.com/DryHumour/readerware-to-tellico/internal/convert/copier"
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/tcfile"
 )
@@ -22,7 +23,7 @@ type parallelCopier struct {
 }
 
 // New creates a new copier for writing images to the given Tellico file.
-func New(logger *slog.Logger, tcf *tcfile.TCFile, concurrency int) parallelCopier {
+func New(logger *slog.Logger, tcf *tcfile.TCFile, concurrency int) copier.Copier {
 	if concurrency < 1 {
 		concurrency = 1
 	}

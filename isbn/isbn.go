@@ -16,11 +16,17 @@ const (
 )
 
 var (
-	ErrInvalidISBN       = errors.New("invalid ISBN")
+	// ErrInvalidISBN indicates the input is not a valid ISBN.
+	ErrInvalidISBN = errors.New("invalid ISBN")
+	// ErrInvalidCheckDigit indicates the ISBN check digit does not match.
 	ErrInvalidCheckDigit = fmt.Errorf("invalid ISBN check digit: %w", ErrInvalidISBN)
-	ErrInvalidKind       = fmt.Errorf("invalid ISBN kind: %w", ErrInvalidISBN)
-	ErrInvalidISBN10     = fmt.Errorf("invalid ISBN-10: %w", ErrInvalidKind)
-	ErrInvalidISBN13     = fmt.Errorf("invalid ISBN-13: %w", ErrInvalidKind)
+	// ErrInvalidKind indicates the ISBN is of an unexpected kind.
+	ErrInvalidKind = fmt.Errorf("invalid ISBN kind: %w", ErrInvalidISBN)
+	// ErrInvalidISBN10 indicates the input is not a valid ISBN-10.
+	ErrInvalidISBN10 = fmt.Errorf("invalid ISBN-10: %w", ErrInvalidKind)
+	// ErrInvalidISBN13 indicates the input is not a valid ISBN-13.
+	ErrInvalidISBN13 = fmt.Errorf("invalid ISBN-13: %w", ErrInvalidKind)
+	// ErrInvalidConversion indicates an ISBN-13 that cannot be converted to ISBN-10.
 	ErrInvalidConversion = fmt.Errorf("invalid ISBN-13 for conversion to ISBN-10: %w", ErrInvalidISBN)
 )
 

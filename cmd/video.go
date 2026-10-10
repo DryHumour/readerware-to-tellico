@@ -62,6 +62,8 @@ func init() {
 	videoCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
+// Video runs the video conversion: it reads the Readerware video CSV export and
+// writes a Tellico video collection to the configured output file.
 func Video(cmd *cobra.Command) error {
 	ctx := cmd.Context()
 	logger := slog.Default()

@@ -25,7 +25,7 @@ func FuzzProcessNames(f *testing.F) {
 		f.Fatalf("failed to create Names: %v", err)
 	}
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		_ = n.Process(input)
 	})
 }
@@ -55,7 +55,7 @@ func FuzzNaturalOrder(f *testing.F) {
 		f.Fatalf("failed to create Names: %v", err)
 	}
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		r := n.Begin(input)
 		_ = n.NaturalOrder(r)
 	})

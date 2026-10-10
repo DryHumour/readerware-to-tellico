@@ -48,7 +48,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if err != nil {
@@ -73,7 +73,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFileEmpty) {
@@ -96,7 +96,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFileTooLarge) {
@@ -117,7 +117,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFormatMismatch) {
@@ -142,7 +142,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		entries := func(yield func(*images.ManifestEntry) bool) {
 			if !yield(entry1) {
@@ -202,7 +202,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		ctx, cancel := context.WithCancel(t.Context())
 		cancel()

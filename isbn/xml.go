@@ -1,7 +1,6 @@
 package isbn
 
 import (
-	_ "embed"
 	"encoding/xml"
 	"fmt"
 )
@@ -12,6 +11,8 @@ const (
 )
 
 // ISBNRangeMessage represents the structure of an ISBN range message XML file.
+//
+//nolint:revive // name mirrors the ISBNRangeMessage XML schema element
 type ISBNRangeMessage struct {
 	XMLName             xml.Name           `xml:"ISBNRangeMessage"`
 	MessageSource       string             `xml:"MessageSource,omitempty"`
@@ -67,6 +68,8 @@ func ParseRangeMessageXML(data []byte) (ISBNRangeMessage, error) {
 }
 
 // ISBNRangesFromXML converts an ISBNRangeMessage to an ISBNRanges.
+//
+//nolint:revive // name mirrors the ISBNRangeMessage XML schema element
 func ISBNRangesFromXML(msg ISBNRangeMessage) ISBNRanges {
 	var out ISBNRanges
 	out.ISBNRangeMessage.MessageDate = msg.MessageDate

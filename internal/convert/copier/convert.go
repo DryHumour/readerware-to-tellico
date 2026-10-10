@@ -5,16 +5,26 @@ package copier
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"image/gif"
 	"image/png"
 	"io"
 	"io/fs"
+	"iter"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
+
+// Copier copies image files from manifest entries into a Tellico collection,
+// yielding a report (and possibly an error) for each entry processed.
+type Copier interface {
+	CopyAll(ctx context.Context, entries iter.Seq[*images.ManifestEntry]) iter.Seq2[Report, error]
+}
 
 // Shared, thread-safe PNG encoder.
 var pngEncoder = &png.Encoder{

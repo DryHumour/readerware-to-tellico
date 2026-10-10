@@ -179,18 +179,18 @@ func setup(dir string) (string, error) {
 // tailBuffer is an io.Writer that retains only the last max bytes written,
 // for surfacing subprocess output in error messages after a failure.
 type tailBuffer struct {
-	buf []byte
-	max int
+	buf   []byte
+	limit int
 }
 
-func newTailBuffer(max int) *tailBuffer {
-	return &tailBuffer{max: max}
+func newTailBuffer(limit int) *tailBuffer {
+	return &tailBuffer{limit: limit}
 }
 
 func (t *tailBuffer) Write(p []byte) (int, error) {
 	t.buf = append(t.buf, p...)
-	if len(t.buf) > t.max {
-		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.max:]...)
+	if len(t.buf) > t.limit {
+		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.limit:]...)
 	}
 	return len(p), nil
 }

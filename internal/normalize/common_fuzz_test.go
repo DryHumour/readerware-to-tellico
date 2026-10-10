@@ -30,7 +30,7 @@ func FuzzExtract(f *testing.F) {
 		"jr.":      "Junior",
 	}
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		// extract should never panic on arbitrary string input
 		_, _ = extract(input, re, canonical)
 	})
@@ -52,7 +52,7 @@ func FuzzAudit(f *testing.F) {
 		"et al.": "Multiple authors",
 	}
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		r := Result{Value: input}
 		_ = audit(r, re, explanations)
 	})

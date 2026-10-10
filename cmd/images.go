@@ -55,7 +55,9 @@ func init() {
 	extractCmd.Flags().String("java-path", "", "Path to the Java executable to use")
 }
 
-func Extract(cmd *cobra.Command, dbPath string, outputPath string) error {
+// Extract runs the images extract command, pulling images out of a Readerware
+// database directory into outputPath using the ImageDumper tool.
+func Extract(cmd *cobra.Command, dbPath, outputPath string) error {
 	ctx := cmd.Context()
 	javaPath, err := cmd.Flags().GetString("java-path")
 	if err != nil {

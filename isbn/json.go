@@ -18,6 +18,8 @@ const (
 var isbnRangesJSON []byte
 
 // ISBNRanges represents the structure of an ISBN ranges document.
+//
+//nolint:revive // name mirrors the ISBN Range Message schema
 type ISBNRanges struct {
 	ISBNRangeMessage struct {
 		MessageDate        string `json:"MessageDate"`

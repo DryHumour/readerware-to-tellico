@@ -27,7 +27,7 @@ type simpleCopier struct {
 type Report = copier.Report
 
 // New creates a new sequential copier for writing images to the given Tellico file.
-func New(logger *slog.Logger, tcf *tcfile.TCFile) simpleCopier {
+func New(logger *slog.Logger, tcf *tcfile.TCFile) copier.Copier {
 	return simpleCopier{
 		logger: logger,
 		tcf:    tcf,
