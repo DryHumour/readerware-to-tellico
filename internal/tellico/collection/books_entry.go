@@ -24,10 +24,6 @@ func newBooksEntry(info CollectionInfo, clean map[string]string, images images.R
 	}, nil
 }
 
-//
-//  BookEntry Methods
-//
-
 // Authors returns the plain-text list of primary authors in discovery order.
 func (e *BooksEntry) Authors() []string { return e.agg.Roles()["Authors"] }
 

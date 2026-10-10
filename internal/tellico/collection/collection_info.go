@@ -39,8 +39,6 @@ func (c *collectionInfo) Data() any                  { return (*collectionInfoDa
 func (c *collectionInfo) Normalize() (result Normalize, err error) {
 	var errs []error
 	if c.normalize.Names == nil || c.normalize.Markers == nil {
-		//fmt.Printf("realBooksConfigNames = %#v\n", c.names) // FIXME(nschelle)
-		//fmt.Printf("realBooksConfigMarkers = %#v\n", c.markers) // FIXME(nschelle)
 		if c.normalize.Names, err = normalize.NewNames(c.names); err != nil {
 			errs = append(errs, fmt.Errorf("failed to create names normalizer: %w", err))
 		}

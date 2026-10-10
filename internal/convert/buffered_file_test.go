@@ -3,6 +3,7 @@ package convert
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -40,7 +41,7 @@ func TestNewBufferedFile(t *testing.T) {
 		testFile := filepath.Join(tmpDir, "test.txt")
 		bom := []byte{0xEF, 0xBB, 0xBF}
 		content := []byte("test content")
-		fullContent := append(bom, content...)
+		fullContent := slices.Concat(bom, content)
 		require.NoError(t, os.WriteFile(testFile, fullContent, 0o644))
 
 		rc, err := newBufferedFile(testFile)

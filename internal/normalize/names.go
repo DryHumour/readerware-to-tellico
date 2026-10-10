@@ -189,14 +189,14 @@ func (n *Names) Audit(r Result) Result {
 	}
 
 	if n.ambiguousHonorificsRE != nil {
-		if locs := n.ambiguousHonorificsRE.FindStringIndex(r.Value); locs != nil && locs[0] != 0 {
+		if locs := n.ambiguousHonorificsRE.FindStringIndex(r.Value); len(locs) >= 2 && locs[0] != 0 {
 			r.RequiresAudit = true
 			r.AuditReasons = append(r.AuditReasons, AuditReasonWithMatch("[ambiguous] Name contains ambiguous honorifics", r.Value, locs))
 		}
 	}
 
 	if n.ambiguousSuffixesRE != nil {
-		if locs := n.ambiguousSuffixesRE.FindStringIndex(r.Value); locs != nil && locs[1] < len(r.Value) {
+		if locs := n.ambiguousSuffixesRE.FindStringIndex(r.Value); len(locs) >= 2 && locs[1] < len(r.Value) {
 			r.RequiresAudit = true
 			r.AuditReasons = append(r.AuditReasons, AuditReasonWithMatch("[ambiguous] Name contains ambiguous initials", r.Value, locs))
 		}

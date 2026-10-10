@@ -1,3 +1,5 @@
+// Package isbn parses, validates, converts, and hyphenates ISBN-10 and
+// ISBN-13 values using the official ISBN range message data.
 package isbn
 
 import (

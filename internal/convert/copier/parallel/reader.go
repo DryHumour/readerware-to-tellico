@@ -3,7 +3,6 @@ package parallel
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -61,7 +60,7 @@ func (r *reader) Run(ctx context.Context) {
 			}
 
 			// issue a progress report
-			if err := r.report(ctx, progressResult(fmt.Sprintf("reading %s", entry.Path))); err != nil {
+			if err := r.report(ctx, progressResult("reading "+entry.Path)); err != nil {
 				return
 			}
 

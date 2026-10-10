@@ -1,3 +1,5 @@
+// Package convert drives the Readerware CSV-to-Tellico conversion pipeline:
+// parsing, cleaning, normalizing, templating, and writing the .tc archive.
 package convert
 
 import (

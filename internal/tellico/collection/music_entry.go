@@ -24,10 +24,6 @@ func newMusicEntry(info CollectionInfo, clean map[string]string, images images.R
 	}, nil
 }
 
-//
-//  MusicEntry Methods
-//
-
 // Artists returns the plain-text list of primary artists in discovery order.
 func (e *MusicEntry) Artists() []string { return e.agg.Roles()["Artists"] }
 

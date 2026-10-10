@@ -1,3 +1,6 @@
+// Package copier provides image copy/convert helpers shared by the simple and
+// parallel copier implementations, plus the GIF-to-PNG conversion used when
+// writing Tellico archives.
 package copier
 
 import (
@@ -62,7 +65,7 @@ type ConvertedPNG struct {
 
 func NewConvertedPNG(fi fs.FileInfo) *ConvertedPNG {
 	name := fi.Name()
-	if ext := filepath.Ext(name); strings.ToLower(ext) == ".gif" {
+	if ext := filepath.Ext(name); strings.EqualFold(ext, ".gif") {
 		name = strings.TrimSuffix(name, ext)
 	}
 	name += ".png"
@@ -84,7 +87,7 @@ func (p *convertedPNGStatView) Name() string {
 }
 
 func (p *convertedPNGStatView) Size() int64 {
-	return int64(p.Buffer.Len())
+	return int64(p.Len())
 }
 
 func (p *convertedPNGStatView) Mode() fs.FileMode {

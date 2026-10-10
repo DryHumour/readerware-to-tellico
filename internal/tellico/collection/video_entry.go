@@ -24,8 +24,6 @@ func newVideoEntry(info CollectionInfo, clean map[string]string, images images.R
 	}, nil
 }
 
-//	VideoEntry Methods
-//
 // Authors returns the plain-text list of authors in discovery order.
 func (e *VideoEntry) Authors() []string { return e.agg.Roles()["Authors"] }
 

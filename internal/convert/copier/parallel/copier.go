@@ -1,3 +1,5 @@
+// Package parallel implements a copier that reads image files concurrently
+// and writes them sequentially into the Tellico archive.
 package parallel
 
 import (

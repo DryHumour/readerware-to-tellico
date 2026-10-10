@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
@@ -133,7 +134,7 @@ func runExportAllTemplates(cmd *cobra.Command) error {
 		return err
 	}
 	if outputDir == nil {
-		return fmt.Errorf("the --output-dir flag is required when exporting all templates")
+		return errors.New("the --output-dir flag is required when exporting all templates")
 	}
 
 	entries, err := fs.ReadDir(convert.TemplatesFS, "templates")
@@ -185,7 +186,7 @@ func templateOutputDir(cmd *cobra.Command) (*os.Root, error) {
 		}
 		return os.OpenRoot(outputDir)
 	} else if cmd.Flags().Lookup("output-dir").Changed {
-		return nil, fmt.Errorf("the --output-dir flag must be non-empty if provided")
+		return nil, errors.New("the --output-dir flag must be non-empty if provided")
 	}
 	return nil, nil
 }

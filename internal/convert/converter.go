@@ -2,6 +2,7 @@ package convert
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"iter"
 	"log/slog"
@@ -22,7 +23,7 @@ const (
 )
 
 // ErrEmptyInputFile is returned when the input CSV contains no rows at all.
-var ErrEmptyInputFile = fmt.Errorf("input file is empty")
+var ErrEmptyInputFile = errors.New("input file is empty")
 
 // Converter handles the conversion of Readerware CSV data to Tellico format.
 // It uses a streaming architecture to process large datasets without buffering

@@ -1,3 +1,5 @@
+// Package images indexes Readerware image manifest files and detects image
+// formats for copy into Tellico archives.
 package images
 
 import (

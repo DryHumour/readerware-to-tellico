@@ -50,7 +50,7 @@ func FetchISBNRanges(ctx context.Context, client HTTPClient) (ISBNRanges, error)
 
 // fetchURL fetches data from a URL using the provided HTTP client.
 func fetchURL(ctx context.Context, client HTTPClient, url string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}

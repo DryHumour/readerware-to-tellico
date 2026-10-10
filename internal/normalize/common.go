@@ -1,3 +1,5 @@
+// Package normalize implements the Readerware value normalizers for names
+// and markers (keep/discard/scrub rules, canonicalization, and auditing).
 package normalize
 
 import (
@@ -20,34 +22,12 @@ const (
 	UnknownMarker = "<unknown>"
 )
 
-// must panics if err is non-nil, otherwise returns v.
-// This is a convenience helper for initializing global variables that must not fail.
-func must[T any](v T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
 // chain combines multiple iter.Seq[T] into a single iter.Seq[T].
 func chain[I iter.Seq[T], T any](iters ...I) I {
 	return func(yield func(T) bool) {
 		for _, it := range iters {
 			for v := range it {
 				if !yield(v) {
-					return
-				}
-			}
-		}
-	}
-}
-
-// chain2 combines multiple iter.Seq2[K,V] into a single iter.Seq2[K,V].
-func chain2[I iter.Seq2[K, V], K, V any](iters ...I) I {
-	return func(yield func(K, V) bool) {
-		for _, it := range iters {
-			for k, v := range it {
-				if !yield(k, v) {
 					return
 				}
 			}
@@ -227,12 +207,12 @@ func audit(r Result, re *regexp.Regexp, explanations map[string]string) Result {
 
 	if err := strutil.AssessRunes(r.Value); err != nil {
 		r.RequiresAudit = true
-		r.AuditReasons = append(r.AuditReasons, AuditReason(fmt.Sprintf("[unusual] Contains unusual characters: %s", err.Error()), r.Value))
+		r.AuditReasons = append(r.AuditReasons, AuditReason("[unusual] Contains unusual characters: "+err.Error(), r.Value))
 	}
 
 	// 3. Check for results that don't start with a capital letter or number.
 
-	if len(r.Value) != 0 {
+	if r.Value != "" {
 		firstRune, _ := utf8.DecodeRuneInString(r.Value)
 		if !unicode.IsUpper(firstRune) && !unicode.IsDigit(firstRune) {
 			r.RequiresAudit = true

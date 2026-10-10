@@ -1,6 +1,7 @@
 package parallel
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"log/slog"
@@ -65,7 +66,7 @@ func TestReaderRun(t *testing.T) {
 		if p.ID != "123" {
 			t.Errorf("expected ID 123, got %q", p.ID)
 		}
-		if string(p.Data) != string(jpegData) {
+		if !bytes.Equal(p.Data, jpegData) {
 			t.Errorf("data mismatch")
 		}
 		releasePayload(p)

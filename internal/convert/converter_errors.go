@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -20,7 +21,7 @@ type RowError struct {
 // including record and line numbers, column (if applicable), and the
 // wrapped error.
 func (e RowError) Error() string {
-	loc := fmt.Sprintf("%d", e.Line)
+	loc := strconv.Itoa(e.Line)
 	if e.Record > 0 {
 		loc = fmt.Sprintf("record %d (line %d)", e.Record, e.Line)
 	}

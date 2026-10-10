@@ -337,7 +337,7 @@ func squeeze(s string, preserveNL bool) string {
 					nlCount = 0
 				}
 			default:
-				// text: continue scan
+				// text: just continue scan
 			}
 
 		case stateSPC:

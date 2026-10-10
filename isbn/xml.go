@@ -73,7 +73,7 @@ func ISBNRangesFromXML(msg ISBNRangeMessage) ISBNRanges {
 	for _, g := range msg.RegistrationGroups.Group {
 		gr := GroupRule{Prefix: g.Prefix}
 		for _, r := range g.Rules.Rule {
-			gr.Rules.Rule = append(gr.Rules.Rule, RangeRule{Range: r.Range, Length: r.Length})
+			gr.Rules.Rule = append(gr.Rules.Rule, RangeRule(r))
 		}
 		out.ISBNRangeMessage.RegistrationGroups.Group = append(out.ISBNRangeMessage.RegistrationGroups.Group, gr)
 	}

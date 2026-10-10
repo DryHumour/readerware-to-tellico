@@ -1,3 +1,5 @@
+// Package simple implements a sequential copier that reads and writes image
+// files one at a time.
 package simple
 
 import (
@@ -41,7 +43,7 @@ func (c simpleCopier) CopyAll(ctx context.Context, entries iter.Seq[*images.Mani
 			if err := context.Cause(ctx); err != nil {
 				return
 			}
-			if !yield(Report{Level: slog.LevelInfo, Message: fmt.Sprintf("copying %s", entry.Path)}, nil) {
+			if !yield(Report{Level: slog.LevelInfo, Message: "copying " + entry.Path}, nil) {
 				return
 			}
 			var report Report

@@ -16,7 +16,7 @@ import (
 // The patterns are joined with alternation (|) in the order they are provided.
 // The flags string is used for regexp flags (e.g., "i" for case-insensitive).
 // The flags string may be empty, in which case no flags are applied to the regexp.
-func compileRE(flags string, prefix string, patterns iter.Seq[string], suffix string) (*regexp.Regexp, error) {
+func compileRE(flags, prefix string, patterns iter.Seq[string], suffix string) (*regexp.Regexp, error) {
 	var sb strings.Builder
 	first := true
 	for p := range patterns {
@@ -151,17 +151,6 @@ func boundaryLiterals(literals iter.Seq[string]) iter.Seq[string] {
 	}
 }
 
-// quotemeta returns an iterator that yields each literal with regexp.QuoteMeta applied.
-func quotemeta(literals iter.Seq[string]) iter.Seq[string] {
-	return func(yield func(string) bool) {
-		for pattern := range literals {
-			if !yield(regexp.QuoteMeta(pattern)) {
-				return
-			}
-		}
-	}
-}
-
 // abbrevPattern generates a search pattern and a canonical replacement key for suffixes.
 //
 // To avoid misidentifying initials as abbreviations, this function only
@@ -172,7 +161,7 @@ func quotemeta(literals iter.Seq[string]) iter.Seq[string] {
 // - key: the original string with a single space inserted wherever \s* was added.
 // - pattern: the regex pattern with \s* injected.
 // - ok: true if at least one \s* sequence was injected.
-func abbrevPattern(s string) (key string, pattern string, ok bool) {
+func abbrevPattern(s string) (key, pattern string, ok bool) {
 	// Fast path: if the configured suffix already contains spaces,
 	// we do not need to auto-generate a space-collapsed version.
 	if s == "" || strings.ContainsRune(s, ' ') {
@@ -262,27 +251,9 @@ func spacePattern(s string) string {
 	return b.String()
 }
 
-// patternsByLen returns an iterator that yields the values from the patterns map, sorted by key length in descending order.
-func patternsByLen(patterns iter.Seq2[string, string]) iter.Seq[string] {
-	return func(yield func(string) bool) {
-		type pair struct{ K, V string }
-		items := []pair{}
-		for k, v := range patterns {
-			items = append(items, pair{K: k, V: v})
-		}
-		if len(items) == 0 {
-			return
-		}
-		slices.SortStableFunc(items, func(a, b pair) int { return len(b.K) - len(a.K) })
-		for _, item := range items {
-			if !yield(item.V) {
-				return
-			}
-		}
-	}
-}
-
 // boundaryPatternsByLen returns an iterator that yields the values from the patterns map, sorted by key length in descending order.
+//
+//nolint:unparam // prefix is always `\b` today, but kept for symmetry with suffix
 func boundaryPatternsByLen(prefix string, patterns iter.Seq2[string, string], suffix string) iter.Seq[string] {
 	return func(yield func(string) bool) {
 		var b bytes.Buffer

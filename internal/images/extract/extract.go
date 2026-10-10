@@ -1,3 +1,5 @@
+// Package extract extracts images from Readerware databases by driving the
+// bundled ImageDumper Java tool.
 package extract
 
 import (
