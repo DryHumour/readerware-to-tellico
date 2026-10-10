@@ -65,7 +65,7 @@ func TestIntegration_XMLValidation(t *testing.T) {
 	}
 
 	// Always: check well-formedness (no DTD fetch needed)
-	cmd := exec.Command("xmllint", "--noout", "-")
+	cmd := exec.CommandContext(t.Context(), "xmllint", "--noout", "-")
 	cmd.Stdin = bytes.NewReader(xmlContent)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Errorf("XML is not well-formed:\n%s", out)

@@ -185,9 +185,9 @@ func (i ISBN) Is13() bool {
 func (i ISBN) Split() (body, checkDigit string) {
 	switch len(i.s) {
 	case 10:
-		return string(i.s[:9]), string(i.s[9:])
+		return i.s[:9], i.s[9:]
 	case 13:
-		return string(i.s[:12]), string(i.s[12:])
+		return i.s[:12], i.s[12:]
 	default:
 		return "", ""
 	}
@@ -199,9 +199,9 @@ func (i ISBN) Split() (body, checkDigit string) {
 func (i ISBN) Body() string {
 	switch len(i.s) {
 	case 10:
-		return string(i.s[:9])
+		return i.s[:9]
 	case 13:
-		return string(i.s[:12])
+		return i.s[:12]
 	default:
 		return ""
 	}
@@ -229,9 +229,9 @@ func (i ISBN) CheckDigit() byte {
 func (i ISBN) ExpectedCheckDigit() byte {
 	switch len(i.s) {
 	case 10:
-		return mod11(string(i.s[:9]))
+		return mod11(i.s[:9])
 	case 13:
-		return mod10(string(i.s[:12]))
+		return mod10(i.s[:12])
 	default:
 		return 0
 	}
@@ -242,10 +242,10 @@ func (i ISBN) ExpectedCheckDigit() byte {
 func (i ISBN) IsValid() bool {
 	switch len(i.s) {
 	case 10:
-		body, check := string(i.s[:9]), i.s[9]
+		body, check := i.s[:9], i.s[9]
 		return mod11(body) == check
 	case 13:
-		body, check := string(i.s[:12]), i.s[12]
+		body, check := i.s[:12], i.s[12]
 		return mod10(body) == check
 	default:
 		return false
@@ -266,10 +266,10 @@ func (i ISBN) To10() (ISBN, error) {
 	case 10:
 		return i, nil
 	case 13:
-		if !strings.HasPrefix(string(i.s), ISBN10Prefix) {
+		if !strings.HasPrefix(i.s, ISBN10Prefix) {
 			return ISBN{}, ErrInvalidConversion
 		}
-		body := string(i.s[len(ISBN10Prefix):12])
+		body := i.s[len(ISBN10Prefix):12]
 		return appendCheck(body, mod11(body)), nil
 	default:
 		return ISBN{}, ErrInvalidISBN
@@ -283,7 +283,7 @@ func (i ISBN) To10() (ISBN, error) {
 func (i ISBN) To13() ISBN {
 	switch len(i.s) {
 	case 10:
-		body := ISBN10Prefix + string(i.s[:9])
+		body := ISBN10Prefix + i.s[:9]
 		return appendCheck(body, mod10(body))
 	case 13:
 		return i

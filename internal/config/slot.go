@@ -54,7 +54,7 @@ func (s Slot) IsLarge() bool {
 
 func (s Slot) Invert() Slot {
 	if s.IsLarge() {
-		return Slot(s - SlotLarge1 + Slot1)
+		return s - SlotLarge1 + Slot1
 	}
-	return Slot(s + SlotLarge1 - Slot1)
+	return s + SlotLarge1 - Slot1
 }

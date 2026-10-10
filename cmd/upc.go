@@ -466,7 +466,7 @@ func upcPairsToTable(pairs []string) (map[string][]string, error) {
 	var errs []error
 	m := make(map[string][]string, len(pairs)/2)
 	for i := 0; i < len(pairs); i += 2 {
-		key, val := pairs[i], pairs[i+1]
+		key, val := pairs[i], pairs[i+1] //nolint:gosec // G602: pairs length verified even above
 		valid := true
 		switch {
 		case len(key) != 6:

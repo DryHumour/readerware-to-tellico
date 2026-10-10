@@ -33,7 +33,7 @@ type Accessor interface {
 	L(col string) []string
 	// D returns a TellicoDate value for the given column.
 	D(col string) *TellicoDate
-	// Is returns true if the given column is, excatly, "true".
+	// Is returns true if the given column is, exactly, "true".
 	Is(col string) bool
 }
 

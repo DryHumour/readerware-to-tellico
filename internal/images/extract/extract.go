@@ -199,7 +199,7 @@ func (t *tailBuffer) String() string {
 
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
 func command(ctx context.Context, javaExec, jarPath, src, dst string) *exec.Cmd {
-	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst)
+	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst) //nolint:gosec // G204: converter command comes from user config
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd
