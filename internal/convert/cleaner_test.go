@@ -1,7 +1,6 @@
 package convert
 
 import (
-	"errors"
 	"testing"
 	"text/template"
 
@@ -122,7 +121,7 @@ func TestCleaner_CleanRow(t *testing.T) {
 
 			for _, col := range tc.wantColumnErrorCols {
 				var ce ColumnError
-				require.True(t, errors.As(err, &ce))
+				require.ErrorAs(t, err, &ce)
 				require.Equal(t, col, ce.Column)
 			}
 		})

@@ -85,7 +85,7 @@ func TestDirectories_Get(t *testing.T) {
 		}
 
 		result := dirs.Get(Slot(99))
-		require.Equal(t, "", result)
+		require.Empty(t, result)
 	})
 
 	t.Run("returns empty string for empty directory", func(t *testing.T) {
@@ -94,7 +94,7 @@ func TestDirectories_Get(t *testing.T) {
 		dirs := Directories{}
 
 		result := dirs.Get(Slot1)
-		require.Equal(t, "", result)
+		require.Empty(t, result)
 	})
 }
 
