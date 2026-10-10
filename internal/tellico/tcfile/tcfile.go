@@ -1,3 +1,5 @@
+// Package tcfile reads and writes Tellico .tc collection files (zip archives
+// containing a tellico.xml document and an images directory).
 package tcfile
 
 import (
