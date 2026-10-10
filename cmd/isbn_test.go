@@ -6,9 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
 func TestISBNTo13Command(t *testing.T) {

@@ -5,8 +5,9 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
 func mustTemplate(t *testing.T, src string) *template.Template {

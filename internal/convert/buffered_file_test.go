@@ -17,7 +17,7 @@ func TestNewBufferedFile(t *testing.T) {
 		tmpDir := t.TempDir()
 		testFile := filepath.Join(tmpDir, "test.txt")
 		content := []byte("test content")
-		require.NoError(t, os.WriteFile(testFile, content, 0644))
+		require.NoError(t, os.WriteFile(testFile, content, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)
@@ -41,7 +41,7 @@ func TestNewBufferedFile(t *testing.T) {
 		bom := []byte{0xEF, 0xBB, 0xBF}
 		content := []byte("test content")
 		fullContent := append(bom, content...)
-		require.NoError(t, os.WriteFile(testFile, fullContent, 0644))
+		require.NoError(t, os.WriteFile(testFile, fullContent, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)
@@ -70,7 +70,7 @@ func TestNewBufferedFile(t *testing.T) {
 
 		tmpDir := t.TempDir()
 		testFile := filepath.Join(tmpDir, "test.txt")
-		require.NoError(t, os.WriteFile(testFile, []byte{}, 0644))
+		require.NoError(t, os.WriteFile(testFile, []byte{}, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)
@@ -84,7 +84,7 @@ func TestNewBufferedFile(t *testing.T) {
 		tmpDir := t.TempDir()
 		testFile := filepath.Join(tmpDir, "test.txt")
 		content := []byte{0xEF, 0xBB}
-		require.NoError(t, os.WriteFile(testFile, content, 0644))
+		require.NoError(t, os.WriteFile(testFile, content, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)
@@ -110,7 +110,7 @@ func TestBufferedFile_Read(t *testing.T) {
 		tmpDir := t.TempDir()
 		testFile := filepath.Join(tmpDir, "test.txt")
 		content := []byte("hello world")
-		require.NoError(t, os.WriteFile(testFile, content, 0644))
+		require.NoError(t, os.WriteFile(testFile, content, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)
@@ -133,7 +133,7 @@ func TestBufferedFile_Close(t *testing.T) {
 		tmpDir := t.TempDir()
 		testFile := filepath.Join(tmpDir, "test.txt")
 		content := []byte("test")
-		require.NoError(t, os.WriteFile(testFile, content, 0644))
+		require.NoError(t, os.WriteFile(testFile, content, 0o644))
 
 		rc, err := newBufferedFile(testFile)
 		require.NoError(t, err)

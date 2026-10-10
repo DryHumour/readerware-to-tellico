@@ -7,7 +7,6 @@ import (
 )
 
 func TestNewTellicoDate(t *testing.T) {
-
 	t.Run("empty string returns nil", func(t *testing.T) {
 		require.Nil(t, NewTellicoDate(""))
 	})

@@ -10,8 +10,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 	"github.com/spf13/cobra"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 )
 
 // templatesCmd represents the templates parent command
@@ -115,7 +116,7 @@ func runExportTemplate(cmd *cobra.Command, name string) error {
 		panic(fmt.Errorf("failed to localize template name %q: %w", name, err))
 	}
 
-	if err := outputDir.WriteFile(targetPath, content, 0644); err != nil {
+	if err := outputDir.WriteFile(targetPath, content, 0o644); err != nil {
 		return fmt.Errorf("failed to write template to %q: %w", targetPath, err)
 	}
 
@@ -160,7 +161,7 @@ func runExportAllTemplates(cmd *cobra.Command) error {
 			panic(fmt.Errorf("failed to localize template name %q: %w", name, err))
 		}
 		fullPath := filepath.Join(outputDir.Name(), targetPath)
-		if err := outputDir.WriteFile(targetPath, content, 0644); err != nil {
+		if err := outputDir.WriteFile(targetPath, content, 0o644); err != nil {
 			return fmt.Errorf("failed to write template to %q: %w", fullPath, err)
 		}
 		logger.DebugContext(ctx, "exported template", "name", name, "path", fullPath)
@@ -179,7 +180,7 @@ func templateOutputDir(cmd *cobra.Command) (*os.Root, error) {
 	outputDir = strings.TrimSpace(outputDir)
 	if outputDir != "" {
 		outputDir = filepath.Clean(outputDir)
-		if err := os.MkdirAll(outputDir, 0755); err != nil {
+		if err := os.MkdirAll(outputDir, 0o755); err != nil {
 			return nil, fmt.Errorf("failed to create output directory %q: %w", outputDir, err)
 		}
 		return os.OpenRoot(outputDir)

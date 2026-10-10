@@ -3,16 +3,15 @@ package collection
 import (
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/images"
-	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/images"
+	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 )
 
 func TestBooksEntry_Authors(t *testing.T) {
-
 	t.Run("returns all authors from AUTHOR columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -38,7 +37,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("includes manually credited authors", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -65,7 +63,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("deduplicates authors within the same role", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -90,7 +87,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("preserves discovery order across columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -116,7 +112,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("handles empty AUTHOR columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -142,7 +137,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("handles semicolon-separated authors in single column", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -166,7 +160,6 @@ func TestBooksEntry_Authors(t *testing.T) {
 	})
 
 	t.Run("combines column authors and manual credits without duplicates", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -196,9 +189,7 @@ func TestBooksEntry_Authors(t *testing.T) {
 }
 
 func TestBooksEntry_Editors(t *testing.T) {
-
 	t.Run("returns all editors from EDITOR columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -223,7 +214,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("includes editors from cross-role annotations in AUTHOR columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -253,7 +243,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("combines EDITOR columns and cross-role annotations", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -285,7 +274,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("includes manually credited editors", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -312,7 +300,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("deduplicates editors within the same role", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -337,7 +324,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("preserves discovery order across columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -363,7 +349,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("handles empty EDITOR columns", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -388,7 +373,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("handles semicolon-separated editors in single column", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
@@ -412,7 +396,6 @@ func TestBooksEntry_Editors(t *testing.T) {
 	})
 
 	t.Run("combines column editors and manual credits without duplicates", func(t *testing.T) {
-
 		policy := newTestPolicy(t)
 		info := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{

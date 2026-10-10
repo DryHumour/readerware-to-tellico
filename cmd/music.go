@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 	"github.com/DryHumour/readerware-to-tellico/internal/httpclient"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // musicCmd represents the music command

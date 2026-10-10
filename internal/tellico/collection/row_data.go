@@ -10,10 +10,8 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
 
-var (
-	// categoryPathNodeCutRE is a regex to match nodes in a category path that should be removed.
-	categoryPathNodeCutRE = regexp.MustCompile(`(?i:Authors|By (?:Author|Period)|\w{2,}, A-Z|^\(\s*[A-Z]\s*\)$)`) // FIXME(nschelle) move this to generic implementation's source file
-)
+// categoryPathNodeCutRE is a regex to match nodes in a category path that should be removed.
+var categoryPathNodeCutRE = regexp.MustCompile(`(?i:Authors|By (?:Author|Period)|\w{2,}, A-Z|^\(\s*[A-Z]\s*\)$)`) // FIXME(nschelle) move this to generic implementation's source file
 
 type rowData struct {
 	columns   ColumnConfig

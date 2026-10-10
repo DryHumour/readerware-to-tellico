@@ -12,11 +12,10 @@ const (
 	isbnRangesURL = "https://isbnbarcode.org/api/isbn-ranges.json"
 )
 
-var (
-	// isbnRangesJSON is the fallback ISBN ranges JSON file.
-	//go:embed isbn-ranges.json
-	isbnRangesJSON []byte
-)
+// isbnRangesJSON is the fallback ISBN ranges JSON file.
+//
+//go:embed isbn-ranges.json
+var isbnRangesJSON []byte
 
 // ISBNRanges represents the structure of an ISBN ranges document.
 type ISBNRanges struct {

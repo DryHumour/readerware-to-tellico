@@ -6,11 +6,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/assert/yaml"
+
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
 func TestExtractDigits(t *testing.T) {
@@ -420,6 +421,7 @@ func TestRunUPCToISBNHyphenate(t *testing.T) {
 		"hyphenate run should not error")
 	assert.Equal(t, `"0-446-35740-5"`+"\n", out.String(), "hyphenated ISBN-10 output mismatch")
 }
+
 func TestUPCToISBNRestoringZero(t *testing.T) {
 	t.Parallel()
 

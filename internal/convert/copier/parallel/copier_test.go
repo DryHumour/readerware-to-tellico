@@ -23,7 +23,7 @@ func TestCopierCopyAll(t *testing.T) {
 	// Create dummy image data
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 	path := filepath.Join(tmpDir, "test.jpg")
-	if err := os.WriteFile(path, jpegData, 0644); err != nil {
+	if err := os.WriteFile(path, jpegData, 0o644); err != nil {
 		t.Fatal(err)
 	}
 	info, _ := os.Stat(path)

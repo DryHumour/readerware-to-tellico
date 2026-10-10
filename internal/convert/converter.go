@@ -21,10 +21,8 @@ const (
 	progressStep = 100
 )
 
-var (
-	// ErrEmptyInputFile is returned when the input CSV contains no rows at all.
-	ErrEmptyInputFile = fmt.Errorf("input file is empty")
-)
+// ErrEmptyInputFile is returned when the input CSV contains no rows at all.
+var ErrEmptyInputFile = fmt.Errorf("input file is empty")
 
 // Converter handles the conversion of Readerware CSV data to Tellico format.
 // It uses a streaming architecture to process large datasets without buffering
@@ -103,7 +101,7 @@ func (c *Converter) Run(ctx context.Context) iter.Seq2[Report, error] {
 		// Ensure the output directory exists.
 		dir := filepath.Dir(c.cfg.OutputFile)
 		if dir != "." {
-			if err := os.MkdirAll(dir, 0755); err != nil {
+			if err := os.MkdirAll(dir, 0o755); err != nil {
 				yield(Report{}, fmt.Errorf("failed to create output directory: %w", err))
 				return
 			}

@@ -10,9 +10,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
 
-var (
-	_ CollectionInfo = (*collectionInfo)(nil)
-)
+var _ CollectionInfo = (*collectionInfo)(nil)
 
 type collectionInfo struct {
 	// kind is the kind of collection this configuration is for.

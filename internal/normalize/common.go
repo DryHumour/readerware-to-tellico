@@ -76,7 +76,7 @@ func uniq[T comparable](s iter.Seq[T]) iter.Seq[T] {
 func uniqNZ[T comparable](s iter.Seq[T]) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		var zero T
-		seen := map[T]struct{}{zero: struct{}{}}
+		seen := map[T]struct{}{zero: {}}
 		for v := range s {
 			if _, ok := seen[v]; !ok {
 				seen[v] = struct{}{}

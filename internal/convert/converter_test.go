@@ -7,15 +7,14 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/config"
-	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/config"
+	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
-var (
-	testLogger = slog.Default()
-)
+var testLogger = slog.Default()
 
 func TestNewConverter(t *testing.T) {
 	t.Parallel()
@@ -27,7 +26,7 @@ func TestNewConverter(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "input.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := config.Config{
 			InputFile:  inputFile,
@@ -69,7 +68,7 @@ func TestNewConverter(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "input.csv")
 		outputFile := "/invalid/path/output.tc"
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := config.Config{
 			InputFile:  inputFile,
@@ -97,7 +96,7 @@ func TestConverter_Run_EmptyInput(t *testing.T) {
 	outputFile := filepath.Join(tmpDir, "output.tc")
 
 	// Create empty CSV file
-	require.NoError(t, os.WriteFile(inputFile, []byte(""), 0644))
+	require.NoError(t, os.WriteFile(inputFile, []byte(""), 0o644))
 
 	cfg := config.Config{
 		InputFile:  inputFile,
@@ -128,7 +127,7 @@ func TestConverter_Run_ContextCancellation(t *testing.T) {
 1,Test Book,John Doe
 2,Another Book,Jane Smith
 3,Third Book,Bob Johnson`
-	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  inputFile,
@@ -164,7 +163,7 @@ func TestConverter_Run_ValidCSV(t *testing.T) {
 	csvContent := `ROW#,TITLE,AUTHOR
 1,Test Book,John Doe
 2,Another Book,Jane Smith`
-	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  inputFile,
@@ -195,7 +194,7 @@ func TestConverter_Run_InvalidCSV(t *testing.T) {
 	// Create malformed CSV (unclosed quote)
 	csvContent := `ROW#,TITLE,AUTHOR
 1,"Test Book,John Doe`
-	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  inputFile,
@@ -226,7 +225,7 @@ func TestConverter_Run_OnlyOnce(t *testing.T) {
 	// Create valid CSV
 	csvContent := `ROW#,TITLE,AUTHOR
 1,Test Book,John Doe`
-	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(inputFile, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  inputFile,

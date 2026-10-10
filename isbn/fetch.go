@@ -8,9 +8,7 @@ import (
 	"net/http"
 )
 
-var (
-	ErrOversizeResponse = errors.New("oversize response")
-)
+var ErrOversizeResponse = errors.New("oversize response")
 
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)

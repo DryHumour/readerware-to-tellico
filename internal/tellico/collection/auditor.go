@@ -2,9 +2,7 @@ package collection
 
 import "github.com/DryHumour/readerware-to-tellico/internal/normalize"
 
-var (
-	_ Auditor = (*auditor)(nil)
-)
+var _ Auditor = (*auditor)(nil)
 
 // auditor implements Auditor.
 type auditor struct {

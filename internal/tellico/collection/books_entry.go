@@ -4,9 +4,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
 
-var (
-	_ Entry = (*BooksEntry)(nil)
-)
+var _ Entry = (*BooksEntry)(nil)
 
 // BooksEntry is the data object passed to every books entry template.
 // All fields hold plain, unescaped text. Template authors must apply

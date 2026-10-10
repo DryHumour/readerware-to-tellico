@@ -9,9 +9,10 @@ import (
 	"testing"
 	"testing/iotest"
 
-	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
 var errSentinel = errors.New("sentinel")

@@ -12,10 +12,11 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.yaml.in/yaml/v3"
+
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
 // upcCmd represents the upc command

@@ -4,9 +4,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
 
-var (
-	_ Entry = (*MusicEntry)(nil)
-)
+var _ Entry = (*MusicEntry)(nil)
 
 // MusicEntry is the data object passed to every music entry template.
 // All fields hold plain, unescaped text. Template authors must apply

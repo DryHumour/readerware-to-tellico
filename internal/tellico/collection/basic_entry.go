@@ -5,9 +5,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 )
 
-var (
-	_ Entry = (*basicEntry)(nil)
-)
+var _ Entry = (*basicEntry)(nil)
 
 type basicEntry struct {
 	normalize Normalize

@@ -9,13 +9,12 @@ import (
 	"io"
 	"slices"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/spf13/cobra"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
 
-var (
-	bom = []byte{0xEF, 0xBB, 0xBF}
-)
+var bom = []byte{0xEF, 0xBB, 0xBF}
 
 // csvCmd represents the csv command
 var csvCmd = &cobra.Command{

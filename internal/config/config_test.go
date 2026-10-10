@@ -19,8 +19,8 @@ func TestConfig_Validate(t *testing.T) {
 		outputFile := filepath.Join(tmpDir, "output.tc")
 		imagesDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imagesDir, 0755))
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.Mkdir(imagesDir, 0o755))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,
@@ -40,7 +40,7 @@ func TestConfig_Validate(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "test.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,
@@ -68,7 +68,7 @@ func TestConfig_Validate(t *testing.T) {
 		tmpDir := t.TempDir()
 		inputFile := filepath.Join(tmpDir, "test.csv")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile: inputFile,
@@ -85,7 +85,7 @@ func TestConfig_Validate(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "test.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,
@@ -104,7 +104,7 @@ func TestConfig_Validate(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "test.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,
@@ -123,7 +123,7 @@ func TestConfig_Validate(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "test.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,
@@ -142,7 +142,7 @@ func TestConfig_Validate(t *testing.T) {
 		inputFile := filepath.Join(tmpDir, "test.csv")
 		outputFile := filepath.Join(tmpDir, "output.tc")
 
-		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0644))
+		require.NoError(t, os.WriteFile(inputFile, []byte("test"), 0o644))
 
 		cfg := Config{
 			InputFile:  inputFile,

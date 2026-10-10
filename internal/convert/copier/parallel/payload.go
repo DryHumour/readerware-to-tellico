@@ -7,15 +7,13 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/tcfile"
 )
 
-var (
-	// payloadPool is a sync.Pool for reusing payload objects to reduce GC pressure.
-	// Oversized buffers are dropped in releasePayload instead of being returned.
-	payloadPool = sync.Pool{
-		New: func() any {
-			return &payload{Data: make([]byte, copier.MaxReaderwareImageSize)}
-		},
-	}
-)
+// payloadPool is a sync.Pool for reusing payload objects to reduce GC pressure.
+// Oversized buffers are dropped in releasePayload instead of being returned.
+var payloadPool = sync.Pool{
+	New: func() any {
+		return &payload{Data: make([]byte, copier.MaxReaderwareImageSize)}
+	},
+}
 
 // payload represents an image and its data being transferred from reader to writer.
 // The Data field contains the raw image bytes, which may be larger than copierpkg.MaxReaderwareImageSize

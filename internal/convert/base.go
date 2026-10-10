@@ -10,10 +10,11 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 	"github.com/DryHumour/readerware-to-tellico/isbn"
-	"github.com/Masterminds/sprig/v3"
 )
 
 const (

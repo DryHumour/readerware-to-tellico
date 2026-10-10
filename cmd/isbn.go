@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/DryHumour/readerware-to-tellico/isbn"
 	"github.com/spf13/cobra"
+
+	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
 // isbnCmd represents the isbn command

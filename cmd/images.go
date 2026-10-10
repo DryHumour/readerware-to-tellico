@@ -6,8 +6,9 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/images/extract"
 	"github.com/spf13/cobra"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/images/extract"
 )
 
 // imagesCmd represents the images command group

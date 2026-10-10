@@ -13,13 +13,11 @@ import (
 	"time"
 )
 
-var (
-	// Shared, thread-safe PNG encoder.
-	pngEncoder = &png.Encoder{
-		BufferPool:       &pngBufferPool{},
-		CompressionLevel: png.DefaultCompression,
-	}
-)
+// Shared, thread-safe PNG encoder.
+var pngEncoder = &png.Encoder{
+	BufferPool:       &pngBufferPool{},
+	CompressionLevel: png.DefaultCompression,
+}
 
 // pngBufferPool implements the png.EncoderBufferPool interface.
 // It uses a sync.Pool to recycle the heavy zlib/deflate buffers.

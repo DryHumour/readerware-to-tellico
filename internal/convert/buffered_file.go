@@ -9,10 +9,8 @@ import (
 	"os"
 )
 
-var (
-	// byteOrderMarkUTF8 is the UTF-8 encoded Byte Order Mark (BOM).
-	byteOrderMarkUTF8 = []byte{0xEF, 0xBB, 0xBF}
-)
+// byteOrderMarkUTF8 is the UTF-8 encoded Byte Order Mark (BOM).
+var byteOrderMarkUTF8 = []byte{0xEF, 0xBB, 0xBF}
 
 type bufferedFile struct {
 	*bufio.Reader

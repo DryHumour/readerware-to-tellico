@@ -28,7 +28,7 @@ func TestSimpleCopier(t *testing.T) {
 
 	createImage := func(t *testing.T, name string, content []byte) string {
 		path := filepath.Join(tmpDir, name)
-		if err := os.WriteFile(path, content, 0644); err != nil {
+		if err := os.WriteFile(path, content, 0o644); err != nil {
 			t.Fatal(err)
 		}
 		return path

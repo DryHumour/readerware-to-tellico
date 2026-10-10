@@ -7,10 +7,11 @@ import (
 	"log/slog"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/httpclient"
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/DryHumour/readerware-to-tellico/isbn"
-	"github.com/spf13/cobra"
 )
 
 // lineFilterOptions configures the output side of runLineFilter.

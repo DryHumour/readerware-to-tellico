@@ -6,9 +6,7 @@ import (
 	"unicode"
 )
 
-var (
-	ErrUnusualRune = errors.New("unusual character")
-)
+var ErrUnusualRune = errors.New("unusual character")
 
 // IsUnusualString returns true if the string contains any unusual runes for Latinate text.
 // This is used to detect potential encoding issues or non-textual content.

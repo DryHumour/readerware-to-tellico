@@ -12,8 +12,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/config"
 )
 
 var (

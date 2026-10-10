@@ -3,10 +3,11 @@ package collection
 import (
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/images"
-	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/images"
+	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 )
 
 func newTestNames(t testing.TB) *normalize.Names {
@@ -39,7 +40,6 @@ var testNameColumns = ColumnConfig{
 }
 
 func TestAggregateNames(t *testing.T) {
-
 	info := &collectionInfo{columns: testNameColumns}
 	names := newTestNames(t)
 
@@ -135,7 +135,6 @@ func TestAggregateNames(t *testing.T) {
 }
 
 func TestAggregateNames_NilNames(t *testing.T) {
-
 	info := &collectionInfo{columns: testNameColumns}
 	ent, err := newBasicEntry(info, map[string]string{"AUTHOR": "Smith, John"}, images.Row{})
 	require.NoError(t, err)
@@ -144,7 +143,6 @@ func TestAggregateNames_NilNames(t *testing.T) {
 }
 
 func TestAggregateMarkers(t *testing.T) {
-
 	markers, err := normalize.NewMarkers(normalize.MarkersConfig{
 		Marker: map[string]string{
 			"(signed)":       "<signed>",
@@ -203,7 +201,6 @@ func TestAggregateMarkers_NilMarkers(t *testing.T) {
 }
 
 func TestAggregation_Credits(t *testing.T) {
-
 	agg := newAggregation()
 	agg.credits = map[string][]string{
 		"Authors": {"John Doe", "Jane Smith"},
@@ -226,7 +223,6 @@ func TestAggregation_Credits(t *testing.T) {
 }
 
 func TestAggregation_AddCredit(t *testing.T) {
-
 	agg := newAggregation()
 
 	t.Run("adds name to new role", func(t *testing.T) {
@@ -251,7 +247,6 @@ func TestAggregation_AddCredit(t *testing.T) {
 }
 
 func TestAggregation_HasMarker(t *testing.T) {
-
 	agg := newAggregation()
 	agg.markers = map[string]bool{
 		"<signed>": true,
