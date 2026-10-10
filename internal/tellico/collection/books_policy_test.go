@@ -166,6 +166,6 @@ func TestNew(t *testing.T) {
 	t.Run("error for unknown kind", func(t *testing.T) {
 		t.Parallel()
 		_, err := New(Kind("unknown"))
-		assert.ErrorIs(t, err, ErrUnknownKind("unknown"))
+		assert.ErrorIs(t, err, UnknownKindError("unknown"))
 	})
 }

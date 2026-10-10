@@ -32,7 +32,7 @@ func newISBNTo13TestCmd(input string, raw, hyphenate, strict bool) (*cobra.Comma
 	return cmd, &out, &errBuf
 }
 
-func TestRunISBNTo13(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunISBNTo13(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	cmd, out, errBuf := newISBNTo13TestCmd("0306406152\n"+
 		"978-0-306-40615-7\n"+
@@ -74,7 +74,7 @@ func TestRunISBNTo13(t *testing.T) { //nolint:paralleltest,tparallel // mutates 
 	assert.Contains(t, errOut, "not a book ISBN prefix", "non-book EAN-13 should log a prefix error")
 }
 
-func TestRunISBNTo13Raw(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunISBNTo13Raw(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	old := slog.Default()
 	defer slog.SetDefault(old)
@@ -88,7 +88,7 @@ func TestRunISBNTo13Raw(t *testing.T) { //nolint:paralleltest,tparallel // mutat
 	assert.Equal(t, "9780306406157\nbogus\n", out.String(), "raw output should be unquoted, failed input echoed decoded")
 }
 
-func TestRunISBNTo13Hyphenate(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunISBNTo13Hyphenate(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	old := slog.Default()
 	defer slog.SetDefault(old)
@@ -101,7 +101,7 @@ func TestRunISBNTo13Hyphenate(t *testing.T) { //nolint:paralleltest,tparallel //
 	assert.Equal(t, `"978-0-306-40615-7"`+"\n", out.String(), "hyphenated output mismatch")
 }
 
-func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	old := slog.Default()
 	defer slog.SetDefault(old)
@@ -158,7 +158,7 @@ func TestRunISBNTo13UnassignedPublisherBlock(t *testing.T) { //nolint:parallelte
 	})
 }
 
-func TestRunISBNTo13Args(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunISBNTo13Args(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	old := slog.Default()
 	defer slog.SetDefault(old)

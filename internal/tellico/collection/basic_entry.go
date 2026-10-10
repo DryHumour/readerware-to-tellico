@@ -45,13 +45,13 @@ func (e *basicEntry) Images() images.Row {
 }
 
 // V returns the plain-text cleaned value for the given column.
-// Apply xml in the template at the point of XML output: {{ .V "COL" | xml }}
+// Apply xml in the template at the point of XML output: {{ .V "COL" | xml }}.
 func (e *basicEntry) V(col string) string {
 	return e.row.V(col)
 }
 
 // L returns the plain-text split values for a semicolon or slash separated column.
-// Apply xml in the template at the point of XML output: {{ range .L "COL" }}{{ . | xml }}{{ end }}
+// Apply xml in the template at the point of XML output: {{ range .L "COL" }}{{ . | xml }}{{ end }}.
 func (e *basicEntry) L(col string) []string {
 	return e.row.L(col)
 }
@@ -147,7 +147,7 @@ func (e *basicEntry) Markers() []string {
 
 // HasMarker reports whether the given entry-level metadata flag was detected
 // anywhere in the row (e.g. in the title or edition text).
-// Example: {{ if .HasMarker "<signed>" }}
+// Example: {{ if .HasMarker "<signed>" }}.
 func (e *basicEntry) HasMarker(marker string) bool {
 	return e.agg.HasMarker(marker)
 }

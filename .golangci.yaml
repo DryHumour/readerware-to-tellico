@@ -35,6 +35,15 @@ linters:
     - perfsprint
     - intrange
     - modernize
+    - loggercheck
+    - prealloc
+    - errname
+    - usestdlibvars
+    - nolintlint
+    # Documentation
+    - godoclint
+    - godot
+    - inamedparam
     # Tests
     - usetesting
     - testifylint

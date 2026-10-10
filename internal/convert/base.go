@@ -127,7 +127,7 @@ func requiredFunc(warn string, val any) (any, error) {
 }
 
 // includeFunc renders a named template and returns it as a string, allowing it to be piped.
-// e.g., {{ include "my-template" . | indent 4 }}
+// e.g., {{ include "my-template" . | indent 4 }}.
 func includeFunc(t *template.Template) func(name string, data any) (string, error) {
 	return func(name string, data any) (string, error) {
 		var b strings.Builder

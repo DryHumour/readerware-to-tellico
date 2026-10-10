@@ -16,14 +16,14 @@ import (
 
 var bom = []byte{0xEF, 0xBB, 0xBF}
 
-// csvCmd represents the csv command
+// csvCmd represents the csv command.
 var csvCmd = &cobra.Command{
 	Use:   "csv",
 	Short: "Manipulate CSV data",
 	Long:  `Manipulate CSV data in various ways.`,
 }
 
-// csvListCmd represents the CSV list command
+// csvListCmd represents the CSV list command.
 var csvListCmd = &cobra.Command{
 	Use:          "list",
 	Short:        "List the column names from a CSV file on stdin",
@@ -35,7 +35,7 @@ var csvListCmd = &cobra.Command{
 	},
 }
 
-// csvGetCmd represents the CSV get command
+// csvGetCmd represents the CSV get command.
 var csvGetCmd = &cobra.Command{
 	Use:          "get <column-name>",
 	Short:        "Get a specific column from a CSV file on stdin",

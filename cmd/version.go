@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Build-time variables set via ldflags
+// Build-time variables set via ldflags.
 var (
 	version = "v0.0.0-dev"
 	commit  = "unknown"
@@ -14,7 +14,7 @@ var (
 	builtBy = "unknown"
 )
 
-// versionCmd represents the version command
+// versionCmd represents the version command.
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version information",

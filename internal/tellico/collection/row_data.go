@@ -45,13 +45,13 @@ func (d *rowData) Images() images.Row {
 }
 
 // V returns the plain-text cleaned value for the given column.
-// Apply xml in the template at the point of XML output: {{ .V "COL" | xml }}
+// Apply xml in the template at the point of XML output: {{ .V "COL" | xml }}.
 func (d *rowData) V(col string) string {
 	return d.clean[col]
 }
 
 // L returns the plain-text split values for a semicolon or slash separated column.
-// Apply xml in the template at the point of XML output: {{ range .L "COL" }}{{ . | xml }}{{ end }}
+// Apply xml in the template at the point of XML output: {{ range .L "COL" }}{{ . | xml }}{{ end }}.
 func (d *rowData) L(col string) []string {
 	return strutil.SplitList(d.clean[col])
 }

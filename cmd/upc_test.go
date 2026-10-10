@@ -234,7 +234,7 @@ func TestRunUPCListRaw(t *testing.T) {
 		"multi-candidate key should print one line per candidate in order")
 }
 
-func TestRunUPCListDefault(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global viper
+func TestRunUPCListDefault(t *testing.T) { //nolint:paralleltest // mutates the global viper
 	// Not parallel: mutates the global viper.
 	v := viper.GetViper()
 	defer v.Set("upc", nil)
@@ -257,7 +257,7 @@ func TestRunUPCListDefault(t *testing.T) { //nolint:paralleltest,tparallel // mu
 	assert.Contains(t, bi.String(), "011271 0939001", "list default should still list built-in pairs")
 }
 
-func TestEffectiveUPCTable(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global viper
+func TestEffectiveUPCTable(t *testing.T) { //nolint:paralleltest // mutates the global viper
 	// Not parallel: mutates the global viper.
 	v := viper.GetViper()
 	defer v.Set("upc", nil)
@@ -277,7 +277,7 @@ func TestEffectiveUPCTable(t *testing.T) { //nolint:paralleltest,tparallel // mu
 	assert.ErrorContains(t, err, "unquoted scalar", "unquoted numeric scalars should be rejected")
 }
 
-func TestRunUPCToISBN(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunUPCToISBN(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	cmd := &cobra.Command{}
 	cmd.SetContext(t.Context())
 	cmd.Flags().Bool("raw", false, "")
@@ -359,7 +359,7 @@ func TestRunUPCToISBN(t *testing.T) { //nolint:paralleltest,tparallel // mutates
 	assert.Contains(t, errOut, "also tried with a leading zero", "a failed zero-restore retry should join both errors")
 }
 
-func TestRunUPCToISBNStrict(t *testing.T) { //nolint:paralleltest,tparallel // mutates the global slog logger
+func TestRunUPCToISBNStrict(t *testing.T) { //nolint:paralleltest // mutates the global slog logger
 	// Not parallel: mutates the global slog logger.
 	cmd := &cobra.Command{}
 	cmd.SetContext(t.Context())

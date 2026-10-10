@@ -56,6 +56,6 @@ func New(kind Kind) (Policy, error) {
 	case KindVideo:
 		return NewVideoPolicy(), nil
 	default:
-		return nil, ErrUnknownKind(kind)
+		return nil, UnknownKindError(kind)
 	}
 }

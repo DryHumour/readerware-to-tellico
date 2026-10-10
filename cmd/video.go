@@ -13,7 +13,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
-// videoCmd represents the video command
+// videoCmd represents the video command.
 var videoCmd = &cobra.Command{
 	Use:     "video",
 	Aliases: []string{"v"},

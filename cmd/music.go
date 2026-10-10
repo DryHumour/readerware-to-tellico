@@ -13,7 +13,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
-// musicCmd represents the music command
+// musicCmd represents the music command.
 var musicCmd = &cobra.Command{
 	Use:     "music",
 	Aliases: []string{"m"},
