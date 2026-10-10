@@ -20,6 +20,7 @@ func TestResultHelpers(t *testing.T) {
 	}
 
 	t.Run("progressResult", func(t *testing.T) {
+		t.Parallel()
 		res := progressResult("doing something")
 		if res.Report.Level != slog.LevelInfo {
 			t.Errorf("expected level Info, got %v", res.Report.Level)
@@ -30,6 +31,7 @@ func TestResultHelpers(t *testing.T) {
 	})
 
 	t.Run("fatalResult", func(t *testing.T) {
+		t.Parallel()
 		err := errors.New("base error")
 		res := fatalResult("something failed", err)
 		if res.Err == nil {
@@ -44,6 +46,7 @@ func TestResultHelpers(t *testing.T) {
 	})
 
 	t.Run("fatalImageResult", func(t *testing.T) {
+		t.Parallel()
 		err := errors.New("base error")
 		res := fatalImageResult("image failed", entry, err)
 		if !strings.Contains(res.Err.Error(), "id=\"123\"") {
@@ -52,6 +55,7 @@ func TestResultHelpers(t *testing.T) {
 	})
 
 	t.Run("warnResult", func(t *testing.T) {
+		t.Parallel()
 		err := errors.New("warning context")
 		res := warnResult("something suspicious", entry, err)
 		if res.Report.Level != slog.LevelWarn {
@@ -76,6 +80,7 @@ func TestErrorHelpers(t *testing.T) {
 	}
 
 	t.Run("newFileEmptyError", func(t *testing.T) {
+		t.Parallel()
 		err := copier.NewFileEmptyError(entry)
 		if !errors.Is(err, copier.ErrFileEmpty) {
 			t.Errorf("expected ErrFileEmpty, got %v", err)
@@ -86,6 +91,7 @@ func TestErrorHelpers(t *testing.T) {
 	})
 
 	t.Run("newFileError", func(t *testing.T) {
+		t.Parallel()
 		baseErr := errors.New("io error")
 		err := copier.NewFileError("failed to open", entry, baseErr)
 		if !errors.Is(err, baseErr) {
@@ -97,6 +103,7 @@ func TestErrorHelpers(t *testing.T) {
 	})
 
 	t.Run("newFileTooLargeError", func(t *testing.T) {
+		t.Parallel()
 		err := copier.NewFileTooLargeError(entry, 1000000)
 		if !errors.Is(err, copier.ErrFileTooLarge) {
 			t.Errorf("expected ErrFileTooLarge, got %v", err)
@@ -107,6 +114,7 @@ func TestErrorHelpers(t *testing.T) {
 	})
 
 	t.Run("newFormatMismatchError", func(t *testing.T) {
+		t.Parallel()
 		err := copier.NewFormatMismatchError(entry, "png")
 		if !errors.Is(err, copier.ErrFormatMismatch) {
 			t.Errorf("expected ErrFormatMismatch, got %v", err)

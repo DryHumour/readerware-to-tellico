@@ -36,6 +36,7 @@ func TestCopierCopyAll(t *testing.T) {
 	}
 
 	t.Run("single file copy", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 		c := New(logger, tcf, 2)
@@ -62,6 +63,7 @@ func TestCopierCopyAll(t *testing.T) {
 	})
 
 	t.Run("context cancellation", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 		c := New(logger, tcf, 2)

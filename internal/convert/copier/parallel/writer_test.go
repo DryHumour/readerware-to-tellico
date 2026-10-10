@@ -19,6 +19,7 @@ func TestWriterRun(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 
@@ -62,6 +63,7 @@ func TestWriterRun(t *testing.T) {
 	})
 
 	t.Run("context cancellation", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 		resultC := make(chan result)

@@ -18,7 +18,9 @@ func fh(name string) Image {
 }
 
 func TestTCFile(t *testing.T) {
+	t.Parallel()
 	t.Run("creates valid tellico archive", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tc := New(&buf)
 

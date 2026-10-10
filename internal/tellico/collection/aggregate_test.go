@@ -10,8 +10,8 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/normalize"
 )
 
-func newTestNames(t testing.TB) *normalize.Names {
-	t.Helper()
+func newTestNames(tb testing.TB) *normalize.Names {
+	tb.Helper()
 	names, err := normalize.NewNames(normalize.NamesConfig{
 		Role: map[string]string{
 			"(ed.)":    "Editors",
@@ -19,7 +19,7 @@ func newTestNames(t testing.TB) *normalize.Names {
 			"(trans.)": "Translators",
 		},
 	})
-	require.NoError(t, err, "creating test Names config")
+	require.NoError(tb, err, "creating test Names config")
 	return names
 }
 
@@ -40,7 +40,7 @@ var testNameColumns = ColumnConfig{
 }
 
 func TestAggregateNames(t *testing.T) {
-	info := &collectionInfo{columns: testNameColumns}
+	t.Parallel()
 	names := newTestNames(t)
 
 	cases := []struct {
@@ -124,6 +124,8 @@ func TestAggregateNames(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			info := &collectionInfo{columns: testNameColumns}
 			ent, err := newBasicEntry(info, tc.clean, images.Row{})
 			require.NoError(t, err)
 
@@ -135,6 +137,7 @@ func TestAggregateNames(t *testing.T) {
 }
 
 func TestAggregateNames_NilNames(t *testing.T) {
+	t.Parallel()
 	info := &collectionInfo{columns: testNameColumns}
 	ent, err := newBasicEntry(info, map[string]string{"AUTHOR": "Smith, John"}, images.Row{})
 	require.NoError(t, err)
@@ -143,6 +146,7 @@ func TestAggregateNames_NilNames(t *testing.T) {
 }
 
 func TestAggregateMarkers(t *testing.T) {
+	t.Parallel()
 	markers, err := normalize.NewMarkers(normalize.MarkersConfig{
 		Marker: map[string]string{
 			"(signed)":       "<signed>",
@@ -150,8 +154,6 @@ func TestAggregateMarkers(t *testing.T) {
 		},
 	})
 	require.NoError(t, err, "creating test Markers config")
-
-	info := &collectionInfo{columns: testNameColumns}
 
 	cases := []struct {
 		name        string
@@ -182,6 +184,8 @@ func TestAggregateMarkers(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			info := &collectionInfo{columns: testNameColumns}
 			ent, err := newBasicEntry(info, tc.clean, images.Row{})
 			require.NoError(t, err)
 
@@ -193,6 +197,7 @@ func TestAggregateMarkers(t *testing.T) {
 }
 
 func TestAggregateMarkers_NilMarkers(t *testing.T) {
+	t.Parallel()
 	info := &collectionInfo{columns: testNameColumns}
 	ent, err := newBasicEntry(info, map[string]string{"TITLE": "A Book (signed)"}, images.Row{})
 	require.NoError(t, err)
@@ -201,36 +206,43 @@ func TestAggregateMarkers_NilMarkers(t *testing.T) {
 }
 
 func TestAggregation_Credits(t *testing.T) {
+	t.Parallel()
 	agg := newAggregation()
 	agg.credits = map[string][]string{
 		"Authors": {"John Doe", "Jane Smith"},
 	}
 
 	t.Run("returns names with abbreviation", func(t *testing.T) {
+		t.Parallel()
 		result := agg.Credits("Authors", "[ed.]")
 		assert.Equal(t, []string{"John Doe [ed.]", "Jane Smith [ed.]"}, result)
 	})
 
 	t.Run("returns names without abbreviation", func(t *testing.T) {
+		t.Parallel()
 		result := agg.Credits("Authors", "")
 		assert.Equal(t, []string{"John Doe", "Jane Smith"}, result)
 	})
 
 	t.Run("returns nil for empty role", func(t *testing.T) {
+		t.Parallel()
 		result := agg.Credits("Editors", "[ed.]")
 		assert.Nil(t, result)
 	})
 }
 
 func TestAggregation_AddCredit(t *testing.T) {
+	t.Parallel()
 	agg := newAggregation()
 
 	t.Run("adds name to new role", func(t *testing.T) {
+		t.Parallel()
 		agg.AddCredit("Authors", "John Doe")
 		assert.Equal(t, []string{"John Doe"}, agg.credits["Authors"])
 	})
 
 	t.Run("deduplicates within role", func(t *testing.T) {
+		t.Parallel()
 		agg2 := newAggregation()
 		agg2.AddCredit("Authors", "Jane Smith")
 		agg2.AddCredit("Authors", "Jane Smith")
@@ -238,6 +250,7 @@ func TestAggregation_AddCredit(t *testing.T) {
 	})
 
 	t.Run("preserves order of additions", func(t *testing.T) {
+		t.Parallel()
 		agg2 := newAggregation()
 		agg2.AddCredit("Authors", "First")
 		agg2.AddCredit("Authors", "Second")
@@ -247,16 +260,19 @@ func TestAggregation_AddCredit(t *testing.T) {
 }
 
 func TestAggregation_HasMarker(t *testing.T) {
+	t.Parallel()
 	agg := newAggregation()
 	agg.markers = map[string]bool{
 		"<signed>": true,
 	}
 
 	t.Run("returns true for existing marker", func(t *testing.T) {
+		t.Parallel()
 		assert.True(t, agg.HasMarker("<signed>"))
 	})
 
 	t.Run("returns false for non-existent marker", func(t *testing.T) {
+		t.Parallel()
 		assert.False(t, agg.HasMarker("<out_of_print>"))
 	})
 }

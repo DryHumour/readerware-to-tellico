@@ -16,7 +16,9 @@ func newTestPolicy(t *testing.T) *BooksPolicy {
 }
 
 func TestNewBooksPolicy(t *testing.T) {
+	t.Parallel()
 	t.Run("creates policy with default genre blocklist", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		require.NotNil(t, policy)
 		require.Equal(t, KindBooks, policy.Info().Kind())
@@ -24,40 +26,48 @@ func TestNewBooksPolicy(t *testing.T) {
 }
 
 func TestBooksPolicy_ConfigureHeaders(t *testing.T) {
+	t.Parallel()
 	t.Run("valid headers without images", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		assert.NoError(t, policy.ConfigureHeaders([]string{"TITLE", "ROW#", "AUTHOR", "PUBLISHER"}, false))
 	})
 
 	t.Run("valid headers with ROW#", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		assert.NoError(t, policy.ConfigureHeaders([]string{"TITLE", "ROW#", "AUTHOR"}, false))
 	})
 
 	t.Run("valid headers with ROWKEY and images", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		assert.NoError(t, policy.ConfigureHeaders([]string{"TITLE", "ROWKEY", "AUTHOR"}, true))
 	})
 
 	t.Run("missing TITLE header", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		err := policy.ConfigureHeaders([]string{"AUTHOR", "PUBLISHER"}, false)
 		assert.ErrorContains(t, err, "missing required header: TITLE")
 	})
 
 	t.Run("missing ROWKEY when images enabled", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		err := policy.ConfigureHeaders([]string{"TITLE", "AUTHOR"}, true)
 		assert.ErrorContains(t, err, "missing required header: ROWKEY")
 	})
 
 	t.Run("missing both ROWKEY and ROW# when images disabled", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		err := policy.ConfigureHeaders([]string{"TITLE", "AUTHOR"}, false)
 		assert.ErrorContains(t, err, "missing required header: either ROWKEY or ROW#")
 	})
 
 	t.Run("duplicate header", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		err := policy.ConfigureHeaders([]string{"TITLE", "AUTHOR", "TITLE"}, false)
 		assert.ErrorContains(t, err, `duplicate header: "TITLE" appears more than once`)
@@ -65,6 +75,7 @@ func TestBooksPolicy_ConfigureHeaders(t *testing.T) {
 }
 
 func TestBooksPolicy_TemplateNames(t *testing.T) {
+	t.Parallel()
 	names := NewBooksPolicy().Info().TemplateNames()
 	assert.Equal(t, "books.config", names.Config)
 	assert.Equal(t, "books.header", names.Header)
@@ -73,7 +84,9 @@ func TestBooksPolicy_TemplateNames(t *testing.T) {
 }
 
 func TestBooksPolicy_NewEntry(t *testing.T) {
+	t.Parallel()
 	t.Run("builds entry data with all fields", func(t *testing.T) {
+		t.Parallel()
 		policy := newTestPolicy(t)
 		// Configure the policy with test data
 		info := policy.Info().(*collectionInfo)
@@ -100,6 +113,7 @@ func TestBooksPolicy_NewEntry(t *testing.T) {
 	})
 
 	t.Run("builds entry data with multiple authors", func(t *testing.T) {
+		t.Parallel()
 		policy := NewBooksPolicy()
 		// Configure the policy with test data
 		info := policy.Info().(*collectionInfo)
@@ -122,7 +136,9 @@ func TestBooksPolicy_NewEntry(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
+	t.Parallel()
 	t.Run("returns books policy for books kind", func(t *testing.T) {
+		t.Parallel()
 		policy, err := New(KindBooks)
 		require.NoError(t, err)
 		require.NotNil(t, policy)
@@ -130,6 +146,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("returns music policy for music kind", func(t *testing.T) {
+		t.Parallel()
 		policy, err := New(KindMusic)
 		require.NoError(t, err)
 		require.NotNil(t, policy)
@@ -137,6 +154,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("returns video policy for video kind", func(t *testing.T) {
+		t.Parallel()
 		policy, err := New(KindVideo)
 		require.NoError(t, err)
 		require.NotNil(t, policy)
@@ -144,6 +162,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("error for unknown kind", func(t *testing.T) {
+		t.Parallel()
 		_, err := New(Kind("unknown"))
 		assert.ErrorIs(t, err, ErrUnknownKind("unknown"))
 	})

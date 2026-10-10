@@ -20,6 +20,7 @@ func TestReaderRun(t *testing.T) {
 
 	// Helper to create a dummy image file
 	createImage := func(t *testing.T, name string, content []byte) string {
+		t.Helper()
 		path := filepath.Join(tmpDir, name)
 		if err := os.WriteFile(path, content, 0o644); err != nil {
 			t.Fatal(err)
@@ -31,6 +32,7 @@ func TestReaderRun(t *testing.T) {
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "test.jpg", jpegData)
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{
@@ -70,6 +72,7 @@ func TestReaderRun(t *testing.T) {
 	})
 
 	t.Run("oversized file", func(t *testing.T) {
+		t.Parallel()
 		// Create data larger than copierpkg.MaxReaderwareImageSize
 		largeData := make([]byte, copier.MaxReaderwareImageSize+100)
 		copy(largeData, jpegData) // keep valid header
@@ -109,6 +112,7 @@ func TestReaderRun(t *testing.T) {
 	})
 
 	t.Run("format mismatch", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "mismatch.jpg", jpegData)
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{
@@ -142,6 +146,7 @@ func TestReaderRun(t *testing.T) {
 	})
 
 	t.Run("context cancellation", func(t *testing.T) {
+		t.Parallel()
 		resultC := make(chan result)
 		writerC := make(chan *payload)
 		readerC := make(chan *images.ManifestEntry)

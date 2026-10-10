@@ -15,6 +15,7 @@ var (
 )
 
 func TestBugFixes(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		input string
@@ -196,6 +197,7 @@ func TestBugFixes(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			got := n.Process(tc.input)
 			if !reflect.DeepEqual(got, tc.want) {
 				t.Errorf("Process(%q) failed\nGot:  %#v\nWant: %#v", tc.input, got, tc.want)

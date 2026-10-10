@@ -7,11 +7,14 @@ import (
 )
 
 func TestNewTellicoDate(t *testing.T) {
+	t.Parallel()
 	t.Run("empty string returns nil", func(t *testing.T) {
+		t.Parallel()
 		require.Nil(t, NewTellicoDate(""))
 	})
 
 	t.Run("valid ISO date format", func(t *testing.T) {
+		t.Parallel()
 		result := NewTellicoDate("2024-03-15")
 		require.NotNil(t, result)
 		require.Equal(t, 2024, result.YYYY)
@@ -21,6 +24,7 @@ func TestNewTellicoDate(t *testing.T) {
 	})
 
 	t.Run("invalid date format uses literal", func(t *testing.T) {
+		t.Parallel()
 		result := NewTellicoDate("March 15, 2024")
 		require.NotNil(t, result)
 		require.Equal(t, "March 15, 2024", result.Literal)
