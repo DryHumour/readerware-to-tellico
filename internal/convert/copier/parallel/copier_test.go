@@ -3,6 +3,7 @@ package parallel
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"iter"
 	"log/slog"
@@ -77,7 +78,7 @@ func TestCopierCopyAll(t *testing.T) {
 
 		// Should exit quickly without error (or with context error, but iterator handles it)
 		for _, err := range c.CopyAll(ctx, iter.Seq[*images.ManifestEntry](entries)) {
-			if err != nil && err != context.Canceled {
+			if err != nil && !errors.Is(err, context.Canceled) {
 				t.Errorf("expected no error or context.Canceled, got %v", err)
 			}
 		}

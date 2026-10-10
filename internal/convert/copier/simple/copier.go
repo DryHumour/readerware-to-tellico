@@ -116,10 +116,10 @@ func (c simpleCopier) Copy(ctx context.Context, entry *images.ManifestEntry) err
 	}
 	buf := make([]byte, 512)
 	n, err := io.ReadFull(f, buf)
-	if err != nil && err != io.ErrUnexpectedEOF && err != io.EOF {
+	if err != nil && err != io.ErrUnexpectedEOF && err != io.EOF { //nolint:errorlint // equality guaranteed by io package
 		return copier.NewFileError("failed to read file", entry, err)
 	}
-	if err == io.EOF || n == 0 {
+	if err == io.EOF || n == 0 { //nolint:errorlint // equality guaranteed by io package
 		return copier.NewFileEmptyError(entry)
 	}
 	buf = buf[:n]

@@ -51,7 +51,7 @@ func TestRowError_Unwrap(t *testing.T) {
 	inner := errors.New("inner error")
 	err := RowError{Line: 1, Err: inner}
 
-	if got := err.Unwrap(); got != inner {
+	if got := err.Unwrap(); got != inner { //nolint:errorlint // we expect exactly the inner error
 		t.Errorf("RowError.Unwrap() = %v, want %v", got, inner)
 	}
 }

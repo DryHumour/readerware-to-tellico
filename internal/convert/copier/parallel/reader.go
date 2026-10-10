@@ -128,9 +128,9 @@ func (r *reader) processImageFile(ctx context.Context, p *payload, entry *images
 	}
 	n, err := io.ReadFull(f, p.Data)
 	switch err {
-	case nil, io.ErrUnexpectedEOF:
+	case nil, io.ErrUnexpectedEOF: //nolint:errorlint // equality guaranteed by io package
 		p.Data = p.Data[:n]
-	case io.EOF:
+	case io.EOF: //nolint:errorlint // equality guaranteed by io package
 		return nil, copier.NewFileEmptyError(entry)
 	default:
 		return nil, copier.NewFileError("failed to read file", entry, err)
@@ -158,7 +158,7 @@ func (r *reader) processImageFile(ctx context.Context, p *payload, entry *images
 			if err := r.report(ctx, warnResult("problem with image file", entry, warnErr)); err != nil {
 				return nil, err
 			}
-		case io.EOF:
+		case io.EOF: //nolint:errorlint // equality guaranteed by io package
 			// no more data to read, proceed with payload as-is
 		default:
 			return nil, err

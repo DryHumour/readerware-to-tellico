@@ -2,6 +2,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -45,7 +46,7 @@ func (c Config) Validate() error {
 
 	err := validate.Struct(c)
 	if err != nil {
-		errs, ok := err.(validator.ValidationErrors)
+		errs, ok := errors.AsType[validator.ValidationErrors](err)
 		if !ok {
 			return err
 		}

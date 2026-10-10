@@ -64,7 +64,7 @@ func TestResultHelpers(t *testing.T) {
 		if !strings.Contains(res.Report.Message, "id=\"123\"") {
 			t.Errorf("expected ID in message, got %q", res.Report.Message)
 		}
-		if res.Report.Err != err {
+		if !errors.Is(res.Report.Err, err) {
 			t.Errorf("expected error in report, got %v", res.Report.Err)
 		}
 	})
