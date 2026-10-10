@@ -89,7 +89,8 @@ func TestBooksPolicy_NewEntry(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
 		// Configure the policy with test data
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"TITLE":     {"TITLE"},
@@ -116,7 +117,8 @@ func TestBooksPolicy_NewEntry(t *testing.T) {
 		t.Parallel()
 		policy := NewBooksPolicy()
 		// Configure the policy with test data
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2"},

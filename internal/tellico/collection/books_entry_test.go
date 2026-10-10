@@ -15,7 +15,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("returns all authors from AUTHOR columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2", "AUTHOR3"},
@@ -29,7 +30,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -41,7 +43,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("includes manually credited authors", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR"},
@@ -53,7 +56,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -68,7 +72,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("deduplicates authors within the same role", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2"},
@@ -81,7 +86,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -93,7 +99,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("preserves discovery order across columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2", "AUTHOR3"},
@@ -107,7 +114,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -119,7 +127,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("handles empty AUTHOR columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2", "AUTHOR3"},
@@ -133,7 +142,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -145,7 +155,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("handles semicolon-separated authors in single column", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR"},
@@ -157,7 +168,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -169,7 +181,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 	t.Run("combines column authors and manual credits without duplicates", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR"},
@@ -181,7 +194,8 @@ func TestBooksEntry_Authors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -201,7 +215,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("returns all editors from EDITOR columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR", "EDITOR2"},
@@ -214,7 +229,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -226,7 +242,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("includes editors from cross-role annotations in AUTHOR columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2"},
@@ -244,7 +261,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -256,7 +274,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("combines EDITOR columns and cross-role annotations", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Authors": {"AUTHOR", "AUTHOR2"},
@@ -276,7 +295,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -288,7 +308,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("includes manually credited editors", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR"},
@@ -300,7 +321,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -315,7 +337,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("deduplicates editors within the same role", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR", "EDITOR2"},
@@ -328,7 +351,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -340,7 +364,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("preserves discovery order across columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR", "EDITOR2", "EDITOR3"},
@@ -354,7 +379,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -366,7 +392,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("handles empty EDITOR columns", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR", "EDITOR2"},
@@ -379,7 +406,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -391,7 +419,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("handles semicolon-separated editors in single column", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR"},
@@ -403,7 +432,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()
@@ -415,7 +445,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 	t.Run("combines column editors and manual credits without duplicates", func(t *testing.T) {
 		t.Parallel()
 		policy := newTestPolicy(t)
-		info := policy.Info().(*collectionInfo)
+		require.IsType(t, (*collectionInfo)(nil), policy.Info())
+		info, _ := policy.Info().(*collectionInfo)
 		info.columns = ColumnConfig{
 			Names: map[string][]string{
 				"Editors": {"EDITOR"},
@@ -427,7 +458,8 @@ func TestBooksEntry_Editors(t *testing.T) {
 
 		entry, err := policy.NewEntry(clean, images.Row{})
 		require.NoError(t, err)
-		booksEntry := entry.(*BooksEntry)
+		require.IsType(t, (*BooksEntry)(nil), entry)
+		booksEntry, _ := entry.(*BooksEntry)
 
 		// Run aggregation to process the name columns
 		booksEntry.Aggregate()

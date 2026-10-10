@@ -175,7 +175,7 @@ func (c *Converter) Run(ctx context.Context) iter.Seq2[Report, error] {
 			return
 		}
 		// best-effort: CreateTemp's 0600 is stricter than os.Create's umask-derived mode
-		writer.Chmod(0o644)
+		_ = writer.Chmod(0o644)
 		if err := writer.Close(); err != nil {
 			yield(Report{}, fmt.Errorf("failed to write output file: %w", err))
 			return

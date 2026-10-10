@@ -27,7 +27,7 @@ type payload struct {
 // acquirePayload obtains a payload from the pool with a pre-allocated buffer of copierpkg.MaxReaderwareImageSize.
 // The buffer is reset to full capacity before use.
 func acquirePayload() *payload {
-	return payloadPool.Get().(*payload)
+	return payloadPool.Get().(*payload) //nolint:errcheck // want to panic if not payload
 }
 
 // releasePayload returns a payload to the pool for reuse.

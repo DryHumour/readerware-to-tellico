@@ -63,7 +63,7 @@ func runListCSV(cmd *cobra.Command) error {
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
-		reader.Discard(3)
+		_, _ = reader.Discard(3) // (cannot fail)
 	}
 
 	csvReader := csv.NewReader(reader)
@@ -100,7 +100,7 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
-		reader.Discard(3)
+		_, _ = reader.Discard(3) // (cannot fail)
 	}
 
 	csvReader := csv.NewReader(reader)

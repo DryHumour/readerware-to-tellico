@@ -42,7 +42,7 @@ type pngBufferPool struct {
 // If the pool is empty, returning nil tells the PNG encoder to allocate a new one.
 func (p *pngBufferPool) Get() *png.EncoderBuffer {
 	if v := p.pool.Get(); v != nil {
-		return v.(*png.EncoderBuffer)
+		return v.(*png.EncoderBuffer) //nolint:errcheck // want to panic if not png.EncoderBuffer
 	}
 	return nil
 }

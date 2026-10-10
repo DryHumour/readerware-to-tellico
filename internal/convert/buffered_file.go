@@ -32,7 +32,7 @@ func newBufferedFile(path string) (*bufferedFile, error) {
 		return nil, fmt.Errorf("failed to peek file for BOM: %w", err)
 	}
 	if bytes.Equal(peek, byteOrderMarkUTF8) {
-		reader.Discard(3)
+		_, _ = reader.Discard(3) // (cannot fail)
 	}
 
 	return &bufferedFile{Reader: reader, File: f}, nil
