@@ -27,14 +27,16 @@ func TestSimpleCopier(t *testing.T) {
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 
 	createImage := func(t *testing.T, name string, content []byte) string {
+		t.Helper()
 		path := filepath.Join(tmpDir, name)
-		if err := os.WriteFile(path, content, 0644); err != nil {
+		if err := os.WriteFile(path, content, 0o644); err != nil {
 			t.Fatal(err)
 		}
 		return path
 	}
 
 	t.Run("Copy - happy path", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "happy.jpg", jpegData)
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{
@@ -46,7 +48,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if err != nil {
@@ -59,6 +61,7 @@ func TestSimpleCopier(t *testing.T) {
 	})
 
 	t.Run("Copy - empty file", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "empty.jpg", []byte{})
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{
@@ -70,7 +73,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFileEmpty) {
@@ -79,6 +82,7 @@ func TestSimpleCopier(t *testing.T) {
 	})
 
 	t.Run("Copy - oversized file", func(t *testing.T) {
+		t.Parallel()
 		data := make([]byte, copier.MaxReaderwareImageSize+100)
 		copy(data, jpegData)
 		path := createImage(t, "oversized.jpg", data)
@@ -92,7 +96,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFileTooLarge) {
@@ -101,6 +105,7 @@ func TestSimpleCopier(t *testing.T) {
 	})
 
 	t.Run("Copy - format mismatch", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "mismatch.jpg", jpegData)
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{
@@ -112,7 +117,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		err := c.Copy(t.Context(), entry)
 		if !errors.Is(err, copier.ErrFormatMismatch) {
@@ -121,6 +126,7 @@ func TestSimpleCopier(t *testing.T) {
 	})
 
 	t.Run("CopyAll - mixed results", func(t *testing.T) {
+		t.Parallel()
 		// 1. Success
 		path1 := createImage(t, "ok.jpg", jpegData)
 		info1, _ := os.Stat(path1)
@@ -136,7 +142,7 @@ func TestSimpleCopier(t *testing.T) {
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		entries := func(yield func(*images.ManifestEntry) bool) {
 			if !yield(entry1) {
@@ -189,13 +195,14 @@ func TestSimpleCopier(t *testing.T) {
 	})
 
 	t.Run("CopyAll - context cancellation", func(t *testing.T) {
+		t.Parallel()
 		path := createImage(t, "cancel.jpg", jpegData)
 		info, _ := os.Stat(path)
 		entry := &images.ManifestEntry{ID: "cancel", Path: path, Format: "jpg", Info: info}
 
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
-		c := New(logger, tcf)
+		c := simpleCopier{logger: logger, tcf: tcf}
 
 		ctx, cancel := context.WithCancel(t.Context())
 		cancel()

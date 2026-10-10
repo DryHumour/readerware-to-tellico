@@ -70,7 +70,7 @@ func (d Directories) DefaultToExtracted(path string) Directories {
 	return d
 }
 
-func extractionDir(path string, name string) string {
+func extractionDir(path, name string) string {
 	dir := filepath.Join(path, name)
 	if fi, err := os.Stat(dir); err == nil && fi.IsDir() {
 		return dir

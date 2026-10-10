@@ -18,6 +18,10 @@ func init() {
 }
 
 func main() {
+	os.Exit(run())
+}
+
+func run() int {
 	scanner := bufio.NewScanner(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
@@ -69,8 +73,9 @@ func main() {
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintf(os.Stderr, "error reading stdin: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
+	return 0
 }
 
 func try(s string) (isbn.ISBN, error) {

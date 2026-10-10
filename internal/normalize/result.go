@@ -1,5 +1,7 @@
 package normalize
 
+import "slices"
+
 // Result contains the outcome of a normalization pipeline step.
 type Result struct {
 	Value         string   // Value the current text.
@@ -41,7 +43,7 @@ func (r Result) AddAudit(reason string) Result {
 	r.RequiresAudit = true
 	// Force a new allocation using Go's native append-growth math
 	// by clamping the capacity of the original slice to its length.
-	r.AuditReasons = append(r.AuditReasons[:len(r.AuditReasons):len(r.AuditReasons)], reason)
+	r.AuditReasons = append(slices.Clip(r.AuditReasons), reason)
 	return r
 }
 

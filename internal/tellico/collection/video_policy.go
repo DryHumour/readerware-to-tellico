@@ -1,6 +1,7 @@
 package collection
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 
@@ -48,15 +49,15 @@ func (p *VideoPolicy) ConfigureHeaders(headers []string, imagesEnabled bool) err
 		headerSet[h] = true
 	}
 	if !headerSet["TITLE"] {
-		return fmt.Errorf("missing required header: TITLE")
+		return errors.New("missing required header: TITLE")
 	}
 	if imagesEnabled {
 		if !headerSet["ROWKEY"] {
-			return fmt.Errorf("missing required header: ROWKEY is required when image directories are specified")
+			return errors.New("missing required header: ROWKEY is required when image directories are specified")
 		}
 	}
 	if !imagesEnabled && !headerSet["ROWKEY"] && !headerSet["ROW#"] {
-		return fmt.Errorf("missing required header: either ROWKEY or ROW# must be present")
+		return errors.New("missing required header: either ROWKEY or ROW# must be present")
 	}
 	p.info.columns.Headers = slices.Clone(headers)
 	return nil

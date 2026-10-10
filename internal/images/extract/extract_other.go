@@ -15,7 +15,7 @@ func findJavaCustomPath(path string) (string, error) {
 	fi, err := os.Stat(path)
 	if err == nil && fi.IsDir() {
 		path = filepath.Join(path, javaProg)
-		fi, err = os.Stat(path)
+		_, err = os.Stat(path)
 	}
 	if err != nil {
 		return "", err

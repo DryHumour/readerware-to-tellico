@@ -146,8 +146,7 @@ func (c *Converter) convertAllEntries(ctx context.Context, reader io.Reader) ite
 
 			records++
 			if err != nil {
-				var perr *csv.ParseError
-				if errors.As(err, &perr) {
+				if perr, ok := errors.AsType[*csv.ParseError](err); ok {
 					lineNumber = perr.StartLine
 				}
 				if !yield(Report{}, newRowError("failed to read CSV row", records, lineNumber, err)) {

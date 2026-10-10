@@ -17,10 +17,14 @@ const (
 )
 
 var (
-	ErrMissingISBNRangeData      = errors.New("missing ISBN range data")
+	// ErrMissingISBNRangeData indicates the hyphenator has no ISBN range data.
+	ErrMissingISBNRangeData = errors.New("missing ISBN range data")
+	// ErrRegistrationGroupNotFound indicates no registration group covers the ISBN.
 	ErrRegistrationGroupNotFound = fmt.Errorf("registration group not found: %w", ErrInvalidISBN)
-	ErrPublisherRangeNotFound    = fmt.Errorf("invalid or unassigned publisher range: %w", ErrInvalidISBN)
-	ErrInvalidPublisherLength    = fmt.Errorf("invalid publisher length: %w", ErrInvalidISBN)
+	// ErrPublisherRangeNotFound indicates the ISBN falls in an unassigned publisher range.
+	ErrPublisherRangeNotFound = fmt.Errorf("invalid or unassigned publisher range: %w", ErrInvalidISBN)
+	// ErrInvalidPublisherLength indicates the publisher prefix length is out of range.
+	ErrInvalidPublisherLength = fmt.Errorf("invalid publisher length: %w", ErrInvalidISBN)
 
 	// defaultHyphenator is a lazy once-value that returns the default hyphenator.
 	defaultHyphenator = sync.OnceValue(newDefaultHyphenator)

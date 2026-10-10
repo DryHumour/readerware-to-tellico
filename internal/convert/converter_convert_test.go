@@ -22,7 +22,7 @@ func TestExecuteTemplate(t *testing.T) {
 	}{
 		{
 			name:     "successful execution",
-			ctx:      context.Background(),
+			ctx:      t.Context(),
 			tmpl:     tmpl,
 			tmplName: "test",
 			data:     "hello",
@@ -30,7 +30,7 @@ func TestExecuteTemplate(t *testing.T) {
 		},
 		{
 			name:     "cancelled context",
-			ctx:      func() context.Context { ctx, cancel := context.WithCancel(context.Background()); cancel(); return ctx }(),
+			ctx:      func() context.Context { ctx, cancel := context.WithCancel(t.Context()); cancel(); return ctx }(),
 			tmpl:     tmpl,
 			tmplName: "test",
 			data:     "hello",
@@ -38,7 +38,7 @@ func TestExecuteTemplate(t *testing.T) {
 		},
 		{
 			name:     "template execution failure",
-			ctx:      context.Background(),
+			ctx:      t.Context(),
 			tmpl:     template.Must(template.New("test").Parse("{{.Undefined}}")),
 			tmplName: "test",
 			data:     struct{}{},

@@ -1,3 +1,5 @@
+// Package images indexes Readerware image manifest files and detects image
+// formats for copy into Tellico archives.
 package images
 
 import (
@@ -12,8 +14,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/config"
 )
 
 var (

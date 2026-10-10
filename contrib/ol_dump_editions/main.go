@@ -41,6 +41,10 @@ func (l *stringList) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 }
 
 func main() {
+	os.Exit(run())
+}
+
+func run() int {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
@@ -49,7 +53,7 @@ func main() {
 	scanner.Buffer(make([]byte, maxLineSize), maxLineSize)
 	for scanner.Scan() {
 		line := scanner.Text()
-		fields := strings.SplitN(line, "\t", -1)
+		fields := strings.Split(line, "\t")
 		if len(fields) == 0 {
 			continue
 		}
@@ -72,6 +76,7 @@ func main() {
 	}
 	if err := scanner.Err(); err != nil {
 		slog.Error("error reading stdin", "error", err)
-		os.Exit(1)
+		return 1
 	}
+	return 0
 }

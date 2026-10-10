@@ -5,8 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/config"
 )
 
 func TestBuildIndex(t *testing.T) {
@@ -18,9 +19,9 @@ func TestBuildIndex(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0644))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), []byte("fake image 2"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0o644))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), []byte("fake image 2"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -36,8 +37,8 @@ func TestBuildIndex(t *testing.T) {
 		parentDir := filepath.Join(tmpDir, "readerware")
 		imagesDir := filepath.Join(parentDir, "Images")
 
-		require.NoError(t, os.MkdirAll(imagesDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imagesDir, "789.gif"), []byte("fake image"), 0644))
+		require.NoError(t, os.MkdirAll(imagesDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imagesDir, "789.gif"), []byte("fake image"), 0o644))
 
 		dirs := config.Directories{First: parentDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -52,7 +53,7 @@ func TestBuildIndex(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -67,9 +68,9 @@ func TestBuildIndex(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0644))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.png"), []byte("fake image 2"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0o644))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.png"), []byte("fake image 2"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		_, err := BuildIndex(t.Context(), dirs)
@@ -95,10 +96,10 @@ func TestBuildIndex(t *testing.T) {
 		imgDir1 := filepath.Join(tmpDir, "images1")
 		imgDir2 := filepath.Join(tmpDir, "images2")
 
-		require.NoError(t, os.Mkdir(imgDir1, 0755))
-		require.NoError(t, os.Mkdir(imgDir2, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir1, "123.jpg"), []byte("fake image 1"), 0644))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir2, "456.png"), []byte("fake image 2"), 0644))
+		require.NoError(t, os.Mkdir(imgDir1, 0o755))
+		require.NoError(t, os.Mkdir(imgDir2, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir1, "123.jpg"), []byte("fake image 1"), 0o644))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir2, "456.png"), []byte("fake image 2"), 0o644))
 
 		dirs := config.Directories{First: imgDir1, Second: imgDir2}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -117,8 +118,8 @@ func TestIndex_Row(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -147,7 +148,7 @@ func TestIndex_Row(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -177,8 +178,8 @@ func TestIndex_AllUsed(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -214,7 +215,7 @@ func TestIndex_IsEmpty(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -228,8 +229,8 @@ func TestIndex_IsEmpty(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)
@@ -502,9 +503,9 @@ func TestIndex_All(t *testing.T) {
 		tmpDir := t.TempDir()
 		imgDir := filepath.Join(tmpDir, "images")
 
-		require.NoError(t, os.Mkdir(imgDir, 0755))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0644))
-		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), []byte("fake image 2"), 0644))
+		require.NoError(t, os.Mkdir(imgDir, 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), []byte("fake image 1"), 0o644))
+		require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), []byte("fake image 2"), 0o644))
 
 		dirs := config.Directories{First: imgDir}
 		index, err := BuildIndex(t.Context(), dirs)

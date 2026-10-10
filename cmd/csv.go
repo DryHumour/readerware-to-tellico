@@ -9,13 +9,12 @@ import (
 	"io"
 	"slices"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/spf13/cobra"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
 
-var (
-	bom = []byte{0xEF, 0xBB, 0xBF}
-)
+var bom = []byte{0xEF, 0xBB, 0xBF}
 
 // csvCmd represents the csv command
 var csvCmd = &cobra.Command{
@@ -64,7 +63,7 @@ func runListCSV(cmd *cobra.Command) error {
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
-		reader.Discard(3)
+		_, _ = reader.Discard(3) // (cannot fail)
 	}
 
 	csvReader := csv.NewReader(reader)
@@ -101,7 +100,7 @@ func runGetCSV(cmd *cobra.Command, columnName string) error {
 
 	peek, err := reader.Peek(3)
 	if err == nil && bytes.Equal(peek, bom) {
-		reader.Discard(3)
+		_, _ = reader.Discard(3) // (cannot fail)
 	}
 
 	csvReader := csv.NewReader(reader)

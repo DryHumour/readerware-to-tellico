@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 	"github.com/DryHumour/readerware-to-tellico/internal/httpclient"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // musicCmd represents the music command
@@ -61,6 +62,8 @@ func init() {
 	musicCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
+// Music runs the music conversion: it reads the Readerware music CSV export and
+// writes a Tellico music collection to the configured output file.
 func Music(cmd *cobra.Command) error {
 	ctx := cmd.Context()
 	logger := slog.Default()

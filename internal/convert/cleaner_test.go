@@ -1,12 +1,12 @@
 package convert
 
 import (
-	"errors"
 	"testing"
 	"text/template"
 
-	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 	"github.com/stretchr/testify/require"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
 func mustTemplate(t *testing.T, src string) *template.Template {
@@ -121,7 +121,7 @@ func TestCleaner_CleanRow(t *testing.T) {
 
 			for _, col := range tc.wantColumnErrorCols {
 				var ce ColumnError
-				require.True(t, errors.As(err, &ce))
+				require.ErrorAs(t, err, &ce)
 				require.Equal(t, col, ce.Column)
 			}
 		})

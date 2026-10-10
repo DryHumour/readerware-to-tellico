@@ -1,3 +1,5 @@
+// Package convert drives the Readerware CSV-to-Tellico conversion pipeline:
+// parsing, cleaning, normalizing, templating, and writing the .tc archive.
 package convert
 
 import (
@@ -10,10 +12,11 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 	"github.com/DryHumour/readerware-to-tellico/isbn"
-	"github.com/Masterminds/sprig/v3"
 )
 
 const (
@@ -203,16 +206,16 @@ func isbnFunc(isbnText string) string {
 // The returned function generates audit messages for errors.
 func isbnHyphenatorFunc(h *isbn.Hyphenator) func(auditor collection.Auditor, isbnText string) string {
 	return func(auditor collection.Auditor, isbnText string) string {
-		if i, err := isbn.New(isbnText); err == nil || errors.Is(err, isbn.ErrInvalidCheckDigit) {
-			if result, err := h.Hyphenate(i); err == nil {
-				return result
-			} else {
-				auditor.AddAudit("[isbn] " + err.Error())
-				return i.String()
-			}
-		} else {
+		i, err := isbn.New(isbnText)
+		if err != nil && !errors.Is(err, isbn.ErrInvalidCheckDigit) {
 			auditor.AddAudit("[isbn] " + err.Error())
+			return isbnText
 		}
-		return isbnText
+		result, err := h.Hyphenate(i)
+		if err != nil {
+			auditor.AddAudit("[isbn] " + err.Error())
+			return i.String()
+		}
+		return result
 	}
 }

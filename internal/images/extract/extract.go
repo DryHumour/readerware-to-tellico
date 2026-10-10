@@ -1,3 +1,5 @@
+// Package extract extracts images from Readerware databases by driving the
+// bundled ImageDumper Java tool.
 package extract
 
 import (
@@ -177,18 +179,18 @@ func setup(dir string) (string, error) {
 // tailBuffer is an io.Writer that retains only the last max bytes written,
 // for surfacing subprocess output in error messages after a failure.
 type tailBuffer struct {
-	buf []byte
-	max int
+	buf   []byte
+	limit int
 }
 
-func newTailBuffer(max int) *tailBuffer {
-	return &tailBuffer{max: max}
+func newTailBuffer(limit int) *tailBuffer {
+	return &tailBuffer{limit: limit}
 }
 
 func (t *tailBuffer) Write(p []byte) (int, error) {
 	t.buf = append(t.buf, p...)
-	if len(t.buf) > t.max {
-		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.max:]...)
+	if len(t.buf) > t.limit {
+		t.buf = append([]byte(nil), t.buf[len(t.buf)-t.limit:]...)
 	}
 	return len(p), nil
 }
@@ -199,7 +201,7 @@ func (t *tailBuffer) String() string {
 
 // command creates an exec.Cmd for running the ImageDumper with the given parameters.
 func command(ctx context.Context, javaExec, jarPath, src, dst string) *exec.Cmd {
-	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst)
+	cmd := exec.CommandContext(ctx, javaExec, "-jar", jarPath, src, dst) //nolint:gosec // G204: converter command comes from user config
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd

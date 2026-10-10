@@ -1,3 +1,5 @@
+// Package simple implements a sequential copier that reads and writes image
+// files one at a time.
 package simple
 
 import (
@@ -25,7 +27,7 @@ type simpleCopier struct {
 type Report = copier.Report
 
 // New creates a new sequential copier for writing images to the given Tellico file.
-func New(logger *slog.Logger, tcf *tcfile.TCFile) simpleCopier {
+func New(logger *slog.Logger, tcf *tcfile.TCFile) copier.Copier {
 	return simpleCopier{
 		logger: logger,
 		tcf:    tcf,
@@ -41,7 +43,7 @@ func (c simpleCopier) CopyAll(ctx context.Context, entries iter.Seq[*images.Mani
 			if err := context.Cause(ctx); err != nil {
 				return
 			}
-			if !yield(Report{Level: slog.LevelInfo, Message: fmt.Sprintf("copying %s", entry.Path)}, nil) {
+			if !yield(Report{Level: slog.LevelInfo, Message: "copying " + entry.Path}, nil) {
 				return
 			}
 			var report Report
@@ -114,10 +116,10 @@ func (c simpleCopier) Copy(ctx context.Context, entry *images.ManifestEntry) err
 	}
 	buf := make([]byte, 512)
 	n, err := io.ReadFull(f, buf)
-	if err != nil && err != io.ErrUnexpectedEOF && err != io.EOF {
+	if err != nil && err != io.ErrUnexpectedEOF && err != io.EOF { //nolint:errorlint // equality guaranteed by io package
 		return copier.NewFileError("failed to read file", entry, err)
 	}
-	if err == io.EOF || n == 0 {
+	if err == io.EOF || n == 0 { //nolint:errorlint // equality guaranteed by io package
 		return copier.NewFileEmptyError(entry)
 	}
 	buf = buf[:n]

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/bartventer/httpcache"
-	_ "github.com/bartventer/httpcache/store/fscache"
-	_ "github.com/bartventer/httpcache/store/memcache"
+	_ "github.com/bartventer/httpcache/store/fscache"  // register the fscache:// URL scheme
+	_ "github.com/bartventer/httpcache/store/memcache" // register the memcache:// URL scheme
 )
 
 // New returns an *http.Client backed by a filesystem-cached HTTP transport.

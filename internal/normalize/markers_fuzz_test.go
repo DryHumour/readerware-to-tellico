@@ -22,7 +22,7 @@ func FuzzProcessMarkers(f *testing.F) {
 		f.Fatalf("failed to create Markers: %v", err)
 	}
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		_ = m.Process(input)
 	})
 }

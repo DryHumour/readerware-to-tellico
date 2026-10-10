@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
-	"github.com/stretchr/testify/require"
 )
 
 // extractXML runs the conversion with the given CSV and returns the XML content from the TC file.
@@ -21,7 +22,7 @@ func extractXML(t *testing.T, csvContent string) []byte {
 	csvPath := filepath.Join(tmpDir, "test.csv")
 	tcPath := filepath.Join(tmpDir, "test.tc")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -64,7 +65,7 @@ func TestIntegration_XMLValidation(t *testing.T) {
 	}
 
 	// Always: check well-formedness (no DTD fetch needed)
-	cmd := exec.Command("xmllint", "--noout", "-")
+	cmd := exec.CommandContext(t.Context(), "xmllint", "--noout", "-")
 	cmd.Stdin = bytes.NewReader(xmlContent)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Errorf("XML is not well-formed:\n%s", out)
@@ -89,16 +90,16 @@ func TestIntegration_WithImages(t *testing.T) {
 	imgDir := filepath.Join(tmpDir, "images")
 
 	// Write the CSV file
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	// Valid JPEG magic numbers for dummy images
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 	pngData := []byte{0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A}
 
 	// Create test images
-	require.NoError(t, os.Mkdir(imgDir, 0755))
-	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), jpegData, 0644))
-	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), pngData, 0644))
+	require.NoError(t, os.Mkdir(imgDir, 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), jpegData, 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "456.png"), pngData, 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -128,7 +129,7 @@ John Doe,Test Publisher,978-0-123-45678-9`
 	csvPath := filepath.Join(tmpDir, "test.csv")
 	tcPath := filepath.Join(tmpDir, "test.tc")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -157,7 +158,7 @@ Test Book,John Doe,Test Publisher,978-0-123-45678-9`
 	csvPath := filepath.Join(tmpDir, "test.csv")
 	tcPath := filepath.Join(tmpDir, "test.tc")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -187,8 +188,8 @@ Test Book,John Doe`
 	tcPath := filepath.Join(tmpDir, "test.tc")
 	imgDir := filepath.Join(tmpDir, "images")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
-	require.NoError(t, os.Mkdir(imgDir, 0755))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
+	require.NoError(t, os.Mkdir(imgDir, 0o755))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -219,7 +220,7 @@ func TestIntegration_ValidHeadersWithROWKEY(t *testing.T) {
 	csvPath := filepath.Join(tmpDir, "test.csv")
 	tcPath := filepath.Join(tmpDir, "test.tc")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -244,7 +245,7 @@ func TestIntegration_ValidHeadersWithROWHASH(t *testing.T) {
 	csvPath := filepath.Join(tmpDir, "test.csv")
 	tcPath := filepath.Join(tmpDir, "test.tc")
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -272,9 +273,9 @@ func TestIntegration_ValidHeadersWithImages(t *testing.T) {
 	// Valid JPEG magic numbers for dummy images
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
-	require.NoError(t, os.Mkdir(imgDir, 0755))
-	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), jpegData, 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
+	require.NoError(t, os.Mkdir(imgDir, 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(imgDir, "123.jpg"), jpegData, 0o644))
 
 	cfg := config.Config{
 		InputFile:  csvPath,
@@ -301,14 +302,14 @@ func TestIntegration_UserTemplateOverride(t *testing.T) {
 	templateDir := filepath.Join(tmpDir, "templates")
 
 	// Create template directory and a custom title template
-	require.NoError(t, os.Mkdir(templateDir, 0755))
+	require.NoError(t, os.Mkdir(templateDir, 0o755))
 	customTitleTemplate := `{{- define "books.title" }}
    <title>CUSTOM: {{ .V "TITLE" }}</title>
 {{- end -}}
 `
-	require.NoError(t, os.WriteFile(filepath.Join(templateDir, "books.title.gotmpl"), []byte(customTitleTemplate), 0644))
+	require.NoError(t, os.WriteFile(filepath.Join(templateDir, "books.title.gotmpl"), []byte(customTitleTemplate), 0o644))
 
-	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0644))
+	require.NoError(t, os.WriteFile(csvPath, []byte(csvContent), 0o644))
 
 	cfg := config.Config{
 		InputFile:    csvPath,

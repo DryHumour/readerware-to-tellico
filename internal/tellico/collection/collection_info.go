@@ -10,9 +10,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/strutil"
 )
 
-var (
-	_ CollectionInfo = (*collectionInfo)(nil)
-)
+var _ CollectionInfo = (*collectionInfo)(nil)
 
 type collectionInfo struct {
 	// kind is the kind of collection this configuration is for.
@@ -41,8 +39,6 @@ func (c *collectionInfo) Data() any                  { return (*collectionInfoDa
 func (c *collectionInfo) Normalize() (result Normalize, err error) {
 	var errs []error
 	if c.normalize.Names == nil || c.normalize.Markers == nil {
-		//fmt.Printf("realBooksConfigNames = %#v\n", c.names) // FIXME(nschelle)
-		//fmt.Printf("realBooksConfigMarkers = %#v\n", c.markers) // FIXME(nschelle)
 		if c.normalize.Names, err = normalize.NewNames(c.names); err != nil {
 			errs = append(errs, fmt.Errorf("failed to create names normalizer: %w", err))
 		}

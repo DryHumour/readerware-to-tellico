@@ -3,6 +3,7 @@ package parallel
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"iter"
 	"log/slog"
@@ -23,7 +24,7 @@ func TestCopierCopyAll(t *testing.T) {
 	// Create dummy image data
 	jpegData := []byte{0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
 	path := filepath.Join(tmpDir, "test.jpg")
-	if err := os.WriteFile(path, jpegData, 0644); err != nil {
+	if err := os.WriteFile(path, jpegData, 0o644); err != nil {
 		t.Fatal(err)
 	}
 	info, _ := os.Stat(path)
@@ -36,6 +37,7 @@ func TestCopierCopyAll(t *testing.T) {
 	}
 
 	t.Run("single file copy", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 		c := New(logger, tcf, 2)
@@ -62,6 +64,7 @@ func TestCopierCopyAll(t *testing.T) {
 	})
 
 	t.Run("context cancellation", func(t *testing.T) {
+		t.Parallel()
 		var buf bytes.Buffer
 		tcf := tcfile.New(&buf)
 		c := New(logger, tcf, 2)
@@ -75,7 +78,7 @@ func TestCopierCopyAll(t *testing.T) {
 
 		// Should exit quickly without error (or with context error, but iterator handles it)
 		for _, err := range c.CopyAll(ctx, iter.Seq[*images.ManifestEntry](entries)) {
-			if err != nil && err != context.Canceled {
+			if err != nil && !errors.Is(err, context.Canceled) {
 				t.Errorf("expected no error or context.Canceled, got %v", err)
 			}
 		}

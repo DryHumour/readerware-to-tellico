@@ -4,9 +4,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
 
-var (
-	_ Entry = (*MusicEntry)(nil)
-)
+var _ Entry = (*MusicEntry)(nil)
 
 // MusicEntry is the data object passed to every music entry template.
 // All fields hold plain, unescaped text. Template authors must apply
@@ -25,10 +23,6 @@ func newMusicEntry(info CollectionInfo, clean map[string]string, images images.R
 		basicEntry: basic,
 	}, nil
 }
-
-//
-//  MusicEntry Methods
-//
 
 // Artists returns the plain-text list of primary artists in discovery order.
 func (e *MusicEntry) Artists() []string { return e.agg.Roles()["Artists"] }

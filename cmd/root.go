@@ -1,3 +1,5 @@
+// Package cmd implements the readerware-to-tellico command-line interface
+// (cobra commands for books, music, video, images, CSV, ISBN, and UPC tools).
 package cmd
 
 import (

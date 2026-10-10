@@ -1,25 +1,36 @@
+// Package copier provides image copy/convert helpers shared by the simple and
+// parallel copier implementations, plus the GIF-to-PNG conversion used when
+// writing Tellico archives.
 package copier
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"image/gif"
 	"image/png"
 	"io"
 	"io/fs"
+	"iter"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
 
-var (
-	// Shared, thread-safe PNG encoder.
-	pngEncoder = &png.Encoder{
-		BufferPool:       &pngBufferPool{},
-		CompressionLevel: png.DefaultCompression,
-	}
-)
+// Copier copies image files from manifest entries into a Tellico collection,
+// yielding a report (and possibly an error) for each entry processed.
+type Copier interface {
+	CopyAll(ctx context.Context, entries iter.Seq[*images.ManifestEntry]) iter.Seq2[Report, error]
+}
+
+// Shared, thread-safe PNG encoder.
+var pngEncoder = &png.Encoder{
+	BufferPool:       &pngBufferPool{},
+	CompressionLevel: png.DefaultCompression,
+}
 
 // pngBufferPool implements the png.EncoderBufferPool interface.
 // It uses a sync.Pool to recycle the heavy zlib/deflate buffers.
@@ -31,7 +42,7 @@ type pngBufferPool struct {
 // If the pool is empty, returning nil tells the PNG encoder to allocate a new one.
 func (p *pngBufferPool) Get() *png.EncoderBuffer {
 	if v := p.pool.Get(); v != nil {
-		return v.(*png.EncoderBuffer)
+		return v.(*png.EncoderBuffer) //nolint:errcheck // want to panic if not png.EncoderBuffer
 	}
 	return nil
 }
@@ -64,7 +75,7 @@ type ConvertedPNG struct {
 
 func NewConvertedPNG(fi fs.FileInfo) *ConvertedPNG {
 	name := fi.Name()
-	if ext := filepath.Ext(name); strings.ToLower(ext) == ".gif" {
+	if ext := filepath.Ext(name); strings.EqualFold(ext, ".gif") {
 		name = strings.TrimSuffix(name, ext)
 	}
 	name += ".png"
@@ -86,7 +97,7 @@ func (p *convertedPNGStatView) Name() string {
 }
 
 func (p *convertedPNGStatView) Size() int64 {
-	return int64(p.Buffer.Len())
+	return int64(p.Len())
 }
 
 func (p *convertedPNGStatView) Mode() fs.FileMode {

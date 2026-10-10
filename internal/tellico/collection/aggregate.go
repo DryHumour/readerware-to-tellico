@@ -1,3 +1,5 @@
+// Package collection models Tellico collection kinds, entry policies, and
+// aggregation of normalized name/marker data.
 package collection
 
 import (

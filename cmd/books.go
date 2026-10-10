@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"github.com/DryHumour/readerware-to-tellico/internal/config"
 	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 	"github.com/DryHumour/readerware-to-tellico/internal/httpclient"
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // booksCmd represents the books command
@@ -61,6 +62,8 @@ func init() {
 	booksCmd.PersistentFlags().Int("concurrency", 16, "Number of parallel readers for image copying (0 for sequential copying)")
 }
 
+// Books runs the books conversion: it reads the Readerware book CSV export and
+// writes a Tellico book collection to the configured output file.
 func Books(cmd *cobra.Command) error {
 	ctx := cmd.Context()
 	logger := slog.Default()

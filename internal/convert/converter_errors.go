@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -20,7 +21,7 @@ type RowError struct {
 // including record and line numbers, column (if applicable), and the
 // wrapped error.
 func (e RowError) Error() string {
-	loc := fmt.Sprintf("%d", e.Line)
+	loc := strconv.Itoa(e.Line)
 	if e.Record > 0 {
 		loc = fmt.Sprintf("record %d (line %d)", e.Record, e.Line)
 	}
@@ -39,25 +40,25 @@ func (e RowError) Unwrap() error {
 // the CSV record and line numbers. It handles both single errors and
 // multi-error aggregations.
 func wrapColumnErrors(record, line int, err error) error {
-	switch merr := err.(type) {
-	case nil:
+	if err == nil {
 		return nil
-	case ColumnError:
-		return RowError{Record: record, Line: line, Column: merr.Column, Err: merr}
-	case interface{ Unwrap() []error }:
+	}
+	if merr, ok := err.(interface{ Unwrap() []error }); ok {
 		errs := merr.Unwrap()
 		newErrs := make([]error, 0, len(errs))
 		for _, child := range errs {
-			if colErr, ok := child.(ColumnError); ok {
-				newErrs = append(newErrs, RowError{Record: record, Line: line, Column: colErr.Column, Err: colErr})
+			if colErr, ok := errors.AsType[ColumnError](child); ok {
+				newErrs = append(newErrs, RowError{Record: record, Line: line, Column: colErr.Column, Err: child})
 			} else {
 				newErrs = append(newErrs, child)
 			}
 		}
 		return errors.Join(newErrs...)
-	default:
-		return err
 	}
+	if colErr, ok := errors.AsType[ColumnError](err); ok {
+		return RowError{Record: record, Line: line, Column: colErr.Column, Err: err}
+	}
+	return err
 }
 
 // newRowError creates a new error wrapping the provided error with RowError context.

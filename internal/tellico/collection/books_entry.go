@@ -4,9 +4,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/images"
 )
 
-var (
-	_ Entry = (*BooksEntry)(nil)
-)
+var _ Entry = (*BooksEntry)(nil)
 
 // BooksEntry is the data object passed to every books entry template.
 // All fields hold plain, unescaped text. Template authors must apply
@@ -25,10 +23,6 @@ func newBooksEntry(info CollectionInfo, clean map[string]string, images images.R
 		basicEntry: basic,
 	}, nil
 }
-
-//
-//  BookEntry Methods
-//
 
 // Authors returns the plain-text list of primary authors in discovery order.
 func (e *BooksEntry) Authors() []string { return e.agg.Roles()["Authors"] }

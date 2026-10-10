@@ -1,3 +1,5 @@
+// Package isbn parses, validates, converts, and hyphenates ISBN-10 and
+// ISBN-13 values using the official ISBN range message data.
 package isbn
 
 import (
@@ -14,11 +16,17 @@ const (
 )
 
 var (
-	ErrInvalidISBN       = errors.New("invalid ISBN")
+	// ErrInvalidISBN indicates the input is not a valid ISBN.
+	ErrInvalidISBN = errors.New("invalid ISBN")
+	// ErrInvalidCheckDigit indicates the ISBN check digit does not match.
 	ErrInvalidCheckDigit = fmt.Errorf("invalid ISBN check digit: %w", ErrInvalidISBN)
-	ErrInvalidKind       = fmt.Errorf("invalid ISBN kind: %w", ErrInvalidISBN)
-	ErrInvalidISBN10     = fmt.Errorf("invalid ISBN-10: %w", ErrInvalidKind)
-	ErrInvalidISBN13     = fmt.Errorf("invalid ISBN-13: %w", ErrInvalidKind)
+	// ErrInvalidKind indicates the ISBN is of an unexpected kind.
+	ErrInvalidKind = fmt.Errorf("invalid ISBN kind: %w", ErrInvalidISBN)
+	// ErrInvalidISBN10 indicates the input is not a valid ISBN-10.
+	ErrInvalidISBN10 = fmt.Errorf("invalid ISBN-10: %w", ErrInvalidKind)
+	// ErrInvalidISBN13 indicates the input is not a valid ISBN-13.
+	ErrInvalidISBN13 = fmt.Errorf("invalid ISBN-13: %w", ErrInvalidKind)
+	// ErrInvalidConversion indicates an ISBN-13 that cannot be converted to ISBN-10.
 	ErrInvalidConversion = fmt.Errorf("invalid ISBN-13 for conversion to ISBN-10: %w", ErrInvalidISBN)
 )
 
@@ -185,9 +193,9 @@ func (i ISBN) Is13() bool {
 func (i ISBN) Split() (body, checkDigit string) {
 	switch len(i.s) {
 	case 10:
-		return string(i.s[:9]), string(i.s[9:])
+		return i.s[:9], i.s[9:]
 	case 13:
-		return string(i.s[:12]), string(i.s[12:])
+		return i.s[:12], i.s[12:]
 	default:
 		return "", ""
 	}
@@ -199,9 +207,9 @@ func (i ISBN) Split() (body, checkDigit string) {
 func (i ISBN) Body() string {
 	switch len(i.s) {
 	case 10:
-		return string(i.s[:9])
+		return i.s[:9]
 	case 13:
-		return string(i.s[:12])
+		return i.s[:12]
 	default:
 		return ""
 	}
@@ -229,9 +237,9 @@ func (i ISBN) CheckDigit() byte {
 func (i ISBN) ExpectedCheckDigit() byte {
 	switch len(i.s) {
 	case 10:
-		return mod11(string(i.s[:9]))
+		return mod11(i.s[:9])
 	case 13:
-		return mod10(string(i.s[:12]))
+		return mod10(i.s[:12])
 	default:
 		return 0
 	}
@@ -242,10 +250,10 @@ func (i ISBN) ExpectedCheckDigit() byte {
 func (i ISBN) IsValid() bool {
 	switch len(i.s) {
 	case 10:
-		body, check := string(i.s[:9]), i.s[9]
+		body, check := i.s[:9], i.s[9]
 		return mod11(body) == check
 	case 13:
-		body, check := string(i.s[:12]), i.s[12]
+		body, check := i.s[:12], i.s[12]
 		return mod10(body) == check
 	default:
 		return false
@@ -266,10 +274,10 @@ func (i ISBN) To10() (ISBN, error) {
 	case 10:
 		return i, nil
 	case 13:
-		if !strings.HasPrefix(string(i.s), ISBN10Prefix) {
+		if !strings.HasPrefix(i.s, ISBN10Prefix) {
 			return ISBN{}, ErrInvalidConversion
 		}
-		body := string(i.s[len(ISBN10Prefix):12])
+		body := i.s[len(ISBN10Prefix):12]
 		return appendCheck(body, mod11(body)), nil
 	default:
 		return ISBN{}, ErrInvalidISBN
@@ -283,7 +291,7 @@ func (i ISBN) To10() (ISBN, error) {
 func (i ISBN) To13() ISBN {
 	switch len(i.s) {
 	case 10:
-		body := ISBN10Prefix + string(i.s[:9])
+		body := ISBN10Prefix + i.s[:9]
 		return appendCheck(body, mod10(body))
 	case 13:
 		return i

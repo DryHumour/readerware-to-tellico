@@ -113,7 +113,7 @@ func engineRegexSqueeze(s string, re *regexp.Regexp, preserveNL, extract bool) (
 				}
 			} else {
 				if preserveNL && nlCount > 0 {
-					for j := 0; j < nlCount; j++ {
+					for range nlCount {
 						b.WriteByte('\n')
 					}
 				} else {
@@ -337,7 +337,7 @@ func squeeze(s string, preserveNL bool) string {
 					nlCount = 0
 				}
 			default:
-				// text: continue scan
+				// text: just continue scan
 			}
 
 		case stateSPC:
@@ -370,7 +370,7 @@ func squeeze(s string, preserveNL bool) string {
 				b.WriteString(s[pfx:sfx])
 
 				if preserveNL && nlCount > 0 {
-					for j := 0; j < nlCount; j++ {
+					for range nlCount {
 						b.WriteByte('\n')
 					}
 				} else {
@@ -407,7 +407,7 @@ func squeeze(s string, preserveNL bool) string {
 				st = stateText
 
 				if preserveNL && nlCount > 0 {
-					for j := 0; j < nlCount; j++ {
+					for range nlCount {
 						b.WriteByte('\n')
 					}
 				} else {

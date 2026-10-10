@@ -27,7 +27,7 @@ func FuzzIsArtifact(f *testing.F) {
 	f.Add("\n\n\n") // only newlines
 	f.Add("\t\t\t") // only tabs
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		// Ensure no panics
 		_ = IsArtifact(input)
 	})
@@ -54,7 +54,7 @@ func FuzzSqueeze(f *testing.F) {
 	f.Add("naïve   ïn   wïntër")
 	f.Add("") // empty string
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		// Ensure no panics
 		_ = Squeeze(input)
 		_ = SqueezePreserveNewlines(input)
@@ -84,7 +84,7 @@ func FuzzEngineRegexSqueeze(f *testing.F) {
 	f.Add("café456au789lait")
 	f.Add("") // empty string
 
-	f.Fuzz(func(t *testing.T, input string) {
+	f.Fuzz(func(_ *testing.T, input string) {
 		// Ensure no panics for all variants
 		_, _ = ExtractAndSqueeze(input, re)
 		_, _ = ExtractAndSqueezePreserveNewlines(input, re)
