@@ -19,14 +19,14 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
-// upcCmd represents the upc command
+// upcCmd represents the upc command.
 var upcCmd = &cobra.Command{
 	Use:   "upc",
 	Short: "Manage UPC codes",
 	Long:  `Manage UPC codes for books and other items.`,
 }
 
-// upcListCmd represents the UPC prefix table list command
+// upcListCmd represents the UPC prefix table list command.
 var upcListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the UPC to ISBN prefix table",
@@ -42,7 +42,7 @@ compiled-in table, ignoring any upc.table config.`,
 	},
 }
 
-// upcListDefaultCmd represents the UPC prefix table list default command
+// upcListDefaultCmd represents the UPC prefix table list default command.
 var upcListDefaultCmd = &cobra.Command{
 	Use:   "default",
 	Short: "List the built-in UPC to ISBN prefix table",
@@ -67,7 +67,7 @@ func init() {
 	upcISBNCmd.Flags().Bool("strict", false, "Fail outputs that are not valid, range-resolvable ISBNs")
 }
 
-// upcISBNCmd represents the UPC to ISBN convert command
+// upcISBNCmd represents the UPC to ISBN convert command.
 var upcISBNCmd = &cobra.Command{
 	Use:   "isbn [upc...]",
 	Short: "Convert UPC codes to ISBNs",

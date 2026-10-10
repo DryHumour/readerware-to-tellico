@@ -9,14 +9,14 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/isbn"
 )
 
-// isbnCmd represents the isbn command
+// isbnCmd represents the isbn command.
 var isbnCmd = &cobra.Command{
 	Use:   "isbn",
 	Short: "Manipulate ISBNs",
 	Long:  `Manipulate ISBN values: normalise, convert, and hyphenate.`,
 }
 
-// isbnTo13Cmd represents the isbn to13 command
+// isbnTo13Cmd represents the isbn to13 command.
 var isbnTo13Cmd = &cobra.Command{
 	Use:     "to13 [isbn...]",
 	Aliases: []string{"13"},

@@ -22,7 +22,7 @@ var (
 	ratingNumberRE = regexp.MustCompile(`\d+(?:\.\d+)?`)
 	// htmlDetectorRE looks for valid tag structures or HTML entities.
 	// Branch 1: < followed by a letter or slash, then anything until >
-	// Branch 2: & followed by letters/numbers/#, ending in ;
+	// Branch 2: & followed by letters/numbers/#, ending in ;.
 	htmlDetectorRE = regexp.MustCompile(`(?i)<[a-z/][^>]*>|&[#a-z0-9]+;`)
 )
 

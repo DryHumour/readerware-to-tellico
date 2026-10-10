@@ -9,8 +9,8 @@ const (
 	KindVideo Kind = "video"
 )
 
-type ErrUnknownKind Kind
+type UnknownKindError Kind
 
-func (e ErrUnknownKind) Error() string {
+func (e UnknownKindError) Error() string {
 	return "unknown kind " + string(e)
 }

@@ -16,7 +16,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/convert"
 )
 
-// templatesCmd represents the templates parent command
+// templatesCmd represents the templates parent command.
 var templatesCmd = &cobra.Command{
 	Use:     "templates",
 	Aliases: []string{"template", "t"},
@@ -27,7 +27,7 @@ You can list the names of all default templates, or export them to a local
 directory to use as a starting point for your own custom overrides.`,
 }
 
-// listCmd represents the templates list sub-command
+// listCmd represents the templates list sub-command.
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
@@ -39,7 +39,7 @@ var listCmd = &cobra.Command{
 	},
 }
 
-// exportCmd represents the templates export sub-command
+// exportCmd represents the templates export sub-command.
 var exportCmd = &cobra.Command{
 	Use:     "export [template-name]",
 	Aliases: []string{"extract", "ext", "exp", "dump", "e", "x", "d"},

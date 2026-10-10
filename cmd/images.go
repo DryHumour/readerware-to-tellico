@@ -11,7 +11,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/images/extract"
 )
 
-// imagesCmd represents the images command group
+// imagesCmd represents the images command group.
 var imagesCmd = &cobra.Command{
 	Use:     "images",
 	Aliases: []string{"image", "img", "i"},
@@ -22,7 +22,7 @@ You can automatically extract database image blobs directly from the internal
 Readerware database, preparing them for conversion.`,
 }
 
-// extractCmd represents the extract command
+// extractCmd represents the extract command.
 var extractCmd = &cobra.Command{
 	Use:     "extract <db-path> <output-path>",
 	Aliases: []string{"ext", "export", "exp", "dump", "e", "x", "d"},

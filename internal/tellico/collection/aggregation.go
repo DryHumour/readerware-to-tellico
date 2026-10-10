@@ -61,7 +61,7 @@ func (a *aggregation) Markers() []string {
 
 // HasMarker reports whether the given entry-level metadata flag was detected
 // anywhere in the row (e.g. in the title or edition text).
-// Example: {{ if .HasMarker "<signed>" }}
+// Example: {{ if .HasMarker "<signed>" }}.
 func (a *aggregation) HasMarker(marker string) bool {
 	return a.markers[marker]
 }

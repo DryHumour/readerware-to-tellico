@@ -13,7 +13,7 @@ import (
 	"github.com/DryHumour/readerware-to-tellico/internal/tellico/collection"
 )
 
-// booksCmd represents the books command
+// booksCmd represents the books command.
 var booksCmd = &cobra.Command{
 	Use:     "books",
 	Aliases: []string{"b"},

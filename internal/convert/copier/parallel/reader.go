@@ -130,7 +130,7 @@ func (r *reader) processImageFile(ctx context.Context, p *payload, entry *images
 	switch err {
 	case nil, io.ErrUnexpectedEOF: //nolint:errorlint // equality guaranteed by io package
 		p.Data = p.Data[:n]
-	case io.EOF: //nolint:errorlint // equality guaranteed by io package
+	case io.EOF:
 		return nil, copier.NewFileEmptyError(entry)
 	default:
 		return nil, copier.NewFileError("failed to read file", entry, err)
