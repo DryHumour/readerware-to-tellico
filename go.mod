@@ -9,7 +9,7 @@ require (
 	github.com/bartventer/httpcache v0.14.0
 	github.com/go-playground/locales v0.14.2
 	github.com/go-playground/universal-translator v0.18.2
-	github.com/go-playground/validator/v10 v10.30.5
+	github.com/go-playground/validator/v10 v10.30.6
 	github.com/jaytaylor/html2text v0.0.0-20260303211410-1a4bdc82ecec
 	github.com/lmittmann/tint v1.2.1
 	github.com/spf13/cobra v1.10.2
@@ -30,7 +30,7 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.16 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-json v0.11.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
