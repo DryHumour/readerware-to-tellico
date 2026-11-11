@@ -1,6 +1,6 @@
 module github.com/DryHumour/readerware-to-tellico
 
-go 1.27.2
+go 1.27.4
 
 tool github.com/spf13/cobra-cli
 
