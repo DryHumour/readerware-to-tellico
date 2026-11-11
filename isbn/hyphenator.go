@@ -114,7 +114,7 @@ func DefaultHyphenator() *Hyphenator {
 // This function panics if the built-in ranges cannot be parsed or compiled
 // (which should never happen in practice).
 func newDefaultHyphenator() *Hyphenator {
-	ranges := must(ParseISBNRangesJSON(isbnRangesJSON))
+	ranges := ISBNRangesFromXML(must(ParseRangeMessageXML(rangeMessageXML)))
 	return must(NewHyphenator(ranges))
 }
 

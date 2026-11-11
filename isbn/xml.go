@@ -1,6 +1,7 @@
 package isbn
 
 import (
+	_ "embed"
 	"encoding/xml"
 	"fmt"
 )
@@ -9,6 +10,11 @@ const (
 	// rangeMessageURL is the canonocal URL for the ISBN range message XML file.
 	rangeMessageURL = "https://www.isbn-international.org/export_rangemessage.xml"
 )
+
+// rangeMessageXML is the fallback ISBN range message XML file.
+//
+//go:embed RangeMessage.xml
+var rangeMessageXML []byte
 
 // ISBNRangeMessage represents the structure of an ISBN range message XML file.
 //

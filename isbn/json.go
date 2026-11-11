@@ -1,7 +1,6 @@
 package isbn
 
 import (
-	_ "embed"
 	"encoding/json/jsontext"
 	json "encoding/json/v2"
 	"fmt"
@@ -11,11 +10,6 @@ const (
 	// isbnRangesURL is the canonocal URL for the ISBN ranges JSON file.
 	isbnRangesURL = "https://isbnbarcode.org/api/isbn-ranges.json"
 )
-
-// isbnRangesJSON is the fallback ISBN ranges JSON file.
-//
-//go:embed isbn-ranges.json
-var isbnRangesJSON []byte
 
 // ISBNRanges represents the structure of an ISBN ranges document.
 //

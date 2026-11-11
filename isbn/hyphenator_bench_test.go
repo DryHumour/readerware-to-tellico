@@ -9,8 +9,10 @@ import (
 )
 
 func BenchmarkHyphenator_Hyphenate(b *testing.B) {
-	ranges, err := ParseISBNRangesJSON(isbnRangesJSON)
+	msg, err := ParseRangeMessageXML(rangeMessageXML)
 	require.NoError(b, err)
+
+	ranges := ISBNRangesFromXML(msg)
 
 	h, err := NewHyphenator(ranges)
 	require.NoError(b, err)

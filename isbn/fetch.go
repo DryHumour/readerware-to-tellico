@@ -17,17 +17,10 @@ type HTTPClient interface {
 }
 
 // FetchISBNRanges attempts to fetch ISBN range data from multiple sources,
-// falling back to embedded data if all sources fail.
+// preferring the canonical International ISBN Agency XML feed, falling back
+// to embedded data if all sources fail.
 func FetchISBNRanges(ctx context.Context, client HTTPClient) (ISBNRanges, error) {
 	var errs []error
-
-	if data, err := fetchURL(ctx, client, isbnRangesURL); err != nil {
-		errs = append(errs, fmt.Errorf("failed to fetch ISBN ranges JSON: %s: %w", isbnRangesURL, err))
-	} else if ranges, err := ParseISBNRangesJSON(data); err != nil {
-		errs = append(errs, fmt.Errorf("failed to parse ISBN ranges JSON: %w", err))
-	} else {
-		return ranges, nil
-	}
 
 	if data, err := fetchURL(ctx, client, rangeMessageURL); err != nil {
 		errs = append(errs, fmt.Errorf("failed to fetch range message XML: %s: %w", rangeMessageURL, err))
@@ -37,10 +30,18 @@ func FetchISBNRanges(ctx context.Context, client HTTPClient) (ISBNRanges, error)
 		return ISBNRangesFromXML(msg), nil
 	}
 
-	if fallback, err := ParseISBNRangesJSON(isbnRangesJSON); err != nil {
-		errs = append(errs, fmt.Errorf("failed to parse fallback ISBN ranges JSON: %w", err))
+	if data, err := fetchURL(ctx, client, isbnRangesURL); err != nil {
+		errs = append(errs, fmt.Errorf("failed to fetch ISBN ranges JSON: %s: %w", isbnRangesURL, err))
+	} else if ranges, err := ParseISBNRangesJSON(data); err != nil {
+		errs = append(errs, fmt.Errorf("failed to parse ISBN ranges JSON: %w", err))
 	} else {
-		return fallback, nil
+		return ranges, nil
+	}
+
+	if fallback, err := ParseRangeMessageXML(rangeMessageXML); err != nil {
+		errs = append(errs, fmt.Errorf("failed to parse fallback range message XML: %w", err))
+	} else {
+		return ISBNRangesFromXML(fallback), nil
 	}
 
 	return ISBNRanges{}, fmt.Errorf("all ISBN range fetch methods failed: %w", errors.Join(errs...))
