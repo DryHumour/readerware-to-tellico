@@ -83,6 +83,9 @@ changelog:
       order: 999
 
 release:
+  # Without this, prerelease detection does not run at all: an unset value
+  # matches neither "auto" nor "true" in goreleaser's release pipe.
+  prerelease: auto
   footer: >-
 
     ---
