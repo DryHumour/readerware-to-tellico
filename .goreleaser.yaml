@@ -12,6 +12,10 @@ builds:
   - main: .
     env:
       - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    # Reproducible builds: same commit produces identical archives.
+    mod_timestamp: '{{ .CommitTimestamp }}'
     goos:
       - linux
       - windows
